@@ -24,6 +24,7 @@ import {
 import tailwind from "./styles/tailwind.css"
 import { loadTranslations, fallbackLocale, getMatchingLocale } from "./helpers/i18n";
 import { fluidType } from "./utils/helpers";
+import { safeGet } from "./utils/safe-post";
 
 export const links: LinksFunction = () => {
   return [
@@ -31,13 +32,15 @@ export const links: LinksFunction = () => {
     { rel: "stylesheet", href: 'https://use.typekit.net/ert5ehm.css' },
     { rel: "stylesheet", href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap' },
     { rel: "preconnect", href: 'https://fonts.googleapis.com' },
-    { rel: "preconnect", href: 'https://fonts.gstatic.com'},
-    { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
-    { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }
+    { rel: "preconnect", href: 'https://fonts.gstatic.com'}
   ];
 };
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({data}) => {
+  let theme = ''
+  if (data !== undefined) {
+    theme = data.primary
+  }
   return {
     'theme-color': '#ffffff',
     'twitter:card': 'summary_large_image'
@@ -49,6 +52,8 @@ type I18nKeys = typeof i18nKeys[number];
 
 type LoaderData = {
   i18n: Record<any, any>;
+  primary: string;
+  favicon: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -88,10 +93,20 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     });
   }
 
+  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=it-IT`)
+  if (websiteErr !== null) {
+    throw new Error(`API website: ${websiteErr.message} ${websiteErr.code}`);
+  }
+
+  const primary: string = websiteRes.website.theme.primaryColor
+  const favicon: string = websiteRes.website.theme.faviconUrl
+
   const i18n = loadTranslations<I18nKeys>(incomingLocale, i18nKeys);
 
   const loaderData: LoaderData = {
-    i18n: i18n
+    i18n,
+    primary,
+    favicon
   }
 
   return json(loaderData, {
@@ -106,6 +121,9 @@ export default function App() {
   const match = matches.find((match) => match.data && match.data.canonical);
   const canonical = match?.data.canonical;
   const alternates = match?.data.alternates;
+  const loaderData = useLoaderData<LoaderData>()
+
+  const favicon = loaderData.favicon || ""
 
   return (
     <html lang="en">
@@ -114,6 +132,7 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         {!!canonical && <link rel="canonical" href={canonical} />}
+        {!!favicon && <link rel="icon" type="image/x-icon" href={favicon}></link>}
         <Links />
       </head>
       <body>
@@ -148,7 +167,7 @@ export function CatchBoundary() {
             <div className="w-full h-full bg-white flex flex-col">
             <div className="w-full flex-1 flex items-center justify-center p-4 max-w-screen-md mx-auto text-center">
               <div>
-                <h2 className="font-display uppercase text-center" style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
+                <h2 className="uppercase text-center" style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
                   The website didn't load correctly
                 </h2>
                 <p>
@@ -156,9 +175,7 @@ export function CatchBoundary() {
                 </p>
               </div>
             </div>
-            <div className="bg-gradient-to-t from-red-600 to-white h-full flex flex-col items-center justify-end pt-8 group">
-              <img className="transform translate-y-1/3 w-full max-w-screen-lg h-auto object-cover" src="/holy-david.svg" alt="" />
-            </div>
+            <div className="bg-gradient-to-t from-red-600 to-white h-full flex flex-col items-center justify-end pt-8 group" />
             </div>
           </div>
         </div>
@@ -188,7 +205,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
             <div className="w-full h-full bg-white flex flex-col">
             <div className="w-full flex-1 flex items-center justify-center p-4 max-w-screen-md mx-auto text-center">
               <div>
-                <h2 className="font-display uppercase text-center" style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
+                <h2 className="uppercase text-center" style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
                   The website didn't load correctly
                 </h2>
                 <p>
@@ -199,9 +216,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
                 </p>
               </div>
             </div>
-            <div className="bg-gradient-to-t from-red-600 via-red-500 to-white h-full flex flex-col items-center justify-end pt-8 group">
-              <img className="transform translate-y-1/3 w-full max-w-screen-lg h-auto object-cover" src="/holy-david.svg" alt="" />
-            </div>
+            <div className="bg-gradient-to-t from-red-600 via-red-500 to-white h-full flex flex-col items-center justify-end pt-8 group" />
             </div>
           </div>
         </div>

@@ -11,8 +11,7 @@ import { ArrowLeftIcon } from '@heroicons/react/outline'
 export const links: LinksFunction = () => {
   return link(
     {
-      canonical: 'https://holydavid.art/it-it',
-      alternate: 'https://holydavid.art/en-en'
+      canonical: 'https://illos.davidegiovanni.com/it-it/contacts'
     }
   )
 };
@@ -21,14 +20,14 @@ export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
   let image = ''
-  let url = 'https://holydavid.art' + location.pathname
+  let url = 'https://illos.davidegiovanni.com' + location.pathname
 
   if (data !== undefined) {
     const { page } = data as LoaderData;
-    title = (page.title !== '' ? page.title : "Homepage") + ' | Holy David'
-    description = page.description !== '' ? page.description : "Holy David art website where you can fin news, info and more"
+    title = (page.title !== '' ? page.title : "Contatti") + ' | Davide G. Steccanella'
+    description = page.description !== '' ? page.description : "Contatta Davide Giovanni Steccanella per le sue illustrazioni"
     image = page.image !== '' ? page.image : ''
-    url = 'https://holydavid.art' + location.pathname
+    url = 'https://illos.davidegiovanni.com' + location.pathname
   }
 
   return metadata(
@@ -59,7 +58,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
 
   const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com/pages/contacts?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (pageErr !== null) {
-    throw new Error("Website didn't load correctly");
+    throw new Error(`API Page: ${pageErr.message}, ${pageErr.code}`);
   }
 
   const page: WebPageModel = pageRes.page

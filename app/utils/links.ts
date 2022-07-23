@@ -1,13 +1,15 @@
-export default ({ canonical, alternate } : { canonical:string, alternate:string }) => {
-    const links: any = [
+export default ({ canonical, alternate } : { canonical:string, alternate?:string }) => {
+    let links: any = [
       {
         rel: 'canonical',
         href: canonical,
-      },
-      {
-        rel: 'alternate',
-        href: alternate,
       }
     ]
+    if (alternate) {
+      links.push({
+        rel: 'alternate',
+        href: alternate,
+      })
+    }
     return links
 }

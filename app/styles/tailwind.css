@@ -1213,6 +1213,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   display: grid;
 }
 
+.hidden {
+  display: none;
+}
+
 .h-full {
   height: 100%;
 }
@@ -1243,6 +1247,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .h-6 {
   height: 1.5rem;
+}
+
+.h-12 {
+  height: 3rem;
 }
 
 .w-full {
@@ -2122,6 +2130,10 @@ img {
     margin-bottom: 4rem;
   }
 
+  .lg\:block {
+    display: block;
+  }
+
   .lg\:hidden {
     display: none;
   }
@@ -2177,6 +2189,14 @@ img {
 
   .lg\:flex-row {
     flex-direction: row;
+  }
+
+  .lg\:overflow-y-auto {
+    overflow-y: auto;
+  }
+
+  .lg\:overflow-y-hidden {
+    overflow-y: hidden;
   }
 
   .lg\:border-r {

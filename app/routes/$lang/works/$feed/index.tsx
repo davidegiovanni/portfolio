@@ -13,27 +13,18 @@ import { ArrowLeftIcon } from '@heroicons/react/outline'
 const i18nKeys = ["shared"] as const;
 type I18nKeys = typeof i18nKeys[number];
 
-export const links: LinksFunction = () => {
-  return link(
-    {
-      canonical: 'https://holydavid.art/it-it/newsroom',
-      alternate: 'https://holydavid.art/en-us/newsroom'
-    }
-  )
-};
-
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
-  let image = 'https://cdn.revas.app/v0/01f9ekbw2n7m4sfc4xhtftyarv/01fv5pkdatk6nkxdmkhprnwxpz/01fv89a184detgp575h5zenqvq/holy-david-full-logo-png.png'
-  let url = 'https://holydavid.art' + location.pathname
+  let image = ''
+  let url = 'https://illos.davidegiovanni.com' + location.pathname
 
   if (data !== undefined) {
     const page = data.page
-    title = (page.title !== '' ? page.title : "Newsroom") + ' | Holy David'
-    description = page.description !== '' ? page.description : "Holy David art website where you can fin news, info and more"
-    image = page.image !== '' ? page.image : "https://cdn.revas.app/v0/01f9ekbw2n7m4sfc4xhtftyarv/01fv5pkdatk6nkxdmkhprnwxpz/01fv89a184detgp575h5zenqvq/holy-david-full-logo-png.png"
-    url = 'https://holydavid.art' + location.pathname
+    title = (page.title !== '' ? page.title : "Pagina") + ' | Davide G. Steccanella'
+    description = page.description !== '' ? page.description : "Le illustrazioni di Davide G. Steccanella"
+    image = page.image !== '' ? page.image : ""
+    url = 'https://illos.davidegiovanni.com' + location.pathname
 
   }
   return metadata(
@@ -54,6 +45,7 @@ type LoaderData = {
   sections: WebSectionModel[];
   feed: Feed;
   items: FeedItem[];
+  canonical: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -80,12 +72,15 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const sections: WebSectionModel[] = page.sections
 
+  const canonical = `https://illos.davidegiovanni.com/${params.lang}/${params.feed}`
+
   const loaderData: LoaderData = {
     i18n,
     page: page,
     sections: sections,
     feed: feed,
-    items: items
+    items: items,
+    canonical: canonical
   }
   return json(loaderData);
 };
@@ -101,7 +96,7 @@ export default function FeedPage() {
 
   return (
     <div className="overflow-y-hidden h-full flex justify-end">
-      <div className="bg-white w-full lg:w-2/3 2xl:w-1/2">
+      <div className="bg-white w-full lg:w-2/3">
         {/* { feed.description !=="" && feed.description !== undefined && 
           <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }} className="w-1/2 mb-4 lg:mb-16">
             { feed.description }
@@ -125,27 +120,6 @@ export default function FeedPage() {
               </Link>
             ))
           }
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function ErrorBoundary({ error }: { error: Error }) {
-  return (
-    <div className="w-full h-full p-2 bg-white">
-      <div className="error-message">
-        <div className="inner-container">
-          <div className="card">
-            <div className="p-8 column">
-              <div className="item">
-                <h1 className="inline-block text-sm font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">Errore</h1>
-              </div>
-              <p className="item">
-                {error.message}
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

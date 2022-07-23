@@ -15,15 +15,15 @@ type I18nKeys = typeof i18nKeys[number];
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
-  let image = 'https://cdn.revas.app/v0/01f9ekbw2n7m4sfc4xhtftyarv/01fv5pkdatk6nkxdmkhprnwxpz/01fv89a184detgp575h5zenqvq/holy-david-full-logo-png.png'
-  let url = 'https://holydavid.art' + location.pathname
+  let image = ''
+  let url = 'https://illos.davidegiovanni.com' + location.pathname
   
   if (data !== undefined) {
     const page = data.item
-    title = (page.title !== '' ? page.title : "News") + ' | Holy David'
-    description = page.summary !== '' ? page.summary : "Holy David art website where you can fin news, info and more"
-    image = page.image !== '' ? page.image : "https://cdn.revas.app/v0/01f9ekbw2n7m4sfc4xhtftyarv/01fv5pkdatk6nkxdmkhprnwxpz/01fv89a184detgp575h5zenqvq/holy-david-full-logo-png.png"
-    url = 'https://holydavid.art' + location.pathname
+    title = (page.title !== '' ? page.title : "Page") + ' | Davide G. Steccanella'
+    description = page.summary !== '' ? page.summary : "Le illustrazioni di Davide G. Steccanella"
+    image = page.image !== '' ? page.image : ""
+    url = 'https://illos.davidegiovanni.com' + location.pathname
 
   }
   
@@ -66,7 +66,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
   const item: FeedItem = foundNews
 
-  const canonical = `https://holydavid.art/${params.lang}/${params.feed}/${params.item}`
+  const canonical = `https://illos.davidegiovanni.com/${params.lang}/${params.feed}/${params.item}`
 
   const loaderData: LoaderData = {
     i18n,
@@ -110,27 +110,6 @@ export default function ItemPage() {
           </p>
           <XIcon className="w-8 h-8 text-white"/>
         </Link>
-      </div>
-    </div>
-  );
-}
-
-export function ErrorBoundary({ error }: { error: Error }) {
-  return (
-    <div className="w-full h-full p-2">
-      <div className="error-message">
-        <div className="inner-container">
-          <div className="card">
-            <div className="p-8 column">
-              <div className="item">
-                <h1 className="inline-block text-sm font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">Errore</h1>
-              </div>
-              <p className="item">
-                {error.message}
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

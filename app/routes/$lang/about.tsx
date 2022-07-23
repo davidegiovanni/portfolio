@@ -16,14 +16,14 @@ export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
   let image = 'https://cdn.revas.app/v0/01f9ekbw2n7m4sfc4xhtftyarv/01fv5pkdatk6nkxdmkhprnwxpz/01fv89a184detgp575h5zenqvq/holy-david-full-logo-png.png'
-  let url = 'https://holydavid.art' + location.pathname
+  let url = 'https://illos.davidegiovanni.com' + location.pathname
   
   if (data !== undefined) {
     const page = data.item
-    title = (page.title !== '' ? page.title : "News") + ' | Holy David'
-    description = page.summary !== '' ? page.summary : "Holy David art website where you can fin news, info and more"
+    title = (page.title !== '' ? page.title : "About") + ' | Davide G. Steccanella'
+    description = page.summary !== '' ? page.summary : "Il CV e altre informazioni sull'illustratore Davide G. Steccanella"
     image = page.image !== '' ? page.image : "https://cdn.revas.app/v0/01f9ekbw2n7m4sfc4xhtftyarv/01fv5pkdatk6nkxdmkhprnwxpz/01fv89a184detgp575h5zenqvq/holy-david-full-logo-png.png"
-    url = 'https://holydavid.art' + location.pathname
+    url = 'https://illos.davidegiovanni.com' + location.pathname
 
   }
   
@@ -66,7 +66,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
   const item: FeedItem = foundNews
 
-  const canonical = `https://holydavid.art/${params.lang}/${params.feed}/${params.item}`
+  const canonical = `https://illos.davidegiovanni.com/${params.lang}/${params.feed}/${params.item}`
 
   const loaderData: LoaderData = {
     i18n,
@@ -82,7 +82,7 @@ export default function About() {
   const params = useParams()
 
     return (
-      <div className="overflow-y-hidden flex flex-col lg:flex-row h-full relative">
+      <div className="overflow-y-auto lg:overflow-y-hidden flex flex-col lg:flex-row h-full relative">
         <div className="absolute top-0 left-0 m-4">
           <Link to={`/${params.lang}`} className="underline text-white">
             <p className="sr-only">
@@ -94,7 +94,7 @@ export default function About() {
         <div className="w-full lg:w-2/5 p-4 flex items-center justify-center bg-black">
           <img src={item.image} className="w-2/3 lg:w-1/2 h-auto" alt="" />
         </div>
-        <div className="flex-1 flex flex-col justify-center items-end py-4 lg:py-16 overflow-y-auto px-4">
+        <div className="flex-1 flex flex-col justify-center items-end py-4 lg:py-16 lg:overflow-y-auto px-4">
           <div className="flex justify-start w-full w-full lg:w-9/12 mx-auto">
             <div className="w-full">
               <h1 style={{ fontSize: fluidType(20, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 32, 300, 2400, 1.5).lineHeight }}>
