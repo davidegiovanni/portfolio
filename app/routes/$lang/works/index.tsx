@@ -53,7 +53,7 @@ export const loader: LoaderFunction = async ({request, params}) => {
   return json(loaderData)
 };
 
-export default function Index() {
+export default function WorksIndex() {
   const { i18n } = useLoaderData<LoaderData>();
   const params = useParams()
 

@@ -6,6 +6,7 @@ import { WebPageModel, WebSectionModel } from "api/models";
 import metadata from '~/utils/metadata'
 import link from '~/utils/links'
 import { fluidType } from '~/utils/helpers'
+import { ArrowLeftIcon } from '@heroicons/react/outline'
 
 export const links: LinksFunction = () => {
   return link(
@@ -74,40 +75,45 @@ export const loader: LoaderFunction = async ({request, params}) => {
   return json(loaderData)
 };
 
-export default function Index() {
+export default function Contacts() {
   const { i18n, sections } = useLoaderData<LoaderData>();
   const params = useParams()
 
   const feeds: WebSectionModel[] = sections.length > 1 ? sections.splice(1) : [] as WebSectionModel[]
 
   const theme = {
-    primary: sections[0].primaryLink.title || '#ffffff',
-    secondary: sections[0].secondaryLink.title || '#000000'
+    primary: sections[0].secondaryLink.title || '#ffffff'
   }
 
-  const dynamicClass = `bg-white text-black h-full w-full flex overflow-hidden items-stretch`
+  const dynamicClass = `bg-white text-black h-full w-full flex flex-col overflow-hidden items-stretch p-2`
 
   return (
     <div className={dynamicClass}>
-      <div className="w-4/12  max-w-screen-md flex flex-col items-center justify-end p-4 lg:px-12">
-        <div>
-          <h1 style={{ fontSize: fluidType(16, 80, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 40, 300, 2400, 1.5).lineHeight }} className="text-justify w-full">{sections[0].title}</h1>
-          <div className="columns-2 gap-4 py-4 my-4 border-y border-black w-full">
-            <h2 className="text-justify" style={{ fontSize: fluidType(16, 12, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+      <div className="flex-1 w-full flex flex-col items-start justify-start">
+        <div className="w-full lg:w-auto">
+          <div className="mb-4">
+          <Link to={`/${params.lang}`} className="underline">
+            <p className="sr-only">
+              Torna indietro
+            </p>
+            <ArrowLeftIcon className="w-6 h-6" />
+          </Link>
+        </div>
+          <h1 style={{ fontSize: fluidType(24, 80, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 76, 300, 2400, 1.5).lineHeight }} className="text-justify w-full">{sections[0].title}</h1>
+          <div className="columns-2 gap-4 pt-4 pb-1 my-4 border-y border-black w-full">
+            <h2 className="text-justify" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
               {sections[0].description}
             </h2>
           </div>
-          <div className="flex items-center justify-between">
-            { feeds.map((f, index) => (
-              <div className="uppercase underline hover:opacity-50">
-                {index}. {f.title}
-              </div>
-            ))}
+          <div className="w-full underline uppercase hover:opacity-50 flex items-center justify-between">
+            <a href={sections[0].primaryLink.url} className="text-justify" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+              {sections[0].primaryLink.title}
+            </a>
           </div>
         </div>
       </div>
-      <div style={{ backgroundColor: theme.primary}} className={`w-full flex-1 overflow-hidden relative flex items-center justify-center`}>
-        <img src={sections[0].image} className="w-2/3 h-auto object-cover" alt="" />
+      <div className={`w-full h-2/3 overflow-hidden relative flex items-stretch justify-end`}>
+        <img src={sections[0].image} className="w-auto h-full object-cover" alt="" />
       </div>
     </div>
   );

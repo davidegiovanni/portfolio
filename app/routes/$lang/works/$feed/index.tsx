@@ -8,6 +8,7 @@ import metadata from '~/utils/metadata'
 import link from '~/utils/links'
 import { fluidType, formatDate } from '~/utils/helpers'
 import queryString from 'query-string'
+import { ArrowLeftIcon } from '@heroicons/react/outline'
 
 const i18nKeys = ["shared"] as const;
 type I18nKeys = typeof i18nKeys[number];
@@ -99,18 +100,32 @@ export default function FeedPage() {
   }
 
   return (
-    <div>
-      <h1 className="font-display uppercase" style={{ fontSize: fluidType(32, 100, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 80, 300, 2400, 1.5).lineHeight }}>{feed.title}</h1>
-      <div className="columns-3 gap-2">
-        {
-          items.map((i: FeedItem, index: any) => (
-            <Link to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className="block">
-              <div className="mb-2">
-                <img src={i.image} alt="" />
-              </div>
+    <div className="overflow-y-hidden h-full flex justify-end">
+      <div className="bg-white w-full lg:w-2/3 2xl:w-1/2">
+        {/* { feed.description !=="" && feed.description !== undefined && 
+          <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }} className="w-1/2 mb-4 lg:mb-16">
+            { feed.description }
+          </div>
+        } */}
+        <div className="grid grid-cols-2 h-full bg-white overflow-y-auto">
+          <div className="p-2">
+            <Link to={`/${params.lang}/works`}>
+            <p className="sr-only">
+              Torna indietro
+            </p>
+            <ArrowLeftIcon className="w-6 h-6" />
             </Link>
-          ))
-        }
+          </div>
+          {
+            items.map((i: FeedItem, index: any) => (
+              <Link to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className={((index + 1) % 2 !== 0 ? 'border-l border-black ' : '') + "block p-2"}>
+                <div className="">
+                  <img src={i.image} alt="" />
+                </div>
+              </Link>
+            ))
+          }
+        </div>
       </div>
     </div>
   );
@@ -118,7 +133,7 @@ export default function FeedPage() {
 
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
-    <div className="w-full h-full p-2">
+    <div className="w-full h-full p-2 bg-white">
       <div className="error-message">
         <div className="inner-container">
           <div className="card">

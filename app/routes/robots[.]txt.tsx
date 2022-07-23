@@ -6,7 +6,7 @@ export const loader: LoaderFunction = () => {
         User-agent: *
         Allow: /
     
-        Sitemap: https://illustrations.davidegiovanni.com/sitemap.xml
+        Sitemap: https://illos.davidegiovanni.com/sitemap.xml
         `
       // return the text content, a status 200 success response, and set the content type to text/plain 
         return new Response(robotText,{

@@ -7,7 +7,7 @@ import { Feed, FeedItem } from "api/models";
 import metadata from '~/utils/metadata'
 import { fluidType, formatDate } from '~/utils/helpers'
 import parse from 'html-react-parser'
-import { XIcon } from '@heroicons/react/outline'
+import { ArrowLeftIcon } from '@heroicons/react/outline'
 
 const i18nKeys = ["shared"] as const;
 type I18nKeys = typeof i18nKeys[number];
@@ -51,13 +51,13 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const lang = params.lang === 'it-it' ? 'it-IT' : 'en-US'
   const locale = params.lang === 'it-it' ? 'it' : 'en'
 
-  const [feedRes, feedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/${params.feed}/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
+  const [feedRes, feedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/about/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
   if (feedErr !== null) {
     throw new Error(`API Feed: ${feedErr.message}, ${feedErr.code}`);
   }
 
   const feed: Feed = feedRes
-  const slug = params.item
+  const slug = 'about'
   let foundNews = feed.items.find((i: any) => {
     return i.id.endsWith(slug)
   })
@@ -77,61 +77,42 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   return json(loaderData);
 };
 
-export default function ItemPage() {
+export default function About() {
   const { i18n, item, canonical } = useLoaderData<LoaderData>();
   const params = useParams()
 
-  return (
-    <div className="overflow-y-hidden flex flex-col h-full relative">
-      {/* <div className="flex-none absolute bottom-0 right-0 w-1/2 z-20 bg-white p-4">
-        <div className="flex justify-start">
-          <div style={{ fontSize: fluidType(16, 24, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 20, 300, 2400, 1.5).lineHeight }}>
-            <h1>
-              {item.title}
-            </h1>
-            <h2 className="my-2">
-              {item.summary}
-            </h2>
-          </div>
+    return (
+      <div className="overflow-y-hidden flex flex-col lg:flex-row h-full relative">
+        <div className="absolute top-0 left-0 m-4">
+          <Link to={`/${params.lang}`} className="underline text-white">
+            <p className="sr-only">
+              Torna indietro
+            </p>
+            <ArrowLeftIcon className="w-6 h-6" />
+          </Link>
         </div>
-        { item.content_html !== "" && item.content_html !== undefined &&
-          <div className="h-full w-full lg:w-2/3 max-w-screen-sm mb-2 columns-2 gap-2" style={{ fontSize: fluidType(8, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
-            <article className="prose prose-sm text-black">
-              {parse(item.content_html)}
-            </article>
-          </div>
-        }
-      </div> */}
-      <img src={item.image} className="absolute inset-0 w-full h-full object-contain" alt="" />
-      <div className="absolute inset-x-0 bottom-0 w-full z-50 text-white bg-gradient-to-t from-black to-transparent p-2 text-center h-16 flex items-center justify-center">
-        <Link to={`/${params.lang}/works/${params.feed}`}>
-          <p className="sr-only">
-            Torna indietro
-          </p>
-          <XIcon className="w-8 h-8 text-white"/>
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-export function ErrorBoundary({ error }: { error: Error }) {
-  return (
-    <div className="w-full h-full p-2">
-      <div className="error-message">
-        <div className="inner-container">
-          <div className="card">
-            <div className="p-8 column">
-              <div className="item">
-                <h1 className="inline-block text-sm font-medium text-red-600 bg-red-100 rounded-full px-2 py-0.5">Errore</h1>
-              </div>
-              <p className="item">
-                {error.message}
-              </p>
+        <div className="w-full lg:w-2/5 p-4 flex items-center justify-center bg-black">
+          <img src={item.image} className="w-2/3 lg:w-1/2 h-auto" alt="" />
+        </div>
+        <div className="flex-1 flex flex-col justify-center items-end py-4 lg:py-16 overflow-y-auto px-4">
+          <div className="flex justify-start w-full w-full lg:w-9/12 mx-auto">
+            <div className="w-full">
+              <h1 style={{ fontSize: fluidType(20, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 32, 300, 2400, 1.5).lineHeight }}>
+                {item.title}
+              </h1>
+              <h2 className="w-full my-4 columns-2 gap-2 pt-4 pb-1 border-y border-black" style={{ fontSize: fluidType(16, 24, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
+                {item.summary}
+              </h2>
             </div>
           </div>
+          { item.content_html !== "" && item.content_html !== undefined &&
+            <div className="h-full w-10/12 lg:w-2/3 max-w-screen-md mb-2">
+              <article className="prose prse-sm md:prose-lg text-black">
+                {parse(item.content_html)}
+              </article>
+            </div>
+          }
         </div>
-      </div>
-    </div>
-  );
+      </div>  
+    )
 }

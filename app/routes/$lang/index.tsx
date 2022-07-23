@@ -85,13 +85,13 @@ export default function Index() {
     secondary: sections[0].secondaryLink.title || '#000000'
   }
 
-  const dynamicClass = `bg-white text-black h-full w-full flex overflow-hidden items-stretch`
+  const dynamicClass = `bg-white text-black h-full w-full flex flex-col-reverse lg:flex-row overflow-hidden items-stretch`
 
   return (
     <div className={dynamicClass}>
-      <div className="w-4/12  max-w-screen-md flex flex-col items-center justify-end p-4 lg:px-12">
+      <div className="w-full flex-1 lg:flex-none lg:w-4/12  max-w-screen-md flex flex-col items-center justify-end p-4 lg:px-12">
         <div>
-          <h1 style={{ fontSize: fluidType(12, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 32, 300, 2400, 1.5).lineHeight }} className="text-justify w-full">{sections[0].title}</h1>
+          <h1 style={{ fontSize: fluidType(20, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 32, 300, 2400, 1.5).lineHeight }} className="text-justify w-full">{sections[0].title}</h1>
           <div className="columns-2 gap-4 py-4 my-4 border-y border-black w-full">
             <h2 className="text-justify" style={{ fontSize: fluidType(16, 12, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
               {sections[0].description}
@@ -100,14 +100,14 @@ export default function Index() {
           <div className="flex items-center justify-between">
             { feeds.map((f, index) => (
               <Link to={`/${params.lang}/${f.description}`} className="uppercase underline hover:opacity-50">
-                {index}. {f.title}
+                {index + 1}. {f.title}
               </Link>
             ))}
           </div>
         </div>
       </div>
-      <div style={{ backgroundColor: theme.primary}} className={`w-full flex-1 overflow-hidden relative flex items-center justify-center`}>
-        <img src={sections[0].image} className="w-2/3 h-auto object-cover" alt="" />
+      <div style={{ backgroundColor: theme.primary}} className={`w-full flex-1 overflow-hidden relative flex items-center justify-center p-4`}>
+        <img src={sections[0].image} className="h-full w-auto lg:w-2/3 lg:h-auto object-cover" alt="" />
       </div>
     </div>
   );

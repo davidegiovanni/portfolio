@@ -32,11 +32,11 @@ export const meta: MetaFunction = ({ data, location }) => {
 
   return metadata(
     {
-      title: title, 
-      description: description, 
-      image: image, 
-      url: url, 
-      robots: 'follow', 
+      title: title,
+      description: description,
+      image: image,
+      url: url,
+      robots: 'follow',
       type: 'website',
     }
   )
@@ -52,7 +52,7 @@ type LoaderData = {
   feeds: WebSectionModel[];
 };
 
-export const loader: LoaderFunction = async ({request, params}) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
 
   let lang = params.lang === 'it-it' ? 'it-IT' : 'en-US'
@@ -76,31 +76,59 @@ export const loader: LoaderFunction = async ({request, params}) => {
   return json(loaderData)
 };
 
-export default function Index() {
+export default function Works() {
   const { i18n, sections, feeds } = useLoaderData<LoaderData>();
   const params = useParams()
+  const location = useLocation()
 
-  const dynamicClass = `bg-white text-black h-full w-full overflow-y-hidden flex p-2`
+  const isFeedPage = location.pathname.includes('/works/')
+
+  const dynamicClass = `bg-black text-black h-full w-full overflow-y-hidden flex flex-col lg:flex-row p-4 justify-between`
 
   return (
     <div className={dynamicClass}>
-      <div className="w-1/3">
-        <div>
-          <Link to={`/${params.lang}`}>
-            Home
-          </Link>
-        </div>
-        <div>
-          { feeds.map((f, index) => (
-              <Link to={`/${params.lang}/works/${f.description}`} className="block pt-8">
-                <p style={{ fontSize: fluidType(16, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 32, 300, 2400, 1.5).lineHeight }} className="pb-4 border-b-2 border-black w-full">
-                  {f.title}
-                </p>
-              </Link>
-            ))}
+      <div className="text-justify w-full h-1/2 lg:h-auto lg:w-1/4 transform -rotate-2 shadow-2xl relative z-30">
+        <div className="bg-white h-full w-full lg:w-10/12 p-4 flex flex-col items-center justify-center">
+          <h1 className={"inline-block"} style={{ fontSize: fluidType(16, 32, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 28, 300, 2400, 1.5).lineHeight }}>{sections[0].title}</h1>
+          <div className="flex-1 bg-gray-800 w-full relative overflow-hidden my-2">
+            <img src={sections[0].image} className="w-full h-full inset-0 absolute object-cover" alt="" />
+          </div>
+          <h2 className={"inline-block"} style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
+            {sections[0].description}
+          </h2>
         </div>
       </div>
-      <div className="overflow-y-hidden flex-1 p-2 bg-gray-100">
+      <div className="w-full h-1/2 lg:h-auto lg:w-1/4 flex flex-col items-center justify-start text-center overflow-y-auto transform rotate-3 shadow-2xl relative z-40">
+        <div className="w-full lg:w-10/12 h-full bg-white p-2 flex flex-col justify-between">
+          <div className="p-4">
+            {feeds.map((f, index) => (
+              <NavLink className={({ isActive }) =>
+                isActive ? 'underline opacity-75 uppercase' : 'uppercase'
+              } to={`/${params.lang}/works/${f.description}`}>
+                <div>
+                  <div>
+                    <p>
+                      0{index + 1}.
+                    </p>
+                    <p style={{ fontSize: fluidType(16, 32, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 28, 300, 2400, 1.5).lineHeight }} className="mb-4">
+                      {f.title}
+                    </p>
+                  </div>
+                </div>
+              </NavLink>
+            ))}
+          </div>
+          <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
+            <p className="mb-2">
+              Seleziona una collezione per vedere i disegni
+            </p>
+            <Link to={`/${params.lang}`} className="underline">
+              Homepage
+            </Link>
+          </div>
+        </div>
+      </div>
+      <div className={(isFeedPage ? 'fixed fixed lg:relative inset-0 ' : '') + " overflow-y-auto flex-1 h-full bg-black z-50"}>
         <Outlet />
       </div>
     </div>
