@@ -20,7 +20,7 @@ type I18nKeys = typeof i18nKeys[number];
 
 type LoaderData = {
   i18n: Record<I18nKeys, any>,
-  logo: string
+  section: WebSectionModel
 };
 
 export const loader: LoaderFunction = async ({request, params}) => {
@@ -28,29 +28,32 @@ export const loader: LoaderFunction = async ({request, params}) => {
 
   let lang = params.lang === 'it-it' ? 'it-IT' : 'en-US'
 
-  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
-  if (websiteErr !== null) {
-    throw new Error(`API website: ${websiteErr.message} ${websiteErr.code}`);
+  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
+  if (pageErr !== null) {
+    throw new Error(`API Page: ${pageErr.message} ${pageErr.code}`);
   }
-  const logo = websiteRes.website.theme.borderRadius
+
+  const page: WebPageModel = pageRes.page
+
+  const section: WebSectionModel = page.sections[0]
 
   const loaderData: LoaderData = {
     i18n,
-    logo
+    section
   }
 
   return json(loaderData)
 };
 
 export default function WorksIndex() {
-  const { i18n, logo } = useLoaderData<LoaderData>();
+  const { i18n, section } = useLoaderData<LoaderData>();
   const params = useParams()
 
   const dynamicClass = `h-full w-full flex flex-col items-center justify-center`
 
   return (
     <div className={dynamicClass}>
-      <img src={logo} alt="" className="w-1/2 hidden lg:block" />
+      <img src={section.image} alt="" className="w-1/2 hidden lg:block" />
     </div>
   );
 }

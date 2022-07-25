@@ -85,34 +85,19 @@ export default function Works() {
 
   return (
     <div className={dynamicClass}>
-      <div className="text-justify w-full h-1/2 lg:h-auto lg:w-1/4 transform -rotate-2 shadow-2xl relative z-30">
-        <div className="bg-white h-full w-full lg:w-10/12 p-4 flex flex-col items-center justify-center">
-          <h1 className={"inline-block"} style={{ fontSize: fluidType(16, 32, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 28, 300, 2400, 1.5).lineHeight }}>{sections[0].title}</h1>
-          <div className="flex-1 bg-gray-800 w-full relative overflow-hidden my-2">
-            <img src={sections[0].image} className="w-full h-full inset-0 absolute object-cover" alt="" />
-          </div>
-          <h2 className={"inline-block"} style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
-            {sections[0].description}
-          </h2>
-        </div>
-      </div>
-      <div className="w-full h-1/2 lg:h-auto lg:w-1/4 flex flex-col items-center justify-start text-center overflow-y-auto transform rotate-3 shadow-2xl relative z-40">
+      <div className="w-full h-full lg:h-auto lg:w-1/4 flex flex-col items-center justify-start text-center overflow-y-auto transform rotate-3 shadow-2xl relative z-40">
         <div className="w-full lg:w-10/12 h-full bg-white p-2 flex flex-col justify-between">
           <div className="p-4">
             {feeds.map((f, index) => (
               <NavLink className={({ isActive }) =>
-                isActive ? 'underline opacity-75 uppercase' : 'uppercase'
+                isActive ? 'block uppercase line-through decoration-black decoration-wavy decoration-4' : 'uppercase'
               } to={`/${params.lang}/works/${f.description}`}>
-                <div>
-                  <div>
-                    <p>
-                      0{index + 1}.
-                    </p>
-                    <p style={{ fontSize: fluidType(16, 32, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 28, 300, 2400, 1.5).lineHeight }} className="mb-4">
-                      {f.title}
-                    </p>
-                  </div>
-                </div>
+                <p style={{ textDecorationLine: 'none'}}>
+                  0{index + 1}.
+                </p>
+                <p style={{ fontSize: fluidType(16, 32, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 28, 300, 2400, 1.5).lineHeight }} className="mb-4">
+                  {f.title}
+                </p>
               </NavLink>
             ))}
           </div>

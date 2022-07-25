@@ -20,9 +20,10 @@ export const meta: MetaFunction = ({ data, location }) => {
   let url = 'https://illos.davidegiovanni.com' + location.pathname
 
   if (data !== undefined) {
+    const feed = data.feed
     const page = data.page
-    title = (page.title !== '' ? page.title : "Pagina") + ' | Davide G. Steccanella'
-    description = page.description !== '' ? page.description : "Le illustrazioni di Davide G. Steccanella"
+    title = (feed.title !== '' ? feed.title : "Pagina") + ' | Davide G. Steccanella'
+    description = feed.description !== '' ? feed.description : "Le illustrazioni di Davide G. Steccanella"
     image = page.image !== '' ? page.image : ""
     url = 'https://illos.davidegiovanni.com' + location.pathname
 
@@ -56,16 +57,16 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const [feedRes, feedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/${params.feed}/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
   if (feedErr !== null) {
-    throw new Error(`${feedErr.message}, ${feedErr.code}`);
+    throw new Error(`API Feed: ${feedErr.message}, ${feedErr.code}`);
   }
 
   const feed: Feed = feedRes
 
   const items: FeedItem[] = feed.items
 
-  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/holydavid.art/pages/newsroom?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
+  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (pageErr !== null) {
-    throw new Error("Website didn't load correctly");
+    throw new Error(`API Page: ${pageErr.message} ${pageErr.code}`);
   }
 
   const page: WebPageModel = pageRes.page
@@ -96,12 +97,7 @@ export default function FeedPage() {
 
   return (
     <div className="overflow-y-hidden h-full flex justify-end">
-      <div className="bg-white w-full lg:w-2/3">
-        {/* { feed.description !=="" && feed.description !== undefined && 
-          <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }} className="w-1/2 mb-4 lg:mb-16">
-            { feed.description }
-          </div>
-        } */}
+      <div className="bg-white w-full lg:w-11/12">
         <div className="grid grid-cols-2 h-full bg-white overflow-y-auto">
           <div className="p-2">
             <Link to={`/${params.lang}/works`}>
@@ -110,10 +106,16 @@ export default function FeedPage() {
             </p>
             <ArrowLeftIcon className="w-6 h-6" />
             </Link>
+            { feed.description !=="" && feed.description !== undefined && 
+              <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }} className="w-1/2 mt-4">
+                { feed.description }
+              </div>
+            }
           </div>
+
           {
             items.map((i: FeedItem, index: any) => (
-              <Link to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className={((index + 1) % 2 !== 0 ? 'border-l border-black ' : '') + "block p-2"}>
+              <Link key={index} to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className={(((index + 1) % 2 === 0) ? 'border-r border-black ' : index === 0 ? 'border-l border-black ' : '') + "block p-2"}>
                 <div className="">
                   <img src={i.image} alt="" />
                 </div>
