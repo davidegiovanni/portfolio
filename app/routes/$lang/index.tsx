@@ -124,7 +124,7 @@ export default function Index() {
         </div>
       </div>
       <div style={{ backgroundColor: theme.primary}} className={`w-full flex-1 overflow-hidden relative flex items-center justify-center p-4`}>
-        <img src={sections[0].image} className="transform scale-150 lg:scale-100 h-auto w-full lg:w-2/3 lg:h-auto object-cover" alt="" />
+        <img src={sections[0].image} className="scale-150 lg:transform-none h-auto w-full lg:w-2/3 lg:h-auto object-cover" alt="" />
       </div>
     </div>
   );
