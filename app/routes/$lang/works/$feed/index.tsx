@@ -99,18 +99,19 @@ export default function FeedPage() {
     <div className="overflow-y-hidden h-full flex justify-end">
       <div className="bg-white w-full lg:w-11/12">
         <div className="grid grid-cols-2 h-full bg-white overflow-y-auto">
-          <div className="p-2">
-            <Link to={`/${params.lang}/works`}>
+          <div className="p-2 lg:flex flex-col items-end justify-between">
+            <Link to={`/${params.lang}/works`} className="w-full">
             <p className="sr-only">
               Torna indietro
             </p>
             <ArrowLeftIcon className="w-6 h-6" />
             </Link>
             { feed.description !=="" && feed.description !== undefined && 
-              <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }} className="w-1/2 mt-4">
+              <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="w-full lg:w-1/2 mt-4 lg:text-right">
                 { feed.description }
               </div>
             }
+            <div className="hidden lg:block h-12"></div>
           </div>
 
           {

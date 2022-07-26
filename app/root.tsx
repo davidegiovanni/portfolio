@@ -64,8 +64,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const matchingLocale = getMatchingLocale(request, incomingLocale)
 
-  console.log('incomingLocale', incomingLocale,'matchingLocale', matchingLocale, 'path', pathname) 
-
   if (matchingLocale === undefined) {
     return redirect(`/it-it${pathname}`)
   }

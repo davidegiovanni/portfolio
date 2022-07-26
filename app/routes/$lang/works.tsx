@@ -48,12 +48,19 @@ type LoaderData = {
   page: WebPageModel;
   sections: WebSectionModel[];
   feeds: WebSectionModel[];
+  logo: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
 
   let lang = params.lang === 'it-it' ? 'it-IT' : 'en-US'
+
+  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
+  if (websiteErr !== null) {
+    throw new Error(`API website: ${websiteErr.message} ${websiteErr.code}`);
+  }
+  const logo = websiteRes.website.theme.logoUrl
 
   const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (pageErr !== null) {
@@ -68,14 +75,15 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     i18n,
     page: page,
     sections: sections,
-    feeds: sections.length > 1 ? sections.splice(1) : [] as WebSectionModel[]
+    feeds: sections.length > 1 ? sections.splice(1) : [] as WebSectionModel[],
+    logo
   }
 
   return json(loaderData)
 };
 
 export default function Works() {
-  const { i18n, sections, feeds } = useLoaderData<LoaderData>();
+  const { i18n, logo, feeds } = useLoaderData<LoaderData>();
   const params = useParams()
   const location = useLocation()
 
@@ -102,11 +110,15 @@ export default function Works() {
             ))}
           </div>
           <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
-            <p className="mb-2">
+            <p className="mb-4">
               Seleziona una collezione per vedere i disegni
             </p>
-            <Link to={`/${params.lang}`} className="underline">
-              Homepage
+            <hr className="mb-4 w-10/12 mx-auto" />
+            <Link to={`/${params.lang}`} className="underline block w-10/12 mx-auto mb-4">
+              <img src={logo} alt="" />
+              <p className="sr-only">
+                Homepage
+              </p>
             </Link>
           </div>
         </div>

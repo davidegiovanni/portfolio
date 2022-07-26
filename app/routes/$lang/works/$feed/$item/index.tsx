@@ -1,5 +1,6 @@
 import { json, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react";
+import queryString from 'query-string'
  
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
@@ -7,7 +8,7 @@ import { Feed, FeedItem } from "api/models";
 import metadata from '~/utils/metadata'
 import { fluidType, formatDate } from '~/utils/helpers'
 import parse from 'html-react-parser'
-import { XIcon } from '@heroicons/react/outline'
+import { ArrowLeftIcon, ArrowRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
 
 const i18nKeys = ["shared"] as const;
 type I18nKeys = typeof i18nKeys[number];
@@ -43,6 +44,9 @@ type LoaderData = {
   i18n: Record<I18nKeys, any>;
   canonical: string;
   item: FeedItem;
+  previous: string;
+  current: number;
+  next: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -64,6 +68,20 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (foundNews === undefined) {
     throw new Error("News undefined");
   }
+
+  function getSlug (url: string) {
+    const parsed = queryString.parse(url)
+    return parsed.content
+  }
+
+  let indexOfItem = feed.items.indexOf(foundNews)
+  let nextItemIndex = indexOfItem !== feed.items.length - 1 ? indexOfItem + 1 : -1
+  let nextItemSlug = nextItemIndex !== -1 ? feed.items[nextItemIndex].id : ''
+  let previousItemIndex = indexOfItem > 0 ? indexOfItem -1 : -1
+  let previousItemSlug = previousItemIndex !== -1 ? feed.items[previousItemIndex].id : ''
+  nextItemSlug = nextItemSlug !== '' ? getSlug(nextItemSlug) as string : ''
+  previousItemSlug = previousItemSlug !== '' ? getSlug(previousItemSlug) as string : ''
+
   const item: FeedItem = foundNews
 
   const canonical = `https://illos.davidegiovanni.com/${params.lang}/${params.feed}/${params.item}`
@@ -71,45 +89,51 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const loaderData: LoaderData = {
     i18n,
     canonical: canonical,
-    item: item as FeedItem
+    item: item as FeedItem,
+    current: indexOfItem,
+    next: nextItemSlug,
+    previous: previousItemSlug
   }
 
   return json(loaderData);
 };
 
 export default function ItemPage() {
-  const { i18n, item, canonical } = useLoaderData<LoaderData>();
+  const { item, current, next, previous } = useLoaderData<LoaderData>();
   const params = useParams()
 
   return (
     <div className="overflow-y-hidden flex flex-col h-full relative">
-      {/* <div className="flex-none absolute bottom-0 right-0 w-1/2 z-20 bg-white p-4">
-        <div className="flex justify-start">
-          <div style={{ fontSize: fluidType(16, 24, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 20, 300, 2400, 1.5).lineHeight }}>
-            <h1>
-              {item.title}
-            </h1>
-            <h2 className="my-2">
-              {item.summary}
-            </h2>
-          </div>
-        </div>
-        { item.content_html !== "" && item.content_html !== undefined &&
-          <div className="h-full w-full lg:w-2/3 max-w-screen-sm mb-2 columns-2 gap-2" style={{ fontSize: fluidType(8, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
-            <article className="prose prose-sm text-black">
-              {parse(item.content_html)}
-            </article>
-          </div>
+      <div className="flex-1 w-full relative">
+        <img src={item.image} className="absolute inset-0 w-full h-full object-contain" alt="" />
+      </div>
+      <div className="flex items-center justify-between flex-none h-10 mt-4 mb-4 lg:mb-0 w-10/12 lg:w-1/2 mx-auto text-white bg-gradient-to-t from-black to-transparent text-center">
+        {
+          previous !== '' ? 
+          <Link to={`/${params.lang}/works/${params.feed}/${previous}`}>
+            <p className="sr-only">
+              Precedente
+            </p>
+            <ArrowLeftIcon className="w-8 h-8 text-white"/>
+          </Link> :
+          <div className="w-8 h-8"></div>
         }
-      </div> */}
-      <img src={item.image} className="absolute inset-0 w-full h-full object-contain" alt="" />
-      <div className="absolute inset-x-0 bottom-0 w-full z-50 text-white bg-gradient-to-t from-black to-transparent p-2 text-center h-16 flex items-center justify-center">
         <Link to={`/${params.lang}/works/${params.feed}`}>
           <p className="sr-only">
             Torna indietro
           </p>
-          <XIcon className="w-8 h-8 text-white"/>
+          <ViewGridIcon className="w-8 h-8 text-white"/>
         </Link>
+        {
+          next !== '' ? 
+          <Link to={`/${params.lang}/works/${params.feed}/${next}`}>
+            <p className="sr-only">
+              Successivo
+            </p>
+            <ArrowRightIcon className="w-8 h-8 text-white"/>
+          </Link> :
+          <div className="w-8 h-8"></div>
+        }
       </div>
     </div>
   );

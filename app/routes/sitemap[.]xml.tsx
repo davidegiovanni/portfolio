@@ -14,8 +14,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   let workFeeds: WebSectionModel[] = workSections.length > 1 ? workSections.splice(1) : [] as WebSectionModel[]
   const mappedWorkFeeds = workFeeds.map(wf => wf.description)
 
-  console.log(mappedWorkFeeds)
-
   let itFeeds: Feed[] = []
   let itItems: FeedItem[] = []
 

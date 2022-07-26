@@ -103,12 +103,12 @@ export default function Index() {
 
   return (
     <div className={dynamicClass}>
-      <div className="w-full flex-1 lg:flex-none lg:w-4/12  max-w-screen-md flex flex-col items-center justify-between p-4 lg:px-12">
-        <div className="h-8 mb-2 w-full mt-4">
+      <div className="w-full flex-1 lg:flex-none lg:w-4/12  max-w-screen-md flex flex-col items-center justify-between p-4 md:px-6 lg:px-12">
+        <div className="h-16 mb-2 w-full mb-8 lg:my-4">
           <img src={logo} className="h-full w-auto" alt="" />
         </div>
         <div className="overflow-y-auto">
-          <h1 style={{ fontSize: fluidType(20, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 32, 300, 2400, 1.5).lineHeight }} className="text-justify w-full">{sections[0].title}</h1>
+          <h1 style={{ fontSize: fluidType(24, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 32, 300, 2400, 1.5).lineHeight }} className="text-justify w-full">{sections[0].title}</h1>
           <div className="columns-2 gap-4 py-4 my-4 border-y border-black w-full">
             <h2 className="text-justify" style={{ fontSize: fluidType(16, 12, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
               {sections[0].description}
@@ -124,7 +124,7 @@ export default function Index() {
         </div>
       </div>
       <div style={{ backgroundColor: theme.primary}} className={`w-full flex-1 overflow-hidden relative flex items-center justify-center p-4`}>
-        <img src={sections[0].image} className="h-full w-auto lg:w-2/3 lg:h-auto object-cover" alt="" />
+        <img src={sections[0].image} className="transform translate-y-1/3 lg:translate-y-0 h-auto w-9/12 lg:w-2/3 lg:h-auto object-cover" alt="" />
       </div>
     </div>
   );
