@@ -94,20 +94,22 @@ export default function About() {
         <div className="w-full lg:w-2/5 p-4 flex items-center justify-center bg-black">
           <img src={item.image} className="w-2/3 lg:w-1/2 h-auto" alt="" />
         </div>
-        <div className="flex-1 flex flex-col justify-center items-end py-4 lg:py-16 lg:overflow-y-auto px-4">
-          <div className="flex justify-start w-full w-full lg:w-9/12 mx-auto">
+        <div className="flex-1 py-4 lg:py-16 lg:overflow-y-auto px-4 mb-8 lg:mb-16 h-full">
+          <div className="flex justify-start w-full w-full lg:w-9/12 mx-auto mb-4 lg:mb-8">
             <div className="w-full">
-              <h1 style={{ fontSize: fluidType(20, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 32, 300, 2400, 1.5).lineHeight }}>
+              <h1 style={{ fontSize: fluidType(24, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 32, 300, 2400, 1.5).lineHeight }} >
                 {item.title}
               </h1>
-              <h2 className="w-full my-4 columns-2 gap-2 pt-4 pb-1 border-y border-black" style={{ fontSize: fluidType(16, 24, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
-                {item.summary}
-              </h2>
+              <div className="w-full columns-2 gap-4 border-y border-black py-4 mt-2 lg:px-4">
+                <h2 className="text-justify italic" style={{ fontSize: fluidType(14, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+                  {item.summary}
+                </h2>
+              </div>
             </div>
           </div>
           { item.content_html !== "" && item.content_html !== undefined &&
-            <div className="h-full w-10/12 lg:w-2/3 max-w-screen-md mb-2">
-              <article className="prose prse-sm md:prose-lg text-black">
+            <div className="w-full lg:w-9/12 mx-auto mb-2 mr-auto flex flex-col items-end">
+              <article className="block prose max-w-none lg:w-11/12 text-black">
                 {parse(item.content_html)}
               </article>
             </div>
