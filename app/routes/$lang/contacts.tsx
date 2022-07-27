@@ -89,7 +89,7 @@ export default function Contacts() {
   return (
     <div className={dynamicClass}>
       <div className="flex-1 w-full flex flex-col items-start justify-start">
-        <div className="w-full lg:w-auto">
+        <div className="w-full lg:w-1/2 max-w-screen-md">
           <div className="mb-4">
           <Link to={`/${params.lang}`} className="underline">
             <p className="sr-only">
@@ -97,7 +97,7 @@ export default function Contacts() {
             </p>
             <ArrowLeftIcon className="w-6 h-6" />
           </Link>
-        </div>
+          </div>
           <h1 style={{ fontSize: fluidType(24, 80, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 76, 300, 2400, 1.5).lineHeight }} className="text-justify w-full">{sections[0].title}</h1>
           <div className="columns-2 gap-4 pt-4 pb-1 my-4 border-y border-black w-full">
             <h2 className="text-justify" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
@@ -111,7 +111,7 @@ export default function Contacts() {
           </div>
         </div>
       </div>
-      <div className={`w-full h-2/3 overflow-hidden relative flex items-stretch justify-end`}>
+      <div className={`w-full flex-1 lg:flex-none lg:h-2/3 max-w-screen-md overflow-hidden relative flex items-stretch justify-end`}>
         <img src={sections[0].image} className="w-auto h-full object-cover" alt="" />
       </div>
     </div>
