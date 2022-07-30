@@ -49,6 +49,7 @@ type LoaderData = {
   i18n: Record<I18nKeys, any>;
   page: WebPageModel;
   sections: WebSectionModel[];
+  primary: string;
 };
 
 export const loader: LoaderFunction = async ({request, params}) => {
@@ -61,6 +62,13 @@ export const loader: LoaderFunction = async ({request, params}) => {
     throw new Error(`API Page: ${pageErr.message}, ${pageErr.code}`);
   }
 
+  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
+  if (websiteErr !== null) {
+    throw new Error(`API website: ${websiteErr.message} ${websiteErr.code}`);
+  }
+
+  const primary = websiteRes.website.theme.primaryColor
+
   const page: WebPageModel = pageRes.page
 
   const sections: WebSectionModel[] = page.sections
@@ -68,29 +76,24 @@ export const loader: LoaderFunction = async ({request, params}) => {
   const loaderData: LoaderData = {
     i18n,
     page: page,
-    sections: sections
+    sections: sections,
+    primary
   }
 
   return json(loaderData)
 };
 
 export default function Contacts() {
-  const { i18n, sections } = useLoaderData<LoaderData>();
+  const { primary, sections } = useLoaderData<LoaderData>();
   const params = useParams()
 
-  const feeds: WebSectionModel[] = sections.length > 1 ? sections.splice(1) : [] as WebSectionModel[]
-
-  const theme = {
-    primary: sections[0].secondaryLink.title || '#ffffff'
-  }
-
-  const dynamicClass = `bg-white text-black h-full w-full flex flex-col overflow-hidden items-stretch p-2`
+  const dynamicClass = `bg-black text-black h-full w-full flex flex-col lg:flex-row overflow-hidden items-stretch p-2`
 
   return (
     <div className={dynamicClass}>
-      <div className="flex-1 w-full flex flex-col items-start justify-start">
-        <div className="w-full lg:w-1/2 max-w-screen-md">
-          <div className="mb-4">
+      <div style={{ backgroundColor: primary}} className="h-1/3 lg:h-full w-full lg:w-1/2 flex-none p-2">
+        <div className="flex-1 lg:p-8 flex flex-col justify-end lg:justify-center items-start lg:items-center h-full relative">
+          <div className="m-4 absolute top-0 left-0">
           <Link to={`/${params.lang}`} className="underline">
             <p className="sr-only">
               Torna indietro
@@ -98,21 +101,19 @@ export default function Contacts() {
             <ArrowLeftIcon className="w-6 h-6" />
           </Link>
           </div>
-          <h1 style={{ fontSize: fluidType(24, 80, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 76, 300, 2400, 1.5).lineHeight }} className="text-justify w-full">{sections[0].title}</h1>
-          <div className="columns-2 gap-4 pt-4 pb-1 my-4 border-y border-black w-full">
-            <h2 className="text-justify" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-              {sections[0].description}
-            </h2>
-          </div>
-          <div className="w-full underline uppercase hover:opacity-50 flex items-center justify-between">
-            <a href={sections[0].primaryLink.url} className="text-justify" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-              {sections[0].primaryLink.title}
-            </a>
-          </div>
+          <h1 style={{ fontSize: fluidType(24, 64, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 48, 300, 2400, 1.5).lineHeight }} className="w-full lg:text-center">{sections[0].title}</h1>
+          <a href={sections[0].primaryLink.url} className="lg:text-center inline-block uppercase underline mt-1 lg:mt-4" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+            {sections[0].primaryLink.title}
+          </a>
         </div>
       </div>
-      <div className={`w-full flex-1 lg:flex-none lg:h-2/3 max-w-screen-md overflow-hidden relative flex items-stretch justify-end`}>
-        <img src={sections[0].image} className="w-auto h-full object-cover" alt="" />
+      <div className={`bg-white flex flex-col h-2/3 lg:h-full`}>
+          <h2 className="text-left w-3/4 lg:w-1/2 p-8 lg:p-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
+            {sections[0].description}
+          </h2>
+          <div className="flex-1 flex items-end justify-end w-full p-2 lg:p-4">
+            <img src={sections[0].image} className="w-1/3 h-full lg:h-1/2 object-cover" alt="" />
+          </div>
       </div>
     </div>
   );
