@@ -19,7 +19,7 @@ export function Attachment(props: AttachmentProps) {
       {props.attachment.mediaType.startsWith("image/") && (
         <picture className="h-full w-full">
           <source
-            className="rounded-default"
+            className="relative z-10 h-full w-full object-contain"
             type="image/webp"
             sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
             srcSet={buildSrcset(props.attachment.url, "webp")}
@@ -28,7 +28,7 @@ export function Attachment(props: AttachmentProps) {
             srcSet={buildSrcset(props.attachment.url, "")}
             sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
             src={props.attachment.url}
-            className="relative z-10 h-full w-full object-cover"
+            className="relative z-10 h-full w-full object-contain"
             alt={props.attachment.description}
             loading="lazy"
             decoding="async"
@@ -45,7 +45,7 @@ export function Attachment(props: AttachmentProps) {
           allowFullScreen
         ></iframe>
       )}
-      <div className="absolute inset-0 w-full h-full bg-gray-100 animate-pulse" />
+      {props.attachment.url === "" && <div className="absolute inset-0 w-full h-full bg-gray-100 animate-pulse" />}
     </figure>
   );
 }

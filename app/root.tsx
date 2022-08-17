@@ -118,7 +118,7 @@ export default function App() {
   const match = matches.find((match) => match.data && match.data.canonical);
   const alternates = match?.data.alternates;
   const loaderData = useLoaderData<LoaderData>()
-  const canonical = loaderData.canonical
+  const canonical = match?.data.canonical;
 
   const favicon = loaderData.favicon || ""
 

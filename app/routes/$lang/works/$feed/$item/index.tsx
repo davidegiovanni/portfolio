@@ -23,7 +23,7 @@ export const meta: MetaFunction = ({ data, location }) => {
   if (data !== undefined) {
     const page = data.item
     title = (page.title !== '' ? page.title : "Page") + ' | Davide G. Steccanella'
-    description = page.summary !== '' ? page.summary : "Le illustrazioni di Davide G. Steccanella"
+    description = page.summary !== '' ? page.summary : page.title !== '' ? page.title : "Le illustrazioni di Davide G. Steccanella"
     image = page.image !== '' ? page.image : ""
     url = 'https://illos.davidegiovanni.com' + location.pathname
 
@@ -105,15 +105,15 @@ export default function ItemPage() {
 
   return (
     <div className="overflow-y-hidden flex flex-col h-full relative">
-      <div className="flex-1 w-full relative">
-        <div className="absolute inset-0 w-full h-full object-contain">
-          <Attachment attachment={{
-            id: "",
-            mediaType: "image/",
-            url: item.image,
-            description: item.title
-          }}></Attachment>
-        </div>
+      <div className="flex-1 w-full relative flex flex-col overflow-y-hidden">
+        <div className="w-full h-full">
+            <Attachment attachment={{
+              id: "",
+              mediaType: "image/",
+              url: item.image,
+              description: item.title
+            }}></Attachment>
+          </div>
       </div>
       <div className="flex items-center justify-between flex-none h-10 mt-4 mb-4 lg:mb-0 w-10/12 lg:w-1/2 mx-auto text-white bg-gradient-to-t from-black to-transparent text-center">
         {

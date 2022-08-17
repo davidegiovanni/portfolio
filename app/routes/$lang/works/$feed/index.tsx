@@ -107,6 +107,9 @@ export default function FeedPage() {
             </p>
             <ArrowLeftIcon className="w-6 h-6" />
             </Link>
+            <h1 className="sr-only">
+              { feed.title }
+            </h1>
             { feed.description !=="" && feed.description !== undefined && 
               <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="w-full lg:w-1/2 mt-4 lg:text-right">
                 { feed.description }
