@@ -129,7 +129,7 @@ export default function FeedPage() {
                       description: i.title
                     }}></Attachment>
                     {
-                      i.content_html && <article className={((index) % 3 === 0 ? "text-left" : (index + 2) % 3 === 0 ? "text-right" : "text-right") + " prose prose-sm lg:prose-base italic prose-a:text-blue-500 prose-a:underline-offset-2 max-w-none w-full pt-2 lg:pt-4"}>{parse(i.content_html)}</article>
+                      i.content_html && <article className={((index) % 3 === 0 ? "text-left" : (index + 2) % 3 === 0 ? "text-right" : "text-right") + " prose prose-sm lg:prose-base italic prose-a:text-blue-500 prose-a:underline-offset-4 max-w-none w-full pt-2 lg:pt-4"}>{parse(i.content_html)}</article>
                     }
                 </div>
               </Link>

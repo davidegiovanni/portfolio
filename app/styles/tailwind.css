@@ -1086,6 +1086,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-bottom: 0;
 }
 
+.prose-red {
+  --tw-prose-links: #dc2626;
+  --tw-prose-invert-links: #ef4444;
+}
+
+.prose-blue {
+  --tw-prose-links: #2563eb;
+  --tw-prose-invert-links: #3b82f6;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1652,13 +1662,137 @@ img {
   opacity: 0.5;
 }
 
+.prose-p\:p-8 :is(:where(p):not(:where([class~="not-prose"] *))) {
+  padding: 2rem;
+}
+
+.prose-p\:first-of-type\:before\:hidden:first-of-type :is(:where(p):not(:where([class~="not-prose"] *)))::before {
+  content: var(--tw-content);
+  display: none;
+}
+
+.prose-p\:first-of-type\:before\:opacity-0:first-of-type :is(:where(p):not(:where([class~="not-prose"] *)))::before {
+  content: var(--tw-content);
+  opacity: 0;
+}
+
 .prose-a\:text-blue-500 :is(:where(a):not(:where([class~="not-prose"] *))) {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
 }
 
+.prose-a\:text-green-500 :is(:where(a):not(:where([class~="not-prose"] *))) {
+  --tw-text-opacity: 1;
+  color: rgb(34 197 94 / var(--tw-text-opacity));
+}
+
 .prose-a\:underline-offset-2 :is(:where(a):not(:where([class~="not-prose"] *))) {
   text-underline-offset: 2px;
+}
+
+.prose-a\:underline-offset-4 :is(:where(a):not(:where([class~="not-prose"] *))) {
+  text-underline-offset: 4px;
+}
+
+.prose-a\:visited\:text-purple-500:visited :is(:where(a):not(:where([class~="not-prose"] *))) {
+  color: rgb(168 85 247 );
+}
+
+.prose-blockquote\:border-0 :is(:where(blockquote):not(:where([class~="not-prose"] *))) {
+  border-width: 0px;
+}
+
+.prose-blockquote\:bg-gray-100 :is(:where(blockquote):not(:where([class~="not-prose"] *))) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
+.prose-blockquote\:p-80 :is(:where(blockquote):not(:where([class~="not-prose"] *))) {
+  padding: 20rem;
+}
+
+.prose-blockquote\:p-8 :is(:where(blockquote):not(:where([class~="not-prose"] *))) {
+  padding: 2rem;
+}
+
+.prose-blockquote\:first-of-type\:before\:hidden:first-of-type :is(:where(blockquote):not(:where([class~="not-prose"] *)))::before {
+  content: var(--tw-content);
+  display: none;
+}
+
+.prose-blockquote\:first-of-type\:before\:opacity-0:first-of-type :is(:where(blockquote):not(:where([class~="not-prose"] *)))::before {
+  content: var(--tw-content);
+  opacity: 0;
+}
+
+.prose-blockquote\:prose-p\:first-of-type\:before\:opacity-0:first-of-type :is(:where(p):not(:where([class~="not-prose"] *))) :is(:where(blockquote):not(:where([class~="not-prose"] *)))::before {
+  content: var(--tw-content);
+  opacity: 0;
+}
+
+.prose-ol\:text-red-500 :is(:where(ol):not(:where([class~="not-prose"] *))) {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-ol\:marker\:text-red-500 * :is(:where(ol):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-ol\:marker\:text-red-500 :is(:where(ol):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-ul\:text-red-500 :is(:where(ul):not(:where([class~="not-prose"] *))) {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-ul\:marker\:text-red-500 * :is(:where(ul):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-ul\:marker\:text-red-500 :is(:where(ul):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-li\:text-red-500 :is(:where(li):not(:where([class~="not-prose"] *))) {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-li\:marker\:text-red-500 * :is(:where(li):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-li\:marker\:text-purple-500 * :is(:where(li):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(168 85 247 / var(--tw-text-opacity));
+}
+
+.prose-li\:marker\:text-emerald-500 * :is(:where(li):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(16 185 129 / var(--tw-text-opacity));
+}
+
+.prose-li\:marker\:text-red-500 :is(:where(li):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
+}
+
+.prose-li\:marker\:text-purple-500 :is(:where(li):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(168 85 247 / var(--tw-text-opacity));
+}
+
+.prose-li\:marker\:text-emerald-500 :is(:where(li):not(:where([class~="not-prose"] *)))::marker {
+  --tw-text-opacity: 1;
+  color: rgb(16 185 129 / var(--tw-text-opacity));
 }
 
 @media (min-width: 768px) {
