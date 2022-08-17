@@ -84,7 +84,7 @@ export default function About() {
 
     return (
       <div className="overflow-y-auto lg:overflow-y-hidden flex flex-col lg:flex-row h-full relative items-center justify-center">
-        <div className="absolute top-0 left-0 m-4">
+        <div className="absolute top-0 left-0 m-4 z-40">
           <Link to={`/${params.lang}`} className="underline text-white">
             <p className="sr-only">
               Torna indietro

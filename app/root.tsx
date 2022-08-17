@@ -38,7 +38,6 @@ export const meta: MetaFunction = ({data}) => {
     theme = data.primary
   }
   return {
-    'theme-color': theme,
     'twitter:card': 'summary_large_image'
   };
 };

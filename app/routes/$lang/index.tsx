@@ -104,6 +104,7 @@ export default function Index() {
 
   return (
     <div className={dynamicClass}>
+      <meta name="theme-color" content={theme.primary} />
       <div className="w-full flex-1 lg:flex-none lg:w-4/12  max-w-screen-md flex flex-col items-center justify-between p-4 md:px-6 lg:px-12">
         <div className="h-16 w-full mb-8 lg:my-4">
           <img src={logo} className="h-full w-auto" alt="" />

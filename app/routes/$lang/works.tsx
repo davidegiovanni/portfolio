@@ -93,6 +93,7 @@ export default function Works() {
 
   return (
     <div className={dynamicClass}>
+      <meta name="theme-color" content="#000000" />
       <div className="w-full h-full lg:h-auto lg:w-1/4 flex flex-col items-center justify-start text-center overflow-y-auto transform rotate-3 shadow-2xl relative z-40">
         <div className="w-full lg:w-10/12 h-full bg-white p-2 flex flex-col justify-between">
           <div className="p-4">

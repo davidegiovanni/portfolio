@@ -102,8 +102,8 @@ export default function Contacts() {
             <ArrowLeftIcon className="w-6 h-6" />
           </Link>
           </div>
-          <h1 style={{ fontSize: fluidType(24, 64, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 48, 300, 2400, 1.5).lineHeight }} className="w-full lg:text-center">{sections[0].title}</h1>
-          <h2 className="text-center w-3/4 mx-auto my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
+          <h1 style={{ fontSize: fluidType(24, 64, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 48, 300, 2400, 1.5).lineHeight }} className="w-full lg:text-center mt-12 lg:mt-0">{sections[0].title}</h1>
+          <h2 className="lg:text-center w-3/4 mx-auto my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
             {sections[0].description}
           </h2>
           <a href={sections[0].primaryLink.url} className="lg:text-center inline-block uppercase underline" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
