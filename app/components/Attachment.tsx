@@ -3,6 +3,8 @@ import { Attachment } from "api/models";
 
 type AttachmentProps = {
   attachment: Attachment;
+  align?: string;
+  size?: string;
 };
 
 export function Attachment(props: AttachmentProps) {
@@ -19,7 +21,7 @@ export function Attachment(props: AttachmentProps) {
       {props.attachment.mediaType.startsWith("image/") && (
         <picture className="h-full w-full">
           <source
-            className="relative z-10 h-full w-full object-contain"
+            className={(props.align) + " " + (props.size ? props.size : "object-contain ") + " relative z-10 h-full w-full"}
             type="image/webp"
             sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
             srcSet={buildSrcset(props.attachment.url, "webp")}
@@ -28,7 +30,7 @@ export function Attachment(props: AttachmentProps) {
             srcSet={buildSrcset(props.attachment.url, "")}
             sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
             src={props.attachment.url}
-            className="relative z-10 h-full w-full object-contain"
+            className={(props.align) + " " + (props.size ? props.size : "object-contain ") + " relative z-10 h-full w-full"}
             alt={props.attachment.description}
             loading="lazy"
             decoding="async"

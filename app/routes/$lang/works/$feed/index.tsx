@@ -5,7 +5,7 @@ import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
 import { Feed, FeedItem, WebPageModel, WebSectionModel } from "api/models";
 import metadata from '~/utils/metadata'
-import link from '~/utils/links'
+import parse from 'html-react-parser'
 import { fluidType, formatDate } from '~/utils/helpers'
 import queryString from 'query-string'
 import { ArrowLeftIcon } from '@heroicons/react/outline'
@@ -121,13 +121,16 @@ export default function FeedPage() {
           {
             items.map((i: FeedItem, index: any) => (
               <Link key={index} to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className={(((index + 1) % 2 === 0) ? 'border-r border-black ' : index === 0 ? 'border-l border-black ' : '') + "block p-2"}>
-                <div className="">
-                <Attachment attachment={{
+                <div className="aspect-square">
+                <Attachment align={ (index) % 3 === 0 ? "object-top" : (index + 2) % 3 === 0 ? "object-center" : "object-bottom"} attachment={{
                       id: "",
                       mediaType: "image/",
                       url: i.image,
                       description: i.title
                     }}></Attachment>
+                    {
+                      i.content_html && <article className={((index) % 3 === 0 ? "text-left" : (index + 2) % 3 === 0 ? "text-right" : "text-right") + " prose prose-sm lg:prose-base italic prose-a:text-blue-500 prose-a:underline-offset-2 max-w-none w-full pt-2 lg:pt-4"}>{parse(i.content_html)}</article>
+                    }
                 </div>
               </Link>
             ))

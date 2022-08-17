@@ -92,14 +92,14 @@ export default function About() {
             <ArrowLeftIcon className="w-6 h-6" />
           </Link>
         </div>
-        <div className="relative w-full lg:w-2/5 p-4 flex items-center justify-center bg-black relative pb-[50%] lg:h-full">
-          <div className="absolute inset-0 w-2/3 lg:w-1/2 h-auto mx-auto my-auto">
-          <Attachment attachment={{
-            id: "",
-            mediaType: "image/",
-            url: item.image,
-            description: ""
-          }}></Attachment>
+        <div className="relative w-full h-[400px] lg:w-2/5 flex items-center justify-center bg-black flex-none lg:h-full overflow-hidden">
+          <div className="w-full lg:w-1/2 h-full mx-auto flex items-center justify-center translate-y-1/4 lg:translate-y-0">
+            <Attachment align="object-center" size="object-cover lg:object-contain" attachment={{
+              id: "",
+              mediaType: "image/",
+              url: item.image,
+              description: ""
+            }}></Attachment>
           </div>
         </div>
         <div className="flex-1 py-4 lg:py-16 lg:overflow-y-auto px-4 mb-8 lg:mb-16 h-full">

@@ -92,8 +92,8 @@ export default function Contacts() {
 
   return (
     <div className={dynamicClass}>
-      <div style={{ backgroundColor: primary}} className="h-1/3 lg:h-full w-full lg:w-1/2 flex-none p-2">
-        <div className="flex-1 lg:p-8 flex flex-col justify-end lg:justify-center items-start lg:items-center h-full relative">
+      <div style={{ backgroundColor: primary}} className="lg:h-full w-full lg:w-1/2 flex-none p-2">
+        <div className="flex-1 pb-4 pt-12 px-4 lg:p-8 flex flex-col justify-end lg:justify-center items-start lg:items-center h-full relative">
           <div className="m-4 absolute top-0 left-0">
           <Link to={`/${params.lang}`} className="underline">
             <p className="sr-only">
@@ -102,8 +102,8 @@ export default function Contacts() {
             <ArrowLeftIcon className="w-6 h-6" />
           </Link>
           </div>
-          <h1 style={{ fontSize: fluidType(24, 64, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 48, 300, 2400, 1.5).lineHeight }} className="w-full lg:text-center mt-12 lg:mt-0">{sections[0].title}</h1>
-          <h2 className="lg:text-center w-3/4 mx-auto my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
+          <h1 style={{ fontSize: fluidType(24, 64, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 48, 300, 2400, 1.5).lineHeight }} className="w-full lg:text-center">{sections[0].title}</h1>
+          <h2 className="lg:text-center w-3/4 lg:mx-auto my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
             {sections[0].description}
           </h2>
           <a href={sections[0].primaryLink.url} className="lg:text-center inline-block uppercase underline" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
@@ -112,8 +112,8 @@ export default function Contacts() {
         </div>
       </div>
       <div className={`bg-white flex flex-col h-2/3 lg:h-full p-4 items-center justify-center`}>
-            <div className="w-full max-w-screen-md h-full lflex-1 object-cover">
-                <Attachment attachment={{
+            <div className="w-full max-w-screen-md h-full flex-1">
+                <Attachment align="object-center" attachment={{
                 id: "",
                 mediaType: "image/",
                 url: sections[0].image,
