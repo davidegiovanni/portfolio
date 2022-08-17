@@ -9,6 +9,7 @@ import link from '~/utils/links'
 import { fluidType, formatDate } from '~/utils/helpers'
 import queryString from 'query-string'
 import { ArrowLeftIcon } from '@heroicons/react/outline'
+import { Attachment } from "~/components/Attachment";
 
 const i18nKeys = ["shared"] as const;
 type I18nKeys = typeof i18nKeys[number];
@@ -118,7 +119,12 @@ export default function FeedPage() {
             items.map((i: FeedItem, index: any) => (
               <Link key={index} to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className={(((index + 1) % 2 === 0) ? 'border-r border-black ' : index === 0 ? 'border-l border-black ' : '') + "block p-2"}>
                 <div className="">
-                  <img src={i.image} alt="" />
+                <Attachment attachment={{
+                      id: "",
+                      mediaType: "image/",
+                      url: i.image,
+                      description: i.title
+                    }}></Attachment>
                 </div>
               </Link>
             ))

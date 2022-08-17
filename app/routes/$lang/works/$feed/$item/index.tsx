@@ -1,7 +1,7 @@
 import { json, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react";
 import queryString from 'query-string'
- 
+
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
 import { Feed, FeedItem } from "api/models";
@@ -9,6 +9,7 @@ import metadata from '~/utils/metadata'
 import { fluidType, formatDate } from '~/utils/helpers'
 import parse from 'html-react-parser'
 import { ArrowLeftIcon, ArrowRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
+import { Attachment } from "~/components/Attachment";
 
 const i18nKeys = ["shared"] as const;
 type I18nKeys = typeof i18nKeys[number];
@@ -18,7 +19,7 @@ export const meta: MetaFunction = ({ data, location }) => {
   let description = 'The website didn\'t load correctly'
   let image = ''
   let url = 'https://illos.davidegiovanni.com' + location.pathname
-  
+
   if (data !== undefined) {
     const page = data.item
     title = (page.title !== '' ? page.title : "Page") + ' | Davide G. Steccanella'
@@ -27,7 +28,7 @@ export const meta: MetaFunction = ({ data, location }) => {
     url = 'https://illos.davidegiovanni.com' + location.pathname
 
   }
-  
+
   return metadata(
     {
       title: title,
@@ -69,7 +70,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     throw new Error("News undefined");
   }
 
-  function getSlug (url: string) {
+  function getSlug(url: string) {
     const parsed = queryString.parse(url)
     return parsed.content
   }
@@ -77,7 +78,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   let indexOfItem = feed.items.indexOf(foundNews)
   let nextItemIndex = indexOfItem !== feed.items.length - 1 ? indexOfItem + 1 : -1
   let nextItemSlug = nextItemIndex !== -1 ? feed.items[nextItemIndex].id : ''
-  let previousItemIndex = indexOfItem > 0 ? indexOfItem -1 : -1
+  let previousItemIndex = indexOfItem > 0 ? indexOfItem - 1 : -1
   let previousItemSlug = previousItemIndex !== -1 ? feed.items[previousItemIndex].id : ''
   nextItemSlug = nextItemSlug !== '' ? getSlug(nextItemSlug) as string : ''
   previousItemSlug = previousItemSlug !== '' ? getSlug(previousItemSlug) as string : ''
@@ -105,34 +106,41 @@ export default function ItemPage() {
   return (
     <div className="overflow-y-hidden flex flex-col h-full relative">
       <div className="flex-1 w-full relative">
-        <img src={item.image} className="absolute inset-0 w-full h-full object-contain" alt="" />
+        <div className="absolute inset-0 w-full h-full object-contain">
+          <Attachment attachment={{
+            id: "",
+            mediaType: "image/",
+            url: item.image,
+            description: item.title
+          }}></Attachment>
+        </div>
       </div>
       <div className="flex items-center justify-between flex-none h-10 mt-4 mb-4 lg:mb-0 w-10/12 lg:w-1/2 mx-auto text-white bg-gradient-to-t from-black to-transparent text-center">
         {
-          previous !== '' ? 
-          <Link to={`/${params.lang}/works/${params.feed}/${previous}`}>
-            <p className="sr-only">
-              Precedente
-            </p>
-            <ArrowLeftIcon className="w-8 h-8 text-white"/>
-          </Link> :
-          <div className="w-8 h-8"></div>
+          previous !== '' ?
+            <Link to={`/${params.lang}/works/${params.feed}/${previous}`}>
+              <p className="sr-only">
+                Precedente
+              </p>
+              <ArrowLeftIcon className="w-8 h-8 text-white" />
+            </Link> :
+            <div className="w-8 h-8"></div>
         }
         <Link to={`/${params.lang}/works/${params.feed}`}>
           <p className="sr-only">
             Torna indietro
           </p>
-          <ViewGridIcon className="w-8 h-8 text-white"/>
+          <ViewGridIcon className="w-8 h-8 text-white" />
         </Link>
         {
-          next !== '' ? 
-          <Link to={`/${params.lang}/works/${params.feed}/${next}`}>
-            <p className="sr-only">
-              Successivo
-            </p>
-            <ArrowRightIcon className="w-8 h-8 text-white"/>
-          </Link> :
-          <div className="w-8 h-8"></div>
+          next !== '' ?
+            <Link to={`/${params.lang}/works/${params.feed}/${next}`}>
+              <p className="sr-only">
+                Successivo
+              </p>
+              <ArrowRightIcon className="w-8 h-8 text-white" />
+            </Link> :
+            <div className="w-8 h-8"></div>
         }
       </div>
     </div>

@@ -6,6 +6,7 @@ import { WebPageModel, WebSectionModel } from "api/models";
 import metadata from '~/utils/metadata'
 import link from '~/utils/links'
 import { fluidType } from '~/utils/helpers'
+import { Attachment } from "~/components/Attachment";
 
 export const links: LinksFunction = () => {
   return link(
@@ -124,7 +125,14 @@ export default function Index() {
         </div>
       </div>
       <div style={{ backgroundColor: theme.primary}} className={`w-full flex-1 overflow-hidden relative flex items-center justify-center p-4`}>
-        <img src={sections[0].image} className="scale-150 lg:transform-none h-auto w-full lg:w-2/3 lg:h-auto object-cover" alt="" />
+        <div className="scale-150 lg:transform-none h-auto w-full lg:w-2/3 lg:h-auto object-cover">
+          <Attachment attachment={{
+            id: "",
+            mediaType: "image/",
+            url: sections[0].image,
+            description: sections[0].title
+          }}></Attachment>
+        </div>
       </div>
     </div>
   );

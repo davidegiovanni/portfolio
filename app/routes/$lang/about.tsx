@@ -8,6 +8,7 @@ import metadata from '~/utils/metadata'
 import { fluidType, formatDate } from '~/utils/helpers'
 import parse from 'html-react-parser'
 import { ArrowLeftIcon } from '@heroicons/react/outline'
+import { Attachment } from "~/components/Attachment";
 
 const i18nKeys = ["shared"] as const;
 type I18nKeys = typeof i18nKeys[number];
@@ -92,7 +93,14 @@ export default function About() {
           </Link>
         </div>
         <div className="w-full lg:w-2/5 p-4 flex items-center justify-center bg-black">
-          <img src={item.image} className="w-2/3 lg:w-1/2 h-auto" alt="" />
+          <div className="w-2/3 lg:w-1/2 h-auto">
+          <Attachment attachment={{
+            id: "",
+            mediaType: "image/",
+            url: item.image,
+            description: ""
+          }}></Attachment>
+          </div>
         </div>
         <div className="flex-1 py-4 lg:py-16 lg:overflow-y-auto px-4 mb-8 lg:mb-16 h-full">
           <div className="flex justify-start w-full w-full lg:w-9/12 mx-auto mb-4 lg:mb-8">

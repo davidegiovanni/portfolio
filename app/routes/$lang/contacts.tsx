@@ -7,6 +7,7 @@ import metadata from '~/utils/metadata'
 import link from '~/utils/links'
 import { fluidType } from '~/utils/helpers'
 import { ArrowLeftIcon } from '@heroicons/react/outline'
+import { Attachment } from "~/components/Attachment";
 
 export const links: LinksFunction = () => {
   return link(
@@ -112,7 +113,14 @@ export default function Contacts() {
             {sections[0].description}
           </h2>
           <div className="flex-1 flex items-end justify-end w-full p-2 lg:p-4">
-            <img src={sections[0].image} className="w-1/3 h-full lg:h-1/2 object-cover" alt="" />
+            <div className="w-1/3 h-full lg:h-1/2 object-cover">
+                <Attachment attachment={{
+                id: "",
+                mediaType: "image/",
+                url: sections[0].image,
+                description: ""
+              }}></Attachment>
+            </div>
           </div>
       </div>
     </div>

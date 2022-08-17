@@ -28,21 +28,17 @@ import { safeGet } from "./utils/safe-post";
 
 export const links: LinksFunction = () => {
   return [
-    { rel: "stylesheet", href: tailwind },
-    { rel: "stylesheet", href: 'https://use.typekit.net/ert5ehm.css' },
-    { rel: "stylesheet", href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap' },
-    { rel: "preconnect", href: 'https://fonts.googleapis.com' },
-    { rel: "preconnect", href: 'https://fonts.gstatic.com'}
+    { rel: "stylesheet", href: tailwind }
   ];
 };
 
 export const meta: MetaFunction = ({data}) => {
-  let theme = ''
+  let theme = '#ffffff'
   if (data !== undefined) {
     theme = data.primary
   }
   return {
-    'theme-color': '#ffffff',
+    'theme-color': theme,
     'twitter:card': 'summary_large_image'
   };
 };
@@ -54,11 +50,13 @@ type LoaderData = {
   i18n: Record<any, any>;
   primary: string;
   favicon: string;
+  canonical: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   let incomingLocale: string | undefined = params.lang === undefined ? fallbackLocale : params.lang
   let url = new URL(request.url)
+  const canonicalUrl = url.href
 
   const pathname = url.pathname.replace(`/${incomingLocale}`, '')
 
@@ -104,7 +102,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const loaderData: LoaderData = {
     i18n,
     primary,
-    favicon
+    favicon,
+    canonical: canonicalUrl
   }
 
   return json(loaderData, {
@@ -117,9 +116,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function App() {
   const matches = useMatches();
   const match = matches.find((match) => match.data && match.data.canonical);
-  const canonical = match?.data.canonical;
   const alternates = match?.data.alternates;
   const loaderData = useLoaderData<LoaderData>()
+  const canonical = loaderData.canonical
 
   const favicon = loaderData.favicon || ""
 
@@ -143,6 +142,10 @@ export default function App() {
         <Scripts />
         <LiveReload />
         {process.env.NODE_ENV === "development" && <LiveReload />}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link rel="stylesheets" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap" />
+        <link rel="stylesheets" href="https://use.typekit.net/ert5ehm.css" />
       </body>
     </html>
   );
@@ -181,6 +184,10 @@ export function CatchBoundary() {
         <Scripts />
         <LiveReload />
         {process.env.NODE_ENV === "development" && <LiveReload />}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link rel="stylesheets" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap" />
+        <link rel="stylesheets" href="https://use.typekit.net/ert5ehm.css" />
       </body>
     </html>
   );
@@ -222,6 +229,10 @@ export function ErrorBoundary({ error }: { error: Error }) {
         <Scripts />
         <LiveReload />
         {process.env.NODE_ENV === "development" && <LiveReload />}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link rel="stylesheets" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap" />
+        <link rel="stylesheets" href="https://use.typekit.net/ert5ehm.css" />
       </body>
     </html>
   );

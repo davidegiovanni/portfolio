@@ -6,6 +6,7 @@ import { WebPageModel, WebSectionModel } from "api/models";
 import metadata from '~/utils/metadata'
 import link from '~/utils/links'
 import { fluidType } from '~/utils/helpers'
+import { Attachment } from "~/components/Attachment";
 
 export const links: LinksFunction = () => {
   return link(
@@ -53,7 +54,14 @@ export default function WorksIndex() {
 
   return (
     <div className={dynamicClass}>
-      <img src={section.image} alt="" className="w-1/2 hidden lg:block" />
+      <div className="w-1/2 hidden lg:block" >
+        <Attachment attachment={{
+          id: "",
+          mediaType: "image/",
+          url: section.image,
+          description: ""
+        }}></Attachment>
+      </div>
     </div>
   );
 }
