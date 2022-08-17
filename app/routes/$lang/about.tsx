@@ -83,7 +83,7 @@ export default function About() {
   const params = useParams()
 
     return (
-      <div className="overflow-y-auto lg:overflow-y-hidden flex flex-col lg:flex-row h-full relative">
+      <div className="overflow-y-auto lg:overflow-y-hidden flex flex-col lg:flex-row h-full relative items-center justify-center">
         <div className="absolute top-0 left-0 m-4">
           <Link to={`/${params.lang}`} className="underline text-white">
             <p className="sr-only">
@@ -92,8 +92,8 @@ export default function About() {
             <ArrowLeftIcon className="w-6 h-6" />
           </Link>
         </div>
-        <div className="w-full lg:w-2/5 p-4 flex items-center justify-center bg-black">
-          <div className="w-2/3 lg:w-1/2 h-auto">
+        <div className="relative w-full lg:w-2/5 p-4 flex items-center justify-center bg-black relative pb-[50%] lg:h-full">
+          <div className="absolute inset-0 w-2/3 lg:w-1/2 h-auto mx-auto my-auto">
           <Attachment attachment={{
             id: "",
             mediaType: "image/",

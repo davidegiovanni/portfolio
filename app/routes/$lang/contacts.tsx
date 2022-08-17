@@ -103,17 +103,16 @@ export default function Contacts() {
           </Link>
           </div>
           <h1 style={{ fontSize: fluidType(24, 64, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 48, 300, 2400, 1.5).lineHeight }} className="w-full lg:text-center">{sections[0].title}</h1>
-          <a href={sections[0].primaryLink.url} className="lg:text-center inline-block uppercase underline mt-1 lg:mt-4" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+          <h2 className="text-center w-3/4 mx-auto my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
+            {sections[0].description}
+          </h2>
+          <a href={sections[0].primaryLink.url} className="lg:text-center inline-block uppercase underline" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
             {sections[0].primaryLink.title}
           </a>
         </div>
       </div>
-      <div className={`bg-white flex flex-col h-2/3 lg:h-full`}>
-          <h2 className="text-left w-3/4 lg:w-1/2 p-8 lg:p-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
-            {sections[0].description}
-          </h2>
-          <div className="flex-1 flex items-end justify-end w-full p-2 lg:p-4">
-            <div className="w-1/3 h-full lg:h-1/2 object-cover">
+      <div className={`bg-white flex flex-col h-2/3 lg:h-full p-4 items-center justify-center`}>
+            <div className="w-full max-w-screen-md h-full lflex-1 object-cover">
                 <Attachment attachment={{
                 id: "",
                 mediaType: "image/",
@@ -121,7 +120,6 @@ export default function Contacts() {
                 description: ""
               }}></Attachment>
             </div>
-          </div>
       </div>
     </div>
   );
