@@ -107,7 +107,14 @@ export default function Index() {
       <meta name="theme-color" content={theme.primary} />
       <div className="w-full flex-1 lg:flex-none lg:w-4/12  max-w-screen-md flex flex-col items-center justify-between p-4 md:px-6 lg:px-12">
         <div className="h-16 w-full mb-8 lg:my-4">
-          <img src={logo} className="h-full w-auto" alt="" />
+          <div>
+            <Attachment attachment={{
+              id: "",
+              mediaType: "image/",
+              url: logo,
+              description: "Davide Giovanni Steccanella"
+            }}></Attachment>
+          </div>
         </div>
         <div className="overflow-y-auto">
           <h1 style={{ fontSize: fluidType(24, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 32, 300, 2400, 1.5).lineHeight }} className="w-full">{sections[0].title}</h1>

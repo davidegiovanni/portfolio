@@ -6,6 +6,7 @@ import { WebPageModel, WebSectionModel } from "api/models";
 import metadata from '~/utils/metadata'
 import link from '~/utils/links'
 import { fluidType } from '~/utils/helpers'
+import { Attachment } from "~/components/Attachment";
 
 export const links: LinksFunction = () => {
   return link(
@@ -100,7 +101,7 @@ export default function Works() {
             {feeds.map((f, index) => (
               <NavLink className={({ isActive }) =>
                 isActive ? 'block uppercase line-through decoration-black decoration-wavy decoration-4' : 'uppercase'
-              } to={`/${params.lang}/works/${f.description}`}>
+              } to={`/${params.lang}/works/${f.description}`} reloadDocument>
                 <p style={{ textDecorationLine: 'none'}}>
                   0{index + 1}.
                 </p>
@@ -115,8 +116,15 @@ export default function Works() {
               Seleziona una collezione per vedere i disegni
             </p>
             <hr className="mb-4 w-10/12 mx-auto" />
-            <Link to={`/${params.lang}`} className="underline block w-10/12 mx-auto mb-4">
-              <img src={logo} alt="" />
+            <Link to={`/${params.lang}`} className="underline block w-10/12 mx-auto mb-4" reloadDocument>
+              <div>
+                <Attachment attachment={{
+                  id: "",
+                  mediaType: "image/",
+                  url: logo,
+                  description: "Davide Giovanni Steccanella"
+                }}></Attachment>
+              </div>
               <p className="sr-only">
                 Homepage
               </p>
