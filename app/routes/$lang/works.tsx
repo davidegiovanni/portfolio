@@ -107,7 +107,7 @@ export default function Works() {
                   }}></Attachment>
                 </div>
                 <div className="absolute inset-x-0 bottom-0 text-center z-20">
-                  <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="bg-white border border-black group-hover:underline rounded-md mb-4 px-4 py-2 uppercase inline-block w-fit mx-auto max-w-[90%]">
+                  <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="bg-white border border-black group-hover:underline rounded-md mb-4 px-4 py-2 uppercase inline-block w-10/12 lg:w-fit mx-auto">
                     {f.title}
                   </p>
                 </div>
