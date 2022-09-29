@@ -54,10 +54,12 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({request, params}) => {
   const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
+  const url = new URL(request.url)
+  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illos.davidegiovanni.com' : url.host
 
   let lang = params.lang
 
-  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com/pages/contacts?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
+  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}/pages/contacts?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (pageErr !== null) {
     throw new Error(`API Page: ${pageErr.message}, ${pageErr.code}`);
   }

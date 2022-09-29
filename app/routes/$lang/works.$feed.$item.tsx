@@ -86,7 +86,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const item: FeedItem = foundNews
 
   let url = new URL(request.url)
-  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illustrations.davidegiovanni.com' : url.host
+  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illos.davidegiovanni.com' : url.host
 
   const canonical = `${host}/${params.lang}/${params.feed}/${params.item}`
 

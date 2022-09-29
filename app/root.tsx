@@ -62,7 +62,7 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ request, params }) => {
   const incomingLocale = params.lang || ""
   let url = new URL(request.url)
-  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illustrations.davidegiovanni.com' : url.host
+  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illos.davidegiovanni.com' : url.host
 
   if (incomingLocale === "") {
     const [defaultWebsiteRes, defaultWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
