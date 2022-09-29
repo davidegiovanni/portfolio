@@ -43,32 +43,24 @@ export const meta: MetaFunction = ({ data, location }) => {
   )
 };
 
-const i18nKeys = ["shared"] as const;
+const i18nKeys = [] as const;
 type I18nKeys = typeof i18nKeys[number];
 
 type LoaderData = {
   i18n: Record<I18nKeys, any>;
   page: WebPageModel;
   sections: WebSectionModel[];
-  primary: string;
 };
 
 export const loader: LoaderFunction = async ({request, params}) => {
   const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
 
-  let lang = params.lang === 'it-it' ? 'it-IT' : 'en-US'
+  let lang = params.lang
 
   const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com/pages/contacts?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (pageErr !== null) {
     throw new Error(`API Page: ${pageErr.message}, ${pageErr.code}`);
   }
-
-  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
-  if (websiteErr !== null) {
-    throw new Error(`API website: ${websiteErr.message} ${websiteErr.code}`);
-  }
-
-  const primary = websiteRes.website.theme.primaryColor
 
   const page: WebPageModel = pageRes.page
 
@@ -77,49 +69,26 @@ export const loader: LoaderFunction = async ({request, params}) => {
   const loaderData: LoaderData = {
     i18n,
     page: page,
-    sections: sections,
-    primary
+    sections: sections
   }
 
   return json(loaderData)
 };
 
 export default function Contacts() {
-  const { primary, sections } = useLoaderData<LoaderData>();
-  const params = useParams()
-
-  const dynamicClass = `bg-black text-black h-full w-full flex flex-col lg:flex-row overflow-hidden items-stretch p-2`
+  const { sections } = useLoaderData<LoaderData>();
 
   return (
-    <div className={dynamicClass}>
-      <div style={{ backgroundColor: primary}} className="lg:h-full w-full lg:w-1/2 flex-none p-2">
-        <div className="flex-1 pb-4 pt-12 px-4 lg:p-8 flex flex-col justify-end lg:justify-center items-start lg:items-center h-full relative">
-          <div className="m-4 absolute top-0 left-0">
-          <Link to={`/${params.lang}`} className="underline">
-            <p className="sr-only">
-              Torna indietro
-            </p>
-            <ArrowLeftIcon className="w-6 h-6" />
-          </Link>
-          </div>
-          <h1 style={{ fontSize: fluidType(24, 64, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 48, 300, 2400, 1.5).lineHeight }} className="w-full lg:text-center">{sections[0].title}</h1>
-          <h2 className="lg:text-center w-3/4 lg:mx-auto my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
-            {sections[0].description}
-          </h2>
-          <a href={sections[0].primaryLink.url} className="lg:text-center inline-block uppercase underline" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-            {sections[0].primaryLink.title}
-          </a>
-        </div>
-      </div>
-      <div className={`bg-white flex flex-col h-2/3 lg:h-full p-4 items-center justify-center`}>
-            <div className="w-full max-w-screen-md h-full flex-1">
-                <Attachment align="object-center" attachment={{
-                id: "",
-                mediaType: "image/",
-                url: sections[0].image,
-                description: ""
-              }}></Attachment>
-            </div>
+    <div className={"p-4 h-full w-full"}>
+      <div className="max-w-screen-sm">
+        <h1 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="w-full uppercase font-bold">{sections[0].title}</h1>
+        <h2 className="my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
+          {sections[0].description}
+        </h2>
+        <a href={sections[0].primaryLink.url} className="inline-block uppercase underline text-[blue] hover:text-[darkblue] visited:text-[purple]" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+          {sections[0].primaryLink.title}
+        </a>
+
       </div>
     </div>
   );

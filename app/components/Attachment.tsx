@@ -5,6 +5,7 @@ type AttachmentProps = {
   attachment: Attachment;
   align?: string;
   size?: string;
+  dimensions?: string;
 };
 
 export function Attachment(props: AttachmentProps) {

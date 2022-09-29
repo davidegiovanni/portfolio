@@ -41,13 +41,13 @@ export const meta: MetaFunction = ({ data, location }) => {
   )
 };
 
-const i18nKeys = ["shared"] as const;
+const i18nKeys = [] as const;
 type I18nKeys = typeof i18nKeys[number];
 
 type LoaderData = {
   i18n: Record<I18nKeys, any>;
   page: WebPageModel;
-  sections: WebSectionModel[];
+  mainSection: WebSectionModel;
   feeds: WebSectionModel[];
   logo: string;
 };
@@ -55,28 +55,32 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ request, params }) => {
   const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
 
-  let lang = params.lang === 'it-it' ? 'it-IT' : 'en-US'
+  let lang = params.lang
+  let url = new URL(request.url)
+  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illustrations.davidegiovanni.com' : url.host
 
-  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
+  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (websiteErr !== null) {
     throw new Error(`API website: ${websiteErr.message} ${websiteErr.code}`);
   }
   const logo = websiteRes.website.theme.logoUrl
 
-  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
+  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (pageErr !== null) {
     throw new Error(`API Page: ${pageErr.message}, ${pageErr.code}`);
   }
 
   const page: WebPageModel = pageRes.page
 
-  const sections: WebSectionModel[] = page.sections
+  const mainSection: WebSectionModel = page.sections[0]
+
+  const feeds = page.sections.length > 1 ? page.sections.splice(1) : []
 
   const loaderData: LoaderData = {
     i18n,
     page: page,
-    sections: sections,
-    feeds: sections.length > 1 ? sections.splice(1) : [] as WebSectionModel[],
+    mainSection,
+    feeds,
     logo
   }
 
@@ -84,57 +88,33 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 export default function Works() {
-  const { i18n, logo, feeds } = useLoaderData<LoaderData>();
+  const { mainSection, feeds } = useLoaderData<LoaderData>();
   const params = useParams()
   const location = useLocation()
 
-  const isFeedPage = location.pathname.includes('/works/')
-
-  const dynamicClass = `bg-black text-black h-full w-full overflow-y-hidden flex flex-col lg:flex-row p-4 justify-between`
-
   return (
-    <div className={dynamicClass}>
-      <meta name="theme-color" content="#000000" />
-      <div className="w-full h-full lg:h-auto lg:w-1/4 flex flex-col items-center justify-start text-center overflow-y-auto transform rotate-3 shadow-2xl relative z-40">
-        <div className="w-full lg:w-10/12 h-full bg-white p-2 flex flex-col justify-between">
-          <div className="p-4">
-            {feeds.map((f, index) => (
-              <NavLink className={({ isActive }) =>
-                isActive ? 'block uppercase line-through decoration-black decoration-wavy decoration-4' : 'uppercase'
-              } to={`/${params.lang}/works/${f.description}`} reloadDocument>
-                <p style={{ textDecorationLine: 'none'}}>
-                  0{index + 1}.
-                </p>
-                <p style={{ fontSize: fluidType(16, 32, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 28, 300, 2400, 1.5).lineHeight }} className="mb-4">
-                  {f.title}
-                </p>
-              </NavLink>
-            ))}
-          </div>
-          <div style={{ fontSize: fluidType(12, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(8, 16, 300, 2400, 1.5).lineHeight }}>
-            <p className="mb-4">
-              Seleziona una collezione per vedere i disegni
-            </p>
-            <hr className="mb-4 w-10/12 mx-auto" />
-            <Link to={`/${params.lang}`} className="underline block w-10/12 mx-auto mb-4" reloadDocument>
-              <div>
-                <Attachment attachment={{
-                  id: "",
-                  mediaType: "image/",
-                  url: logo,
-                  description: "Davide Giovanni Steccanella"
-                }}></Attachment>
-              </div>
-              <p className="sr-only">
-                Homepage
-              </p>
-            </Link>
-          </div>
-        </div>
+    <div className="h-full w-full overflow-y-auto">
+        <ul className="grid grid-cols-1 lg:grid-cols-3 border-l border-black">
+          {feeds.map((f, index) => (
+            <div className="border-b border-r border-black last:border-b-0 relative group">
+              <Link className={'text-center'} to={`/${params.lang}/works/${f.description}`}>
+                <div className="aspect-[3/4] relative z-10">
+                <Attachment size="object-cover" attachment={{
+                    id: "",
+                    mediaType: "image/",
+                    url: f.image,
+                    description: f.title
+                  }}></Attachment>
+                </div>
+                <div className="absolute inset-x-0 bottom-0 text-center z-20">
+                  <p style={{ fontSize: fluidType(20, 32, 300, 2400, 1.5).fontSize, lineHeight: fluidType(15, 24, 300, 2400, 1.5).lineHeight }} className="bg-white border border-black group-hover:underline rounded-md mb-4 px-4 py-2 uppercase inline-block w-fit mx-auto">
+                    {f.title}
+                  </p>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </ul>
       </div>
-      <div className={(isFeedPage ? 'fixed fixed lg:relative inset-0 ' : '') + " overflow-y-auto flex-1 h-full bg-black z-50"}>
-        <Outlet />
-      </div>
-    </div>
   );
 }

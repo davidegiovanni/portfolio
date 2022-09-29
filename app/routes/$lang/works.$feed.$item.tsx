@@ -11,7 +11,7 @@ import parse from 'html-react-parser'
 import { ArrowLeftIcon, ArrowRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
 
-const i18nKeys = ["shared"] as const;
+const i18nKeys = [] as const;
 type I18nKeys = typeof i18nKeys[number];
 
 export const meta: MetaFunction = ({ data, location }) => {
@@ -48,13 +48,11 @@ type LoaderData = {
   previous: string;
   current: number;
   next: string;
+  feedTitle: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
-
-  const lang = params.lang === 'it-it' ? 'it-IT' : 'en-US'
-  const locale = params.lang === 'it-it' ? 'it' : 'en'
 
   const [feedRes, feedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/${params.feed}/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
   if (feedErr !== null) {
@@ -75,6 +73,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     return parsed.content
   }
 
+  const feedTitle = feed.title
+
   let indexOfItem = feed.items.indexOf(foundNews)
   let nextItemIndex = indexOfItem !== feed.items.length - 1 ? indexOfItem + 1 : -1
   let nextItemSlug = nextItemIndex !== -1 ? feed.items[nextItemIndex].id : ''
@@ -85,7 +85,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const item: FeedItem = foundNews
 
-  const canonical = `https://illos.davidegiovanni.com/${params.lang}/${params.feed}/${params.item}`
+  let url = new URL(request.url)
+  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illustrations.davidegiovanni.com' : url.host
+
+  const canonical = `${host}/${params.lang}/${params.feed}/${params.item}`
 
   const loaderData: LoaderData = {
     i18n,
@@ -93,55 +96,59 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     item: item as FeedItem,
     current: indexOfItem,
     next: nextItemSlug,
-    previous: previousItemSlug
+    previous: previousItemSlug,
+    feedTitle
   }
 
   return json(loaderData);
 };
 
 export default function ItemPage() {
-  const { item, current, next, previous } = useLoaderData<LoaderData>();
+  const { item, feedTitle, next, previous } = useLoaderData<LoaderData>();
   const params = useParams()
 
   return (
-    <div className="overflow-y-hidden flex flex-col h-full relative">
-      <div className="flex-1 w-full relative flex flex-col overflow-y-hidden">
-        <div className="w-full h-full">
-            <Attachment attachment={{
-              id: "",
-              mediaType: "image/",
-              url: item.image,
-              description: item.title
-            }}></Attachment>
-          </div>
-      </div>
-      <div className="flex items-center justify-between flex-none h-10 mt-4 mb-4 lg:mb-0 w-10/12 lg:w-1/2 mx-auto text-white bg-gradient-to-t from-black to-transparent text-center">
-        {
-          previous !== '' ?
-            <Link to={`/${params.lang}/works/${params.feed}/${previous}`}>
-              <p className="sr-only">
-                Precedente
-              </p>
-              <ArrowLeftIcon className="w-8 h-8 text-white" />
-            </Link> :
-            <div className="w-8 h-8"></div>
-        }
-        <Link to={`/${params.lang}/works/${params.feed}`}>
-          <p className="sr-only">
-            Torna indietro
+    <div className="overflow-y-hidden h-full w-full flex flex-col">
+      <div className="lg:flex items-center justify-between flex-none px-4 py-2 h-12 border-b border-black">
+        <div className="flex items-center mb-2 lg:mb-0" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
+          <Link to={`/${params.lang}/works/${params.feed}`} className="underline uppercase">
+            <p className="flex items-center">
+              {feedTitle}
+            </p>
+          </Link>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mx-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+          <p className="uppercase">
+          {item.title}
           </p>
-          <ViewGridIcon className="w-8 h-8 text-white" />
-        </Link>
-        {
-          next !== '' ?
-            <Link to={`/${params.lang}/works/${params.feed}/${next}`}>
-              <p className="sr-only">
-                Successivo
-              </p>
-              <ArrowRightIcon className="w-8 h-8 text-white" />
-            </Link> :
-            <div className="w-8 h-8"></div>
-        }
+        </div>
+        <div className="flex items-center justify-end">
+          <Link to={`/${params.lang}/works/${params.feed}/${previous}`} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "") + "bg-white border border-black border-r-0 group-hover:underline rounded-l-md p-2 uppercase inline-block w-fit mx-auto"}>
+            <p className="sr-only">
+              {'Indietro'}
+            </p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 rotate-180">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </Link>
+          <Link to={`/${params.lang}/works/${params.feed}/${next}`} className={(next === "" ? "pointer-events-none opacity-50 select-none " : "") + "bg-white border border-black group-hover:underline rounded-r-md p-2 uppercase inline-block w-fit mx-auto"}>
+            <p className="sr-only">
+              {'Avanti'}
+            </p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+      <div className="flex-1 h-4">
+        <Attachment size="object-contain" align="object-center " attachment={{
+          id: "",
+          mediaType: "image/",
+          url: item.image,
+          description: item.title
+        }}></Attachment>
       </div>
     </div>
   );

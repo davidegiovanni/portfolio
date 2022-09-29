@@ -9,6 +9,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
@@ -19,12 +20,14 @@ import {
   useLoaderData,
   useLocation,
   useMatches,
+  useParams,
 } from "@remix-run/react";
 
 import tailwind from "./styles/tailwind.css"
 import { loadTranslations, fallbackLocale, getMatchingLocale } from "./helpers/i18n";
 import { fluidType } from "./utils/helpers";
 import { safeGet } from "./utils/safe-post";
+import { WebLinkModel } from "api/models";
 
 export const links: LinksFunction = () => {
   return [
@@ -42,74 +45,66 @@ export const meta: MetaFunction = ({data}) => {
   };
 };
 
-const i18nKeys = ["shared"] as const;
+const i18nKeys = [] as const;
 type I18nKeys = typeof i18nKeys[number];
 
 type LoaderData = {
   i18n: Record<any, any>;
   primary: string;
   favicon: string;
-  canonical: string;
+  incomingLocale: string;
+  navbarLinks: WebLinkModel[];
+  locales: string[];
+  font: string;
+  fontFamily: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  let incomingLocale: string | undefined = params.lang === undefined ? fallbackLocale : params.lang
+  const incomingLocale = params.lang || ""
   let url = new URL(request.url)
-  const canonicalUrl = url.href
+  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illustrations.davidegiovanni.com' : url.host
 
-  const pathname = url.pathname.replace(`/${incomingLocale}`, '')
-
-  const matchingLocale = getMatchingLocale(request, incomingLocale)
-
-  if (matchingLocale === undefined) {
-    return redirect(`/it-it${pathname}`)
-  }
-  if (pathname === "/") {
-    return redirect(`/${fallbackLocale}`)
-  }
-  if (incomingLocale !== 'it-it' && incomingLocale !== 'en-us') {
-    return redirect(`/${fallbackLocale}${url.pathname}`)
-  }
-  const cookie = createCookie("careers.auctory.io_i18n_cookie_preferences", {
-    path: "/",
-    httpOnly: true,
-    sameSite: "strict",
-  });
-  const cookieHeader = request.headers.get("cookie");
-  let i18nCookie = {
-    lang: matchingLocale.toLowerCase()
-  }
-  let languageCookie = await cookie.parse(cookieHeader);
-  if (languageCookie === undefined) {
-    return redirect(`/${matchingLocale.toLowerCase()}${url.pathname}`, {
-      headers: {
-        "Set-Cookie": await cookie.serialize(i18nCookie),
-      },
-    });
+  if (incomingLocale === "") {
+    const [defaultWebsiteRes, defaultWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
+    if (defaultWebsiteErr !== null) {
+      throw new Error(`defaultWebsiteErr: ${defaultWebsiteErr.message} ${defaultWebsiteErr.code}`);
+    }
+    const defaultLocale = defaultWebsiteRes.website.languageCode
+    return redirect(`/${defaultLocale}`)
   }
 
-  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=it-IT`)
-  if (websiteErr !== null) {
-    throw new Error(`API website: ${websiteErr.message} ${websiteErr.code}`);
-  }
+  const [initialWebsiteRes, initialWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${incomingLocale}`)
+    if (initialWebsiteErr !== null) {
+      const [defaultWebsiteRes, defaultWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
+      if (defaultWebsiteErr !== null) {
+        throw new Error(`initialWebsiteErr website: ${defaultWebsiteErr.message} ${defaultWebsiteErr.code}`);
+      }
+      const defaultLocale = defaultWebsiteRes.website.languageCode
+      return redirect(`/${defaultLocale}`)
+    }
+  
+    const primary: string = initialWebsiteRes.website.theme.primaryColor
+    const favicon: string = initialWebsiteRes.website.theme.faviconUrl
+  
+    const i18n = loadTranslations<I18nKeys>(incomingLocale, i18nKeys);
 
-  const primary: string = websiteRes.website.theme.primaryColor
-  const favicon: string = websiteRes.website.theme.faviconUrl
+    const navbarLinks: WebLinkModel[] = initialWebsiteRes.website.headerNav.links
+    const locales: string[] = initialWebsiteRes.languageCodes.filter((l: string) => l !== params.lang)
+    const font = initialWebsiteRes.website.theme.fontFamilyUrl
+    const fontFamily = initialWebsiteRes.website.theme.fontFamily
 
-  const i18n = loadTranslations<I18nKeys>(incomingLocale, i18nKeys);
+    const loaderData: LoaderData = {
+      i18n,
+      primary,
+      favicon,
+      font,
+      incomingLocale,
+      navbarLinks,
+      locales,
+      fontFamily
+    }
 
-  const loaderData: LoaderData = {
-    i18n,
-    primary,
-    favicon,
-    canonical: canonicalUrl
-  }
-
-  return json(loaderData, {
-    headers: {
-      "Set-Cookie": await cookie.serialize(languageCookie),
-    },
-  })
+  return json(loaderData)
 };
 
 export default function App() {
@@ -118,11 +113,53 @@ export default function App() {
   const alternates = match?.data.alternates;
   const loaderData = useLoaderData<LoaderData>()
   const canonical = match?.data.canonical;
+  const params = useParams()
 
   const favicon = loaderData.favicon || ""
 
+  const [currentTime, setCurrentTime] = useState('-------')
+
+  const getTimeDate = () => {
+    var date = new Date();
+    var current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
+    var current_time = `${date.getHours() < 10 ? '0': ''}${date.getHours()}`+":"+`${date.getMinutes() < 10 ? '0': ''}${date.getMinutes()}`+":"+ `${date.getSeconds()}${date.getSeconds() < 10 ? '0': ''}`;
+    var date_time = current_date+" - "+current_time;
+    setCurrentTime(date_time)
+  }
+
+  useEffect(
+    () => {setTimeout(getTimeDate, 1000)}
+  )
+
+  function getPageSlug(url: string) {
+    return url.replace('https://illos.davidegiovanni.com/', '')
+  }
+
+  function getLanguageName (lang: string) {
+    switch (lang) {
+      case 'it-IT':
+        return 'Italiano'
+      case 'en-US':
+        return 'English'
+      case 'fr-FR':
+        return 'Français'
+      case 'es-ES':
+        return 'Espanol'
+      case 'de-DE':
+        return 'Deutsch'
+      default:
+        break;
+    }
+  }
+
+  const style = {
+    "--customfont": loaderData.fontFamily,
+    fontFamily: loaderData.fontFamily,
+    backgroundColor: loaderData.primary
+  }
+
   return (
-    <html lang="en">
+    <html lang={loaderData.incomingLocale}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -132,61 +169,65 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <div className="fixed inset-0 overflow-hidden selection:bg-gray-300 selection:text-gray-900">
-          <div className="w-full h-full overflow-hidden safari-only">
+        <div style={style} className="fixed inset-0 overflow-hidden selection:bg-[blue] selection:text-[white] w-full h-full flex flex-col font-default">
+          <div className="w-full flex-1 h-1 overflow-hidden">
             <Outlet />
+          </div>
+          <hr className="border-t border-black w-full" />
+          <div className="w-full flex items-center justify-between bg-white px-4 py-2" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+            {loaderData.navbarLinks.map((f, index) => (
+              <Link to={`/${params.lang}/${getPageSlug(f.url)}`} className="hover:underline uppercase" key={index}>
+                {f.title}
+              </Link>
+            ))}
+          </div>
+          <hr className="border-t border-black w-full" />
+          <div style={{ fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-start px-4 py-2 uppercase">
+            {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | </a> { loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link to={`/${l}`} className="ml-2 underline text-[blue] hover:text-[darkblue] visited:text-[purple]">
+              { getLanguageName(l)}
+              </Link></span> )) : null}
           </div>
         </div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        {process.env.NODE_ENV === "development" && <LiveReload />}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link rel="stylesheets" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap" />
-        <link rel="stylesheets" href="https://use.typekit.net/ert5ehm.css" />
+        <link href={loaderData.font} rel="stylesheet"></link>
+        {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
     </html>
   );
 }
 
-export function CatchBoundary() {
+export function CatchBoundary({ error }: { error: Error }) {
+  const catchError = useCatch()
 
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Website error</title>
+        <title>(Ｔ▽Ｔ)</title>
         <Meta />
         <Links />
       </head>
       <body>
-        <div className="fixed inset-0 overflow-hidden bg-black p-2 selection:bg-gray-300 selection:text-gray-900">
+        <div className="fixed inset-0 overflow-hidden bg-[#0827F5] text-white p-2 selection:bg-white selection:text-white">
           <div className="w-full h-full overflow-hidden safari-only">
-            <div className="w-full h-full bg-white flex flex-col">
-            <div className="w-full flex-1 flex items-center justify-center p-4 max-w-screen-md mx-auto text-center">
-              <div>
-                <h2 className="uppercase text-center" style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
-                  The website didn't load correctly
-                </h2>
-                <p>
-                  Wait a while and then refresh the page
-                </p>
-              </div>
-            </div>
-            <div className="bg-gradient-to-t from-red-600 to-white h-full flex flex-col items-center justify-end pt-8 group" />
-            </div>
+            <h1 style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
+              Error ಥ_ಥ
+            </h1>
+            <p className="text-white my-4">
+              {catchError ? catchError.statusText : error.message} ((({catchError ? catchError.status : error.stack})))
+            </p>
+            <img src="https://c.tenor.com/1zi9Ppr4YDsAAAAj/travolta-lost.gif" alt="" />
           </div>
         </div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
         {process.env.NODE_ENV === "development" && <LiveReload />}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link rel="stylesheets" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap" />
-        <link rel="stylesheets" href="https://use.typekit.net/ert5ehm.css" />
       </body>
     </html>
   );
@@ -199,39 +240,25 @@ export function ErrorBoundary({ error }: { error: Error }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Website error</title>
+        <title>(Ｔ▽Ｔ)</title>
         <Meta />
         <Links />
       </head>
       <body>
-        <div className="fixed inset-0 overflow-hidden bg-black p-2 selection:bg-gray-300 selection:text-gray-900">
+      <div className="fixed inset-0 overflow-hidden bg-[#0827F5] text-white p-2 selection:bg-yellow-500 selection:text-white">
           <div className="w-full h-full overflow-hidden safari-only">
-            <div className="w-full h-full bg-white flex flex-col">
-            <div className="w-full flex-1 flex items-center justify-center p-4 max-w-screen-md mx-auto text-center">
-              <div>
-                <h2 className="uppercase text-center" style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
-                  The website didn't load correctly
-                </h2>
-                <p>
-                  Wait a while and then refresh the page.
-                </p>
-                <p className="text-xs opacity-50 mt-2 text-left">
-                  Details: {error.message} {error.stack}
-                </p>
-              </div>
-            </div>
-            <div className="bg-gradient-to-t from-red-600 via-red-500 to-white h-full flex flex-col items-center justify-end pt-8 group" />
-            </div>
+            <h1 style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
+              Error ಥ_ಥ
+            </h1>
+            <p className="text-white mt-4">
+              {error.message} {error.stack}
+            </p>
           </div>
         </div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
         {process.env.NODE_ENV === "development" && <LiveReload />}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link rel="stylesheets" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap" />
-        <link rel="stylesheets" href="https://use.typekit.net/ert5ehm.css" />
       </body>
     </html>
   );

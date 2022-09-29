@@ -10,7 +10,7 @@ import parse from 'html-react-parser'
 import { ArrowLeftIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
 
-const i18nKeys = ["shared"] as const;
+const i18nKeys = [] as const;
 type I18nKeys = typeof i18nKeys[number];
 
 export const meta: MetaFunction = ({ data, location }) => {
@@ -49,9 +49,6 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ request, params }) => {
   const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
 
-  const lang = params.lang === 'it-it' ? 'it-IT' : 'en-US'
-  const locale = params.lang === 'it-it' ? 'it' : 'en'
-
   const [feedRes, feedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/about/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
   if (feedErr !== null) {
     throw new Error(`API Feed: ${feedErr.message}, ${feedErr.code}`);
@@ -83,45 +80,31 @@ export default function About() {
   const params = useParams()
 
     return (
-      <div className="overflow-y-auto lg:overflow-y-hidden flex flex-col lg:flex-row h-full relative items-center justify-center">
-        <div className="absolute top-0 left-0 m-4 z-40">
-          <Link to={`/${params.lang}`} className="underline text-white">
-            <p className="sr-only">
-              Torna indietro
-            </p>
-            <ArrowLeftIcon className="w-6 h-6" />
-          </Link>
-        </div>
-        <div className="relative w-full h-[400px] lg:w-2/5 flex items-center justify-center bg-black flex-none lg:h-full overflow-hidden">
-          <div className="w-full lg:w-1/2 h-full mx-auto flex items-center justify-center translate-y-1/4 lg:translate-y-0">
-            <Attachment align="object-center" size="object-cover lg:object-contain" attachment={{
-              id: "",
-              mediaType: "image/",
-              url: item.image,
-              description: ""
-            }}></Attachment>
+      <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden">
+        <div className="w-full h-full lg:flex items-stretch">
+          <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-black">
+            <Attachment size="object-cover" attachment={{
+                id: "",
+                mediaType: "image/",
+                url: item.image,
+                description: ""
+              }}></Attachment>
           </div>
-        </div>
-        <div className="flex-1 py-4 lg:py-16 lg:overflow-y-auto px-4 mb-8 lg:mb-16 h-full">
-          <div className="flex justify-start w-full w-full lg:w-9/12 mx-auto mb-4 lg:mb-8">
-            <div className="w-full">
-              <h1 style={{ fontSize: fluidType(24, 48, 300, 2400, 1.5).fontSize, lineHeight: fluidType(20, 32, 300, 2400, 1.5).lineHeight }} >
-                {item.title}
-              </h1>
-              <div className="w-full columns-2 gap-4 border-y border-black py-4 mt-2 lg:px-4">
-                <h2 className="text-justify italic" style={{ fontSize: fluidType(14, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+          <div className="w-full lg:w-1/2 lg:overflow-y-auto">
+            <div className="p-4 border-b border-black mb-2">
+              <h1 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="w-full uppercase font-bold mb-2" >
+                  {item.title}
+                </h1>
+                <h2 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="mb-2">
                   {item.summary}
                 </h2>
-              </div>
             </div>
-          </div>
-          { item.content_html !== "" && item.content_html !== undefined &&
-            <div className="w-full lg:w-9/12 mx-auto mb-2 mr-auto flex flex-col items-end">
-              <article className="block prose max-w-none lg:w-11/12 text-black prose-a:text-blue-500 prose-a:underline-offset-4 prose-blockquote:bg-gray-100 prose-blockquote:p-8 prose-blockquote:border-0 prose-blockquote:prose-p:first-of-type:before:opacity-0 prose-a:visited:text-purple-500 prose-li:marker:text-emerald-500">
+            { item.content_html !== "" && item.content_html !== undefined &&
+                <article className="p-4 block prose max-w-none text-black prose-a:text-[blue] prose-a:underline-offset-4 prose-blockquote:bg-gray-100 prose-blockquote:p-8 prose-blockquote:border-0 prose-blockquote:prose-p:first-of-type:before:opacity-0 prose-a:visited:text-[purple] prose-li:marker:text-[black]">
                 {parse(item.content_html)}
               </article>
-            </div>
-          }
+              }
+          </div>
         </div>
       </div>  
     )
