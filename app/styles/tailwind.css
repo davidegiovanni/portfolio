@@ -959,10 +959,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-right: auto;
 }
 
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
 .mt-4 {
   margin-top: 1rem;
 }
@@ -995,12 +991,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   display: none;
 }
 
-.aspect-\[3\/4\] {
-  aspect-ratio: 3 / 4;
-}
-
 .aspect-video {
   aspect-ratio: 16 / 9;
+}
+
+.aspect-\[3\/4\] {
+  aspect-ratio: 3 / 4;
 }
 
 .h-full {
@@ -1039,16 +1035,40 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 1rem;
 }
 
+.h-\[\] {
+  height: ;
+}
+
+.h-\[50vh\] {
+  height: 50vh;
+}
+
+.max-h-\[60vh\] {
+  max-height: 60vh;
+}
+
 .max-h-\[70vh\] {
   max-height: 70vh;
+}
+
+.max-h-\[\] {
+  max-height: ;
+}
+
+.max-h-\[50vh\] {
+  max-height: 50vh;
+}
+
+.max-h-\[55vh\] {
+  max-height: 55vh;
 }
 
 .w-full {
   width: 100%;
 }
 
-.w-2\/3 {
-  width: 66.666667%;
+.w-56 {
+  width: 14rem;
 }
 
 .w-auto {
@@ -1065,12 +1085,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: fit-content;
 }
 
-.w-64 {
-  width: 16rem;
-}
-
-.w-56 {
-  width: 14rem;
+.w-10\/12 {
+  width: 83.333333%;
 }
 
 .max-w-none {
@@ -1120,10 +1136,6 @@ Ensure the default browser behavior of the `hidden` attribute.
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-}
-
-.grid-cols-1 {
-  grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
 .grid-cols-2 {
@@ -1228,6 +1240,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
+.bg-gray-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -1264,6 +1281,11 @@ Ensure the default browser behavior of the `hidden` attribute.
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .text-center {
@@ -1512,44 +1534,24 @@ img {
 }
 
 @media (min-width: 768px) {
+  .md\:ml-2 {
+    margin-left: 0.5rem;
+  }
+
   .md\:block {
     display: block;
-  }
-
-  .md\:flex {
-    display: flex;
-  }
-
-  .md\:aspect-\[\] {
-    aspect-ratio: ;
-  }
-
-  .md\:aspect-square {
-    aspect-ratio: 1 / 1;
-  }
-
-  .md\:aspect-\[3\/\] {
-    aspect-ratio: 3 / ;
-  }
-
-  .md\:aspect-\[3\/2\] {
-    aspect-ratio: 3 / 2;
-  }
-
-  .md\:aspect-\[3\/1\] {
-    aspect-ratio: 3 / 1;
   }
 
   .md\:aspect-\[4\/2\] {
     aspect-ratio: 4 / 2;
   }
 
-  .md\:w-4 {
-    width: 1rem;
+  .md\:h-\[60vh\] {
+    height: 60vh;
   }
 
-  .md\:grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .md\:max-h-\[70vh\] {
+    max-height: 70vh;
   }
 
   .md\:grid-cols-3 {
@@ -1558,10 +1560,6 @@ img {
 }
 
 @media (min-width: 1024px) {
-  .lg\:mb-0 {
-    margin-bottom: 0px;
-  }
-
   .lg\:flex {
     display: flex;
   }
@@ -1574,6 +1572,14 @@ img {
     height: 100%;
   }
 
+  .lg\:h-\[60vh\] {
+    height: 60vh;
+  }
+
+  .lg\:max-h-\[70vh\] {
+    max-height: 70vh;
+  }
+
   .lg\:w-80 {
     width: 20rem;
   }
@@ -1582,8 +1588,10 @@ img {
     width: 50%;
   }
 
-  .lg\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .lg\:w-fit {
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
   }
 
   .lg\:grid-cols-4 {

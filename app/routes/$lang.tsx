@@ -137,7 +137,7 @@ export default function Index() {
   const outletHeight: string = location.pathname.includes('works') 
     ? 'border-t border-black h-full '
     : location.pathname.includes('about')
-      ? 'border-t border-black h-[60vh] '
+      ? 'border-t border-black h-[50vh] md:h-[60vh] '
       : 'border-t border-black h-[30vh] '
 
 
@@ -160,7 +160,7 @@ export default function Index() {
           <div style={{ backgroundImage: `url("${mainSection.image}")`, backgroundSize: '100% 100%'}} className="w-full h-8 flex-1">
           </div>
           <>
-            <div className={((location.pathname.includes('works') || location.pathname.includes('about') || location.pathname.includes('contacts')) ? outletHeight : "h-0 ") + "relative z-30 w-full bg-white transition-all ease-in-out duration-500 max-h-[60vh] "}>
+            <div className={((location.pathname.includes('works') || location.pathname.includes('about') || location.pathname.includes('contacts')) ? outletHeight : "h-0 ") + "relative z-30 w-full bg-white transition-all ease-in-out duration-500 max-h-[60vh] md:max-h-[70vh] "}>
               <Outlet />
             </div>
           </>
