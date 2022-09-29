@@ -109,17 +109,17 @@ export default function ItemPage() {
 
   return (
     <div className="overflow-y-hidden h-full w-full flex flex-col">
-      <div className="lg:flex items-center justify-between flex-none px-4 py-2 h-12 border-b border-black">
-        <div className="flex items-center mb-2 lg:mb-0" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
+      <div className="flex items-center justify-between flex-none px-4 py-2 h-12 border-b border-black">
+        <div className="flex items-center" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
           <Link to={`/${params.lang}/works/${params.feed}`} className="underline uppercase">
             <p className="flex items-center">
               {feedTitle}
             </p>
           </Link>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mx-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="hidden md:block w-4 h-4 mx-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
-          <p className="uppercase">
+          <p className="hidden md:block  uppercase">
           {item.title}
           </p>
         </div>

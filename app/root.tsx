@@ -174,16 +174,21 @@ export default function App() {
             <Outlet />
           </div>
           <hr className="border-t border-black w-full" />
-          <div className="w-full flex items-center justify-between bg-white px-4 py-2" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-            {loaderData.navbarLinks.map((f, index) => (
-              <Link to={`/${params.lang}/${getPageSlug(f.url)}`} className="hover:underline uppercase" key={index}>
-                {f.title}
-              </Link>
-            ))}
-          </div>
-          <hr className="border-t border-black w-full" />
+          {
+            loaderData.navbarLinks.length > 0 &&
+            <>
+              <div className="w-full flex items-center justify-between bg-white px-4 py-2" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+                {loaderData.navbarLinks.length > 0 && loaderData.navbarLinks.map((f, index) => (
+                  <Link to={`/${params.lang}/${getPageSlug(f.url)}`} className="hover:underline uppercase" key={index}>
+                    {f.title}
+                  </Link>
+                ))}
+              </div>
+              <hr className="border-t border-black w-full" />   
+            </>
+          }
           <div style={{ fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-start px-4 py-2 uppercase">
-            {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | </a> { loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link to={`/${l}`} className="ml-2 underline text-[blue] hover:text-[darkblue] visited:text-[purple]">
+            {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | WEBSITE BUILT BY ME | </a> { loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link to={`/${l}`} reloadDocument className="ml-2 underline text-[blue] hover:text-[darkblue] visited:text-[purple]">
               { getLanguageName(l)}
               </Link></span> )) : null}
           </div>

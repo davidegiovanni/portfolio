@@ -991,8 +991,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   display: grid;
 }
 
+.hidden {
+  display: none;
+}
+
 .aspect-\[3\/4\] {
   aspect-ratio: 3 / 4;
+}
+
+.aspect-video {
+  aspect-ratio: 16 / 9;
 }
 
 .h-full {
@@ -1057,6 +1065,14 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: fit-content;
 }
 
+.w-64 {
+  width: 16rem;
+}
+
+.w-56 {
+  width: 14rem;
+}
+
 .max-w-none {
   max-width: none;
 }
@@ -1108,6 +1124,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .flex-col {
@@ -1492,8 +1512,48 @@ img {
 }
 
 @media (min-width: 768px) {
+  .md\:block {
+    display: block;
+  }
+
+  .md\:flex {
+    display: flex;
+  }
+
+  .md\:aspect-\[\] {
+    aspect-ratio: ;
+  }
+
+  .md\:aspect-square {
+    aspect-ratio: 1 / 1;
+  }
+
+  .md\:aspect-\[3\/\] {
+    aspect-ratio: 3 / ;
+  }
+
+  .md\:aspect-\[3\/2\] {
+    aspect-ratio: 3 / 2;
+  }
+
+  .md\:aspect-\[3\/1\] {
+    aspect-ratio: 3 / 1;
+  }
+
+  .md\:aspect-\[4\/2\] {
+    aspect-ratio: 4 / 2;
+  }
+
+  .md\:w-4 {
+    width: 1rem;
+  }
+
   .md\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1510,6 +1570,10 @@ img {
     height: 8rem;
   }
 
+  .lg\:h-full {
+    height: 100%;
+  }
+
   .lg\:w-80 {
     width: 20rem;
   }
@@ -1520,6 +1584,10 @@ img {
 
   .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lg\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .lg\:overflow-y-auto {

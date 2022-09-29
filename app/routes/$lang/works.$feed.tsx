@@ -100,7 +100,7 @@ export default function FeedPage() {
         </h1>
       </div>
       <hr className="border-t border-black w-full" />
-      <div className="grid grid-cols-1 md:grid-cols-4 relative z-20 border-l border-black">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black">
         {
           items.map((i: FeedItem, index: any) => (
             <NavLink key={index} to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className="border-b border-r last:border-b-0 border-black">

@@ -145,7 +145,7 @@ export default function Index() {
     <div className="h-full w-full relative">
       <div>
         <Link to={`/${params.lang}`}>
-          <div className="h-16 lg:h-32 w-2/3 lg:w-80 inline-block m-4 absolute top-0 left-0 z-20">
+          <div className="h-16 lg:h-32 w-56 lg:w-80 inline-block m-4 absolute top-0 left-0 z-20">
             <div className="h-full w-auto">
               <Attachment attachment={{
                 id: "",

@@ -94,7 +94,7 @@ export default function Works() {
 
   return (
     <div className="h-full w-full overflow-y-auto">
-        <ul className="grid grid-cols-1 lg:grid-cols-3 border-l border-black">
+        <ul className="grid grid-cols-2 md:grid-cols-3 border-l border-black h-full">
           {feeds.map((f, index) => (
             <div className="border-b border-r border-black last:border-b-0 relative group">
               <Link className={'text-center'} to={`/${params.lang}/works/${f.description}`}>
@@ -107,7 +107,7 @@ export default function Works() {
                   }}></Attachment>
                 </div>
                 <div className="absolute inset-x-0 bottom-0 text-center z-20">
-                  <p style={{ fontSize: fluidType(20, 32, 300, 2400, 1.5).fontSize, lineHeight: fluidType(15, 24, 300, 2400, 1.5).lineHeight }} className="bg-white border border-black group-hover:underline rounded-md mb-4 px-4 py-2 uppercase inline-block w-fit mx-auto">
+                  <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="bg-white border border-black group-hover:underline rounded-md mb-4 px-4 py-2 uppercase inline-block w-fit mx-auto">
                     {f.title}
                   </p>
                 </div>

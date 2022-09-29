@@ -82,7 +82,7 @@ export default function About() {
     return (
       <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden">
         <div className="w-full h-full lg:flex items-stretch">
-          <div className="w-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-black">
+          <div className="w-full aspect-video md:aspect-[4/2] lg:h-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-black">
             <Attachment size="object-cover" attachment={{
                 id: "",
                 mediaType: "image/",
