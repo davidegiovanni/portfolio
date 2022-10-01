@@ -10,6 +10,7 @@ import { fluidType, formatDate } from '~/utils/helpers'
 import parse from 'html-react-parser'
 import { ArrowLeftIcon, ArrowRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
+import { useState } from "react";
 
 const i18nKeys = [] as const;
 type I18nKeys = typeof i18nKeys[number];
@@ -107,6 +108,8 @@ export default function ItemPage() {
   const { item, feedTitle, next, previous } = useLoaderData<LoaderData>();
   const params = useParams()
 
+  const [isZoom, setZoom] = useState(false)
+
   return (
     <div className="overflow-y-hidden h-full w-full flex flex-col">
       <div className="flex items-center justify-between flex-none px-4 py-2 h-12 border-b border-black">
@@ -142,13 +145,15 @@ export default function ItemPage() {
           </Link>
         </div>
       </div>
-      <div className="flex-1 h-4">
-        <Attachment size="object-contain" align="object-center " attachment={{
-          id: "",
-          mediaType: "image/",
-          url: item.image,
-          description: item.title
-        }}></Attachment>
+      <div className={(isZoom ? "cursor-zoom-out " : "cursor-zoom-in ") + "flex-1 h-full overflow-auto touch-pinch-zoom touch-manipulation touch-pan-x touch-pan-y"} onClick={() => setZoom(!isZoom)}>
+        <div className={(isZoom ? "w-full h-auto origin-top-left scale-150 " : "w-full h-full") + " touch-manipulation touch-pan-x touch-pan-y lg:touch-none"}>
+          <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-top " attachment={{
+            id: "",
+            mediaType: "image/",
+            url: item.image,
+            description: item.title
+          }}></Attachment>
+        </div>
       </div>
     </div>
   );

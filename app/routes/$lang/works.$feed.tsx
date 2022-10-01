@@ -103,7 +103,7 @@ export default function FeedPage() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black">
         {
           items.map((i: FeedItem, index: any) => (
-            <NavLink key={index} to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className="border-b border-r last:border-b-0 border-black">
+            <NavLink key={index} to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className="border-b border-r last:border-b-0 border-black lg:grayscale lg:hover:grayscale-0">
               <Attachment size="object-cover" attachment={{
                     id: "",
                     mediaType: "image/",
