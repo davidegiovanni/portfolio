@@ -34,7 +34,7 @@ export const meta: MetaFunction = ({ data, location }) => {
       description: description,
       image: image,
       url: url,
-      robots: 'follow',
+      robots: 'all',
       type: 'website',
     }
   )
