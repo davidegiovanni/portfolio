@@ -73,12 +73,12 @@ export const loader: LoaderFunction = async ({ request }) => {
               <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
               <lastmod>${item.date_published}</lastmod>
               <priority>1.0</priority>
-            </url>`))}
-          ${itFeeds.map((feed) =>`<url>
+            </url>`)).toString().split(',').join('')}
+          ${itFeeds.map((feed) =>(`<url>
             <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
             <lastmod>2022-01-01T00:00:00+01:00</lastmod>
             <priority>1.0</priority>
-          </url>`)}
+          </url>`)).toString().split(',').join('')}
         </urlset>`.trim()
 
   // Return the response with the content, a status 200 message, and the appropriate headers for an XML page
