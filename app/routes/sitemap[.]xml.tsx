@@ -46,12 +46,16 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   const content = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.w3.org/TR/xhtml11/xhtml11_schema.html http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/TR/xhtml11/xhtml11_schema.html">
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   ${locales.map((l: any) => (
   `<url>
     <loc>https://${host}/${l}</loc>
     <lastmod>2022-01-01T00:00:00+01:00</lastmod>${getAlternateLocales(l).map(al => (`
-    <xhtml:link rel="alternate" hreflang="${al}" href="https://${host}/${al}"/>`)).toString().split(',').join('')}
+    <xhtml:link 
+                rel="alternate"
+                hreflang="${al}"
+                href="https://${host}/${al}"/>`)).toString().split(',').join('')}
     <priority>1.0</priority>
   </url>`)).toString().split(',').join('')
   }
@@ -85,7 +89,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     <priority>1.0</priority>
   </url>`)).toString().split(',').join('')}
 </urlset>
-  `.trim()
+`.trim()
 
   // Return the response with the content, a status 200 message, and the appropriate headers for an XML page
   return new Response(content, {
