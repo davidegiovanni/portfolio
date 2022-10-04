@@ -22,7 +22,7 @@ export const meta: MetaFunction = ({ data, location }) => {
     const feed = data.feed
     title = (feed.title !== '' ? feed.title : "Pagina") + ' | Davide G. Steccanella'
     description = feed.description !== '' ? feed.description : "Le illustrazioni di Davide G. Steccanella"
-    image = data.pageImage !== '' ? data.pageImage : ""
+    image = data.lastItem !== undefined && data.lastItem.image ? data.lastItem.image : ""
     url = data.canonical
 
   }

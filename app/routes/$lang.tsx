@@ -139,18 +139,21 @@ export default function Index() {
   return (
     <div className="h-full w-full relative">
       <div>
-        <Link to={`/${params.lang}`}>
-          <div className="h-16 lg:h-32 w-56 lg:w-80 inline-block m-4 absolute top-0 left-0 z-20">
-            <div className="h-full w-auto">
-              <Attachment attachment={{
-                id: "",
-                mediaType: "image/",
-                url: logo,
-                description: "Davide Giovanni Steccanella"
-              }}></Attachment>
+        {
+          logo !== "" && 
+          <Link to={`/${params.lang}`}>
+            <div className="h-16 lg:h-32 w-56 lg:w-80 inline-block m-4 absolute top-0 left-0 z-20">
+              <div className="h-full w-auto">
+                <Attachment attachment={{
+                  id: "",
+                  mediaType: "image/",
+                  url: logo,
+                  description: "Davide Giovanni Steccanella"
+                }}></Attachment>
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        }
         <div className="absolute inset-0 w-full h-full z-10 flex flex-col overflow-hidden">
           <div style={{ backgroundImage: `-webkit-image-set(${buildSrcset(mainSection.image, 'webp')})`, backgroundSize: '100% 100%'}} className="w-full h-8 flex-1">
           </div>
