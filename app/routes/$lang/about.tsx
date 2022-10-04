@@ -51,7 +51,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const [feedRes, feedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/about/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
   if (feedErr !== null) {
-    throw new Error(`API Feed: ${feedErr.message}, ${feedErr.code}`);
+    throw new Response(`Page do not exist: ${feedRes.message} ${feedRes.code}`, {
+      status: 404,
+    });
   }
 
   const feed: Feed = feedRes
@@ -60,7 +62,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     return i.id.endsWith(slug)
   })
   if (foundNews === undefined) {
-    throw new Error("News undefined");
+    throw new Response(`Page do not exist`, {
+      status: 404,
+    });
   }
   const item: FeedItem = foundNews
 

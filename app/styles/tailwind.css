@@ -967,12 +967,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-bottom: 0.5rem;
 }
 
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
 .mr-4 {
   margin-right: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
 }
 
 .block {
@@ -999,12 +999,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   aspect-ratio: 16 / 9;
 }
 
-.aspect-\[3\/4\] {
-  aspect-ratio: 3 / 4;
-}
-
 .aspect-square {
   aspect-ratio: 1 / 1;
+}
+
+.aspect-\[3\/4\] {
+  aspect-ratio: 3 / 4;
 }
 
 .h-full {
@@ -1027,10 +1027,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 4rem;
 }
 
-.h-8 {
-  height: 2rem;
-}
-
 .h-0 {
   height: 0px;
 }
@@ -1043,24 +1039,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: 1rem;
 }
 
-.h-6 {
-  height: 1.5rem;
-}
-
 .h-auto {
   height: auto;
 }
 
 .max-h-\[60vh\] {
   max-height: 60vh;
-}
-
-.min-h-\[\] {
-  min-height: ;
-}
-
-.min-h-\[200px\] {
-  min-height: 200px;
 }
 
 .w-full {
@@ -1085,20 +1069,12 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: fit-content;
 }
 
-.w-10\/12 {
-  width: 83.333333%;
-}
-
 .w-1\/2 {
   width: 50%;
 }
 
-.w-6 {
-  width: 1.5rem;
-}
-
-.w-1 {
-  width: 0.25rem;
+.w-10\/12 {
+  width: 83.333333%;
 }
 
 .max-w-none {
@@ -1121,10 +1097,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   flex: none;
 }
 
-.origin-top {
-  transform-origin: top;
-}
-
 .origin-top-left {
   transform-origin: top left;
 }
@@ -1134,24 +1106,18 @@ Ensure the default browser behavior of the `hidden` attribute.
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.scale-110 {
-  --tw-scale-x: 1.1;
-  --tw-scale-y: 1.1;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
 .scale-150 {
   --tw-scale-x: 1.5;
   --tw-scale-y: 1.5;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.cursor-zoom-in {
-  cursor: zoom-in;
-}
-
 .cursor-zoom-out {
   cursor: zoom-out;
+}
+
+.cursor-zoom-in {
+  cursor: zoom-in;
 }
 
 .touch-pan-x {
@@ -1285,6 +1251,11 @@ Ensure the default browser behavior of the `hidden` attribute.
   background-color: rgb(8 39 245 / var(--tw-bg-opacity));
 }
 
+.bg-gray-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -1293,11 +1264,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
-}
-
-.object-center {
-  -o-object-position: center;
-     object-position: center;
 }
 
 .object-top {
@@ -1371,11 +1337,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .opacity-50 {
   opacity: 0.5;
-}
-
-.grayscale {
-  --tw-grayscale: grayscale(100%);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .filter {
@@ -1542,16 +1503,6 @@ img {
           text-decoration-line: underline;
 }
 
-.group:hover .group-hover\:grayscale {
-  --tw-grayscale: grayscale(100%);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
-.group:hover .group-hover\:grayscale-0 {
-  --tw-grayscale: grayscale(0);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
 .prose-a\:text-\[blue\] :is(:where(a):not(:where([class~="not-prose"] *))) {
   --tw-text-opacity: 1;
   color: rgb(0 0 255 / var(--tw-text-opacity));
@@ -1644,18 +1595,18 @@ img {
     width: 50%;
   }
 
-  .lg\:w-fit {
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
-    width: fit-content;
-  }
-
   .lg\:w-1\/4 {
     width: 25%;
   }
 
   .lg\:w-3\/4 {
     width: 75%;
+  }
+
+  .lg\:w-fit {
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
+    width: fit-content;
   }
 
   .lg\:touch-none {

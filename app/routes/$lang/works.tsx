@@ -62,13 +62,17 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (websiteErr !== null) {
-    throw new Error(`API website: ${websiteErr.message} ${websiteErr.code}`);
+    throw new Response(`Error loading website: ${websiteErr.message} ${websiteErr.code}`, {
+      status: 404,
+    });
   }
   const logo = websiteRes.website.theme.logoUrl
 
   const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
   if (pageErr !== null) {
-    throw new Error(`API Page: ${pageErr.message}, ${pageErr.code}`);
+    throw new Response(`Page do not exist: ${pageRes.message} ${pageRes.code}`, {
+      status: 404,
+    });
   }
 
   const page: WebPageModel = pageRes.page

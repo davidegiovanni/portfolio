@@ -67,7 +67,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (incomingLocale === "") {
     const [defaultWebsiteRes, defaultWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
     if (defaultWebsiteErr !== null) {
-      throw new Error(`defaultWebsiteErr: ${defaultWebsiteErr.message} ${defaultWebsiteErr.code}`);
+      throw new Response(`${defaultWebsiteErr.message} ${defaultWebsiteErr.code}`, {
+        status: 404,
+      });
     }
     const defaultLocale = defaultWebsiteRes.website.languageCode
     return redirect(`/${defaultLocale}`)
@@ -77,7 +79,9 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     if (initialWebsiteErr !== null) {
       const [defaultWebsiteRes, defaultWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
       if (defaultWebsiteErr !== null) {
-        throw new Error(`initialWebsiteErr website: ${defaultWebsiteErr.message} ${defaultWebsiteErr.code}`);
+        throw new Response(`${defaultWebsiteErr.message} ${defaultWebsiteErr.code}`, {
+          status: 404,
+        });
       }
       const defaultLocale = defaultWebsiteRes.website.languageCode
       return redirect(`/${defaultLocale}`)
@@ -205,8 +209,8 @@ export default function App() {
   );
 }
 
-export function CatchBoundary({ error }: { error: Error }) {
-  const catchError = useCatch()
+export function CatchBoundary() {
+  const caught = useCatch()
 
   return (
     <html lang="en">
@@ -224,7 +228,7 @@ export function CatchBoundary({ error }: { error: Error }) {
               Error ಥ_ಥ
             </h1>
             <p className="text-white my-4">
-              {catchError ? catchError.statusText : error.message} ((({catchError ? catchError.status : error.stack})))
+            {caught.status} {caught.data}
             </p>
             <img src="https://c.tenor.com/1zi9Ppr4YDsAAAAj/travolta-lost.gif" alt="" />
           </div>
