@@ -73,7 +73,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             ${
               itFeeds.map((feed) =>
                   feed.items.map((item) => `<url>
-                  <loc>https://${websiteName}//it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
+                  <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
                   <lastmod>${item.date_published}</lastmod>
                   <priority>1.0</priority>
               </url>`)
@@ -81,7 +81,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             }
             ${
               itFeeds.map((feed) =>`<url>
-                  <loc>https://${websiteName}//it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
+                  <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
                   <lastmod>2022-01-01T00:00:00+01:00</lastmod>
                   <priority>1.0</priority>
               </url>`
