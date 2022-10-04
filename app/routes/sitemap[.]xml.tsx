@@ -48,7 +48,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const content = `<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.w3.org/TR/xhtml11/xhtml11_schema.html http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/TR/xhtml11/xhtml11_schema.html">
-    ${locales.map((l: any) => (`<url>
+    ${locales.map((l: any) => (
+    `<url>
       <loc>https://${websiteName}/${l}</loc>
       <lastmod>2022-01-01T00:00:00+01:00</lastmod>${getAlternateLocales(l).map(al => (`
       <xhtml:link rel="alternate" hreflang="${al}" href="https://${websiteName}/${al}"/>`)).toString().split(',').join('')}
@@ -70,13 +71,15 @@ export const loader: LoaderFunction = async ({ request }) => {
       <lastmod>2022-01-01T00:00:00+01:00</lastmod>
       <priority>1.0</priority>
     </url>
-    ${itFeeds.map((feed) => feed.items.map((item) => `<url>
+    ${itFeeds.map((feed) => feed.items.map((item) => 
+    `<url>
       <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
       <lastmod>${item.date_published}</lastmod>
       <priority>1.0</priority>
     </url>`)).toString().split(',').join('')
     }
-    ${itFeeds.map((feed) =>(`<url>
+    ${itFeeds.map((feed) =>(
+    `<url>
       <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
       <lastmod>2022-01-01T00:00:00+01:00</lastmod>
       <priority>1.0</priority>
