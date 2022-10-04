@@ -4,8 +4,12 @@ import { safeGet } from "~/utils/safe-post";
 import queryString from 'query-string'
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const url = request.url
+  const host = new URL(url).host
 
-  const [workRes, workErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/illustrations.davidegiovanni.com/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=it-IT`)
+  let websiteName = host.includes('localhost') ? 'illos.davidegiovanni.com' : host;
+
+  const [workRes, workErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${websiteName}/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=it-IT`)
   if (workErr !== null) {
     throw new Error(`API Page Works: ${workErr.message} ${workErr.code}`);
   }
@@ -15,13 +19,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   const mappedWorkFeeds = workFeeds.map(wf => wf.description)
 
   let itFeeds: Feed[] = []
-  let itItems: FeedItem[] = []
 
   for (let index = 0; index < mappedWorkFeeds.length; index++) {
     const mappedFeed = mappedWorkFeeds[index];
     const [itFeedRes, itFeedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/${mappedFeed}/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
     if (itFeedErr !== null) {
-      throw new Error(`For cycle API Feed: ${itFeedErr.message} ${itFeedErr.code}, feed: ${mappedFeed}`);
+      throw new Error(`${itFeedErr.message} ${itFeedErr.code}, feed: ${mappedFeed}`);
     }
     itFeeds.push(itFeedRes)
   }
@@ -31,39 +34,44 @@ export const loader: LoaderFunction = async ({ request }) => {
     return parsed.content
   }
 
-  const content = `
+  const content = `<?xml version="1.0" encoding="UTF-8"?>
           <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.w3.org/TR/xhtml11/xhtml11_schema.html http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/TR/xhtml11/xhtml11_schema.html">
             <url>
-                <loc>https://illos.davidegiovanni.com/it-it</loc>
+                <loc>https://${websiteName}/it-IT</loc>
                 <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-                <xhtml:link rel="alternate" hreflang="en" href="https://illos.davidegiovanni.com/it-it"/>
+                <xhtml:link rel="alternate" hreflang="en" href="https://${websiteName}/en-US"/>
                 <priority>1.0</priority>
             </url>
             <url>
-                <loc>https://illos.davidegiovanni.com/it.it/works</loc>
+                <loc>https://${websiteName}/it-IT/works</loc>
                 <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-                <xhtml:link rel="alternate" hreflang="it" href="https://illos.davidegiovanni.com/it-it/contacts"/>
                 <priority>1.0</priority>
             </url>
             <url>
-                <loc>https://illos.davidegiovanni.com/en-us/contacts</loc>
+                <loc>https://${websiteName}/it-IT/contacts</loc>
                 <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-                <xhtml:link rel="alternate" hreflang="it" href="https://illos.davidegiovanni.com/it-it/about"/>
                 <priority>1.0</priority>
             </url>
             <url>
-                <loc>https://illos.davidegiovanni.com/en-us/about</loc>
+                <loc>https://${websiteName}/it-IT/about</loc>
                 <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-                <xhtml:link rel="alternate" hreflang="it" href="https://illos.davidegiovanni.com/it-it/about"/>
                 <priority>1.0</priority>
             </url>
             ${
               itFeeds.map((feed) =>
                   feed.items.map((item) => `<url>
-                  <loc>https://illos.davidegiovanni.com/it-it/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
+                  <loc>https://${websiteName}/it-it/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
                   <lastmod>${item.date_published}</lastmod>
                   <priority>1.0</priority>
               </url>`)
+              )
+            }
+            ${
+              itFeeds.map((feed) =>`<url>
+                  <loc>https://${websiteName}/it-it/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
+                  <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+                  <priority>1.0</priority>
+              </url>`
               )
             }
         </urlset>

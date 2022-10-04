@@ -892,6 +892,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   pointer-events: none;
 }
 
+.static {
+  position: static;
+}
+
 .fixed {
   position: fixed;
 }
@@ -1025,6 +1029,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .h-16 {
   height: 4rem;
+}
+
+.h-8 {
+  height: 2rem;
 }
 
 .h-0 {
@@ -1249,11 +1257,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .bg-\[\#0827F5\] {
   --tw-bg-opacity: 1;
   background-color: rgb(8 39 245 / var(--tw-bg-opacity));
-}
-
-.bg-gray-100 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
 .object-contain {

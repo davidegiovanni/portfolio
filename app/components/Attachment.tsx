@@ -10,9 +10,10 @@ type AttachmentProps = {
 
 export function Attachment(props: AttachmentProps) {
   function buildSrcset(url: any, format: string): any {
+    const u = url.replace('cdn.revas.app', 'static.eu1.revas-cdn.com')
     const sizes = [600, 800, 1024, 1280, 1536];
     const urls = sizes.map(
-      (size) => `${url}?format=${format}&size=${size}w ${size}w`
+      (size) => `${u}?format=${format}&size=${size}w ${size}w`
     );
     return urls.join(",");
   }
@@ -23,15 +24,15 @@ export function Attachment(props: AttachmentProps) {
         <picture className="h-full w-full">
           <source
             className={(props.align) + " " + (props.size ? props.size : "object-contain ") + " relative z-10 h-full w-full"}
-            type="image/avif"
-            sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
-            srcSet={buildSrcset(props.attachment.url, "avif")}
-          ></source>
-          <source
-            className={(props.align) + " " + (props.size ? props.size : "object-contain ") + " relative z-10 h-full w-full"}
             type="image/webp"
             sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
             srcSet={buildSrcset(props.attachment.url, "webp")}
+          ></source>
+          <source
+            className={(props.align) + " " + (props.size ? props.size : "object-contain ") + " relative z-10 h-full w-full"}
+            type="image/avif"
+            sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
+            srcSet={buildSrcset(props.attachment.url, "avif")}
           ></source>
           <img
             srcSet={buildSrcset(props.attachment.url, "")}
