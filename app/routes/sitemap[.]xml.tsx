@@ -47,7 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   const content = `<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     ${locales.map((l: any) => (`<url>
       <loc>https://${websiteName}/${l}</loc>
       <lastmod>2022-01-01T00:00:00+01:00</lastmod>${getAlternateLocales(l).map(al => (`
