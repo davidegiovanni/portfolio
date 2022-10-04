@@ -4,10 +4,9 @@ import { safeGet } from "~/utils/safe-post";
 import queryString from 'query-string'
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const url = request.url
-  const host = new URL(url).host
+  const url = new URL(request.url)
 
-  let websiteName = host.includes('localhost') ? 'illos.davidegiovanni.com' : host;
+  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illos.davidegiovanni.com' : url.host
 
   const [defaultWebsiteRes, defaultWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
   if (defaultWebsiteErr !== null) {
@@ -21,7 +20,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
 
-  const [itWorkRes, itWorkErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${websiteName}/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=it-IT`)
+  const [itWorkRes, itWorkErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=it-IT`)
   if (itWorkErr !== null) {
     throw new Error(`Error: ${itWorkErr.message} ${itWorkErr.code}`);
   }
@@ -47,45 +46,45 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   const content = `<?xml version="1.0" encoding="UTF-8"?>
-  <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.w3.org/TR/xhtml11/xhtml11_schema.html http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/TR/xhtml11/xhtml11_schema.html">
-    ${locales.map((l: any) => (
-    `<url>
-      <loc>https://${websiteName}/${l}</loc>
-      <lastmod>2022-01-01T00:00:00+01:00</lastmod>${getAlternateLocales(l).map(al => (`
-      <xhtml:link rel="alternate" hreflang="${al}" href="https://${websiteName}/${al}"/>`)).toString().split(',').join('')}
-      <priority>1.0</priority>
-    </url>`)).toString().split(',').join('')
-    }
-    <url>
-      <loc>https://${websiteName}/it-IT/works</loc>
-      <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-      <priority>1.0</priority>
-    </url>
-    <url>
-      <loc>https://${websiteName}/it-IT/contacts</loc>
-      <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-      <priority>1.0</priority>
-    </url>
-    <url>
-      <loc>https://${websiteName}/it-IT/about</loc>
-      <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-      <priority>1.0</priority>
-    </url>
-    ${itFeeds.map((feed) => feed.items.map((item) => 
-    `<url>
-      <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
-      <lastmod>${item.date_published}</lastmod>
-      <priority>1.0</priority>
-    </url>`)).toString().split(',').join('')
-    }
-    ${itFeeds.map((feed) =>(
-    `<url>
-      <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
-      <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-      <priority>1.0</priority>
-    </url>`)).toString().split(',').join('')
-    }
-  </urlset>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.w3.org/TR/xhtml11/xhtml11_schema.html http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/TR/xhtml11/xhtml11_schema.html">
+  ${locales.map((l: any) => (
+  `<url>
+    <loc>https://${host}/${l}</loc>
+    <lastmod>2022-01-01T00:00:00+01:00</lastmod>${getAlternateLocales(l).map(al => (`
+    <xhtml:link rel="alternate" hreflang="${al}" href="https://${host}/${al}"/>`)).toString().split(',').join('')}
+    <priority>1.0</priority>
+  </url>`)).toString().split(',').join('')
+  }
+  <url>
+    <loc>https://${host}/it-IT/works</loc>
+    <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://${host}/it-IT/contacts</loc>
+    <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://${host}/it-IT/about</loc>
+    <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+    <priority>1.0</priority>
+  </url>
+  ${itFeeds.map((feed) => 
+    feed.items.map((item) => (
+  `<url>
+    <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
+    <lastmod>${item.date_published}</lastmod>
+    <priority>1.0</priority>
+  </url>
+  `))).toString().split(',').join('')
+  } ${itFeeds.map((feed) =>(
+  `<url>
+    <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
+    <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+    <priority>1.0</priority>
+  </url>`)).toString().split(',').join('')}
+</urlset>
   `.trim()
 
   // Return the response with the content, a status 200 message, and the appropriate headers for an XML page
