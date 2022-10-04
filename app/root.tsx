@@ -80,7 +80,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     }
   
     const primary: string = initialWebsiteRes.website.theme.primaryColor
-    const secondary: string = initialWebsiteRes.website.theme.secondaryColor
+    const secondary: string = initialWebsiteRes.website.theme.invertedPrimaryColor
     const favicon: string = initialWebsiteRes.website.theme.faviconUrl
   
     const i18n = loadTranslations<I18nKeys>(incomingLocale, i18nKeys);
@@ -187,7 +187,7 @@ export default function App() {
             </>
           }
           <div style={{ fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-start px-4 py-2 uppercase">
-            {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | WEBSITE BUILT BY ME | </a> { loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link to={`/${l}`} reloadDocument className="md:ml-2 underline text-[blue] hover:text-[darkblue] visited:text-[purple]">
+            {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | WEBSITE BUILT BY ME | </a> { loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link to={`/${l}`} reloadDocument className="md:ml-2 underline">
               { getLanguageName(l)}
               </Link></span> )) : null}
           </div>
