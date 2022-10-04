@@ -47,6 +47,7 @@ type I18nKeys = typeof i18nKeys[number];
 type LoaderData = {
   i18n: Record<any, any>;
   primary: string;
+  secondary: string;
   favicon: string;
   incomingLocale: string;
   navbarLinks: WebLinkModel[];
@@ -79,6 +80,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     }
   
     const primary: string = initialWebsiteRes.website.theme.primaryColor
+    const secondary: string = initialWebsiteRes.website.theme.secondaryColor
     const favicon: string = initialWebsiteRes.website.theme.faviconUrl
   
     const i18n = loadTranslations<I18nKeys>(incomingLocale, i18nKeys);
@@ -91,6 +93,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const loaderData: LoaderData = {
       i18n,
       primary,
+      secondary,
       favicon,
       font,
       incomingLocale,
@@ -150,7 +153,8 @@ export default function App() {
   const style = {
     "--customfont": loaderData.fontFamily,
     fontFamily: loaderData.fontFamily,
-    backgroundColor: loaderData.primary
+    backgroundColor: loaderData.primary,
+    color: loaderData.secondary
   }
 
   return (
