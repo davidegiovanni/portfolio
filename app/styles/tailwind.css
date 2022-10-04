@@ -1011,6 +1011,22 @@ Ensure the default browser behavior of the `hidden` attribute.
   aspect-ratio: 3 / 4;
 }
 
+.aspect-\[\] {
+  aspect-ratio: ;
+}
+
+.aspect-\[4\/3\] {
+  aspect-ratio: 4 / 3;
+}
+
+.aspect-\[4\/2\] {
+  aspect-ratio: 4 / 2;
+}
+
+.aspect-\[5\/2\] {
+  aspect-ratio: 5 / 2;
+}
+
 .h-full {
   height: 100%;
 }
@@ -1083,6 +1099,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .w-10\/12 {
   width: 83.333333%;
+}
+
+.w-2\/3 {
+  width: 66.666667%;
 }
 
 .max-w-none {
