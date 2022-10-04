@@ -80,11 +80,13 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const feedTitle = feed.title
 
-  let indexOfItem = feed.items.indexOf(foundNews)
-  let nextItemIndex = indexOfItem !== feed.items.length - 1 ? indexOfItem + 1 : -1
-  let nextItemSlug = nextItemIndex !== -1 ? feed.items[nextItemIndex].id : ''
+  const feedItemsToShow = feed.items.length > 1 ? feed.items.slice(0, -1) : feed.items
+
+  let indexOfItem = feedItemsToShow.indexOf(foundNews)
+  let nextItemIndex = indexOfItem !== feedItemsToShow.length - 1 ? indexOfItem + 1 : -1
+  let nextItemSlug = nextItemIndex !== -1 ? feedItemsToShow[nextItemIndex].id : ''
   let previousItemIndex = indexOfItem > 0 ? indexOfItem - 1 : -1
-  let previousItemSlug = previousItemIndex !== -1 ? feed.items[previousItemIndex].id : ''
+  let previousItemSlug = previousItemIndex !== -1 ? feedItemsToShow[previousItemIndex].id : ''
   nextItemSlug = nextItemSlug !== '' ? getSlug(nextItemSlug) as string : ''
   previousItemSlug = previousItemSlug !== '' ? getSlug(previousItemSlug) as string : ''
 
@@ -115,7 +117,7 @@ export default function ItemPage() {
   const [isZoom, setZoom] = useState(false)
 
   return (
-    <div className="overflow-y-hidden h-full w-full flex flex-col">
+    <div className="h-full w-full flex flex-col">
       <div className="flex items-center justify-between flex-none px-4 py-2 h-12 border-b border-black">
         <div className="flex items-center" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
           <Link to={`/${params.lang}/works/${params.feed}`} className="underline uppercase">
@@ -149,14 +151,16 @@ export default function ItemPage() {
           </Link>
         </div>
       </div>
-      <div className={(isZoom ? "cursor-zoom-out " : "cursor-zoom-in ") + "flex-1 h-full overflow-auto touch-pinch-zoom touch-manipulation touch-pan-x touch-pan-y"} onClick={() => setZoom(!isZoom)}>
-        <div className={(isZoom ? "w-full h-auto origin-top-left scale-150 " : "w-full h-full") + " touch-manipulation touch-pan-x touch-pan-y lg:touch-none"}>
-          <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-top " attachment={{
-            id: "",
-            mediaType: "image/",
-            url: item.image,
-            description: item.title
-          }}></Attachment>
+      <div className="flex-1 overflow-auto touch-pinch-zoom touch-manipulation touch-pan-x touch-pan-y">
+        <div className={(isZoom ? "cursor-zoom-out " : "cursor-zoom-in ") + "h-full w-full"} onClick={() => setZoom(!isZoom)}>
+          <div className={(isZoom ? "w-full h-auto origin-top-left scale-150 " : "w-full h-full") + ""}>
+            <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-top " attachment={{
+              id: "",
+              mediaType: "image/",
+              url: item.image,
+              description: item.title
+            }}></Attachment>
+          </div>
         </div>
       </div>
     </div>

@@ -102,24 +102,15 @@ export default function Index() {
   const params = useParams()
   const location = useLocation()
 
-  const theme = {
-    primary: primary || '#ffffff',
-    secondary: secondary || '#000000'
+  function buildSrcset(url: any, format: string): any {
+    const u = url.replace('cdn.revas.app', 'static.eu1.revas-cdn.com')
+    const sizes = [600, 800, 1024, 1280, 1536];
+    const densities = [1, 2,3];
+    const urls = densities.map(
+      (density) => `url("${u}?format=${format}&size=${density === 1 ? '1024' : density === 2 ? '1280' : '1536'}w") ${density}x`
+    );
+    return urls.join(",");
   }
-
-  const [currentTime, setCurrentTime] = useState('-------')
-
-  const getTimeDate = () => {
-    var date = new Date();
-    var current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
-    var current_time = `${date.getHours() < 10 ? '0': ''}${date.getHours()}`+":"+`${date.getMinutes() < 10 ? '0': ''}${date.getMinutes()}`+":"+ `${date.getSeconds()}${date.getSeconds() < 10 ? '0': ''}`;
-    var date_time = current_date+" - "+current_time;
-    setCurrentTime(date_time)
-  }
-
-  useEffect(
-    () => {setTimeout(getTimeDate, 1000)}
-  )
 
   function getLanguageName (lang: string) {
     switch (lang) {
@@ -161,7 +152,7 @@ export default function Index() {
           </div>
         </Link>
         <div className="absolute inset-0 w-full h-full z-10 flex flex-col overflow-hidden">
-          <div style={{ backgroundImage: `url("${mainSection.image}")`, backgroundSize: '100% 100%'}} className="w-full h-8 flex-1">
+          <div style={{ backgroundImage: `-webkit-image-set(${buildSrcset(mainSection.image, 'webp')})`, backgroundSize: '100% 100%'}} className="w-full h-8 flex-1">
           </div>
           <>
             <div className={((location.pathname.includes('works') || location.pathname.includes('about') || location.pathname.includes('contacts')) ? outletHeight : "h-0 ") + "relative z-30 w-full bg-white transition-all ease-in-out duration-500 max-h-[60vh] md:max-h-[70vh] "}>
