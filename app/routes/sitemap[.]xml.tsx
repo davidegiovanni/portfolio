@@ -53,7 +53,8 @@ export const loader: LoaderFunction = async ({ request }) => {
       <lastmod>2022-01-01T00:00:00+01:00</lastmod>${getAlternateLocales(l).map(al => (`
       <xhtml:link rel="alternate" hreflang="${al}" href="https://${websiteName}/${al}"/>`)).toString().split(',').join('')}
       <priority>1.0</priority>
-    </url>`)).toString().split(',').join('')}
+    </url>`)).toString().split(',').join('')
+    }
     <url>
       <loc>https://${websiteName}/it-IT/works</loc>
       <lastmod>2022-01-01T00:00:00+01:00</lastmod>
@@ -69,19 +70,20 @@ export const loader: LoaderFunction = async ({ request }) => {
       <lastmod>2022-01-01T00:00:00+01:00</lastmod>
       <priority>1.0</priority>
     </url>
-  ${itFeeds.map((feed) => feed.items.map((item) => 
-    `<url>
+    ${itFeeds.map((feed) => feed.items.map((item) => `<url>
       <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
       <lastmod>${item.date_published}</lastmod>
       <priority>1.0</priority>
-    </url>`)).toString().split(',').join('')}
-  ${itFeeds.map((feed) =>(
-    `<url>
+    </url>`)).toString().split(',').join('')
+    }
+    ${itFeeds.map((feed) =>(`<url>
       <loc>https://${websiteName}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
       <lastmod>2022-01-01T00:00:00+01:00</lastmod>
       <priority>1.0</priority>
-    </url>`)).toString().split(',').join('')}
-  </urlset>`.trim()
+    </url>`)).toString().split(',').join('')
+    }
+  </urlset>
+  `.trim()
 
   // Return the response with the content, a status 200 message, and the appropriate headers for an XML page
   return new Response(content, {
