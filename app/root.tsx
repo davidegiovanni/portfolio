@@ -36,10 +36,6 @@ export const links: LinksFunction = () => {
 };
 
 export const meta: MetaFunction = ({data}) => {
-  let theme = '#ffffff'
-  if (data !== undefined) {
-    theme = data.primary
-  }
   return {
     'twitter:card': 'summary_large_image'
   };
@@ -75,16 +71,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     return redirect(`/${defaultLocale}`)
   }
 
-  const [initialWebsiteRes, initialWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${incomingLocale}`)
+    const [initialWebsiteRes, initialWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${incomingLocale}`)
     if (initialWebsiteErr !== null) {
-      const [defaultWebsiteRes, defaultWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
-      if (defaultWebsiteErr !== null) {
-        throw new Response(`${defaultWebsiteErr.message} ${defaultWebsiteErr.code}`, {
+      throw new Response(`${initialWebsiteErr.message} ${initialWebsiteErr.code}`, {
           status: 404,
         });
-      }
-      const defaultLocale = defaultWebsiteRes.website.languageCode
-      return redirect(`/${defaultLocale}`)
     }
   
     const primary: string = initialWebsiteRes.website.theme.primaryColor
@@ -230,6 +221,9 @@ export function CatchBoundary() {
             <p className="text-white my-4">
             {caught.status} {caught.data}
             </p>
+            <Link to={'/'} className="block underline mb-4 text-white" reloadDocument>
+              Go to homepage
+            </Link>
             <img src="https://c.tenor.com/1zi9Ppr4YDsAAAAj/travolta-lost.gif" alt="" />
           </div>
         </div>
@@ -259,9 +253,13 @@ export function ErrorBoundary({ error }: { error: Error }) {
             <h1 style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
               Error ಥ_ಥ
             </h1>
-            <p className="text-white mt-4">
+            <p className="text-white my-4">
               {error.message} {error.stack}
             </p>
+            <Link to={'/'} className="block underline mb-4 text-white" reloadDocument>
+              Go to homepage
+            </Link>
+            <img src="https://c.tenor.com/1zi9Ppr4YDsAAAAj/travolta-lost.gif" alt="" />
           </div>
         </div>
         <ScrollRestoration />

@@ -1,4 +1,5 @@
 import { Attachment } from "api/models";
+import { useEffect } from "react";
 
 
 type AttachmentProps = {
@@ -18,10 +19,23 @@ export function Attachment(props: AttachmentProps) {
     return urls.join(",");
   }
 
+  const id = props.attachment.url.split('/').slice(-1)[0]
+
+  let isLoadingLazy = true
+
+  useEffect(() => {
+    const image = document.getElementById(id) as HTMLElement
+    const top = image.getBoundingClientRect().top
+
+    if (top > 0 && top < window.innerHeight) {
+      isLoadingLazy = false
+    }
+  })
+
   return (
-    <figure className="w-full h-full relative" role="figure">
+    <figure id={props.attachment.id} className="w-full h-full relative" role="figure">
       {props.attachment.mediaType.startsWith("image/") && (
-        <picture className="h-full w-full">
+        <picture id={id} className="h-full w-full">
           <source
             className={(props.align) + " " + (props.size ? props.size : "object-contain ") + " relative z-10 h-full w-full"}
             type="image/webp"
@@ -40,7 +54,7 @@ export function Attachment(props: AttachmentProps) {
             src={props.attachment.url}
             className={(props.align) + " " + (props.size ? props.size : "object-contain ") + " relative z-10 h-full w-full"}
             alt={props.attachment.description}
-            loading="lazy"
+            loading={isLoadingLazy ? "lazy" : "eager"}
             decoding="async"
           />
         </picture>

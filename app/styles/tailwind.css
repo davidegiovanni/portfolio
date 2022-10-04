@@ -1154,6 +1154,28 @@ Ensure the default browser behavior of the `hidden` attribute.
           user-select: none;
 }
 
+.auto-rows-min {
+  grid-auto-rows: -webkit-min-content;
+  grid-auto-rows: min-content;
+}
+
+.auto-rows-max {
+  grid-auto-rows: -webkit-max-content;
+  grid-auto-rows: max-content;
+}
+
+.auto-rows-\[minmax\(0\2c _2fr\)\] {
+  grid-auto-rows: minmax(0, 2fr);
+}
+
+.auto-rows-\[minmax\(20px\2c _2fr\)\] {
+  grid-auto-rows: minmax(20px, 2fr);
+}
+
+.auto-rows-\[minmax\(20px\2c 1fr\)\] {
+  grid-auto-rows: minmax(20px,1fr);
+}
+
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -1634,6 +1656,10 @@ img {
 
   .lg\:border-r {
     border-right-width: 1px;
+  }
+
+  .lg\:p-4 {
+    padding: 1rem;
   }
 
   .lg\:grayscale {

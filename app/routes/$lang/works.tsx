@@ -101,7 +101,7 @@ export default function Works() {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <div className="px-4 py-2 h-12 flex items-center justify-between">
+      <div className="px-4 py-2 h-12 flex items-center justify-between border-b border-black flex-none">
         <h1 className="uppercase" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
           { mainSection.title }
         </h1>
@@ -126,8 +126,8 @@ export default function Works() {
           </button>
         </div>
       </div>
-      <hr className="border-t border-black w-full" />
-        <ul className={(isListView ? "grid-cols-1" : "grid-cols-2 md:grid-cols-3") + " grid border-l border-black w-full flex-1 overflow-y-auto"}>
+      <div className="overflow-y-auto flex-1">
+        <div className={(isListView ? "grid-cols-1" : "grid-cols-2 md:grid-cols-3") + " grid border-l border-black w-full "}>
           {feeds.map((f, index) => (
             <div key={index} className="border-b border-r border-black last:border-b-0 relative group">
               <Link className={(isListView ? "flex items-center" : "") + ' text-center block w-full'} to={`/${params.lang}/works/${f.description}`}>
@@ -147,7 +147,8 @@ export default function Works() {
               </Link>
             </div>
           ))}
-        </ul>
+        </div>
+      </div>
       </div>
   );
 }

@@ -95,32 +95,36 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="overflow-y-auto h-full w-full">
-      <div className="px-4 py-2 h-12 flex items-center">
+    <div className="h-full w-full flex flex-col">
+      <div className="px-4 py-2 h-12 flex items-center border-b border-black flex-none">
         <h1 className="uppercase" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
           { feed.title }
         </h1>
       </div>
-      <hr className="border-t border-black w-full" />
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black">
+      <div className="overflow-y-auto flex-1">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black">
+          {
+            items.map((i: FeedItem, index: any) => (
+              <NavLink key={index} to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className="border-b border-r last:border-b-0 border-black lg:grayscale lg:hover:grayscale-0 aspect-square p-2 lg:p-4">
+                <Attachment size="object-contain" attachment={{
+                      id: "",
+                      mediaType: "image/",
+                      url: i.image,
+                      description: i.title
+                    }}></Attachment>
+              </NavLink>
+            ))
+          }
+        </div>
         {
-          items.map((i: FeedItem, index: any) => (
-            <NavLink key={index} to={`/${params.lang}/works/${params.feed}/${getSlug(i.id)}`} className="border-b border-r last:border-b-0 border-black lg:grayscale lg:hover:grayscale-0">
-              <Attachment size="object-cover" attachment={{
-                    id: "",
-                    mediaType: "image/",
-                    url: i.image,
-                    description: i.title
-                  }}></Attachment>
-            </NavLink>
-          ))
-        }
-      </div>
-      <div className="text-center border-t border-black py-4 px-4">
-      { feed.description !=="" && feed.description !== undefined && 
-          <div className="max-w-screen-md mx-auto" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
-            { feed.description }
-          </div>
+          feed.description !=="" && feed.description !== undefined && 
+            <div className="text-center border-t border-black py-4 px-4">
+            { feed.description !=="" && feed.description !== undefined && 
+                <div className="max-w-screen-md mx-auto" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
+                  { feed.description }
+                </div>
+              }
+            </div>
         }
       </div>
     </div>
