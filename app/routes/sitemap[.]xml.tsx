@@ -52,7 +52,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   `<url>
     <loc>https://${host}/${l}</loc>
     <lastmod>2022-01-01T00:00:00+01:00</lastmod>${getAlternateLocales(l).map(al => (`
-    <xhtml:link 
+    <xhtml:link
                 rel="alternate"
                 hreflang="${al}"
                 href="https://${host}/${al}"/>`)).toString().split(',').join('')}
