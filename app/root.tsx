@@ -154,7 +154,6 @@ export default function App() {
     "--customfont": loaderData.fontFamily,
     fontFamily: loaderData.fontFamily,
     backgroundColor: loaderData.primary,
-    color: loaderData.secondary
   }
 
   return (
@@ -186,7 +185,7 @@ export default function App() {
               <hr className="border-t border-black w-full" />   
             </>
           }
-          <div style={{ fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-start px-4 py-2 uppercase">
+          <div style={{color: loaderData.secondary, fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-start px-4 py-2 uppercase">
             {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | WEBSITE BUILT BY ME | </a> { loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link to={`/${l}`} reloadDocument className="md:ml-2 underline">
               { getLanguageName(l)}
               </Link></span> )) : null}
