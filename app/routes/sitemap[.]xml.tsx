@@ -8,6 +8,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illos.davidegiovanni.com' : url.host
 
+  const pages: any = {
+    'it-IT': [
+      'it-IT/about',
+      'it-IT/works',
+      'it-IT/contacts'
+    ]
+  }
+  
   const [defaultWebsiteRes, defaultWebsiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
   if (defaultWebsiteErr !== null) {
     throw new Error(`Error: ${defaultWebsiteErr.message} ${defaultWebsiteErr.code}`);
@@ -18,7 +26,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   function getAlternateLocales(locale: string): string[] {
     return defaultWebsiteRes.languageCodes.filter((l: any) => l !== locale)
   }
-
 
   const [itWorkRes, itWorkErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=it-IT`)
   if (itWorkErr !== null) {
@@ -74,20 +81,27 @@ export const loader: LoaderFunction = async ({ request }) => {
     <lastmod>2022-01-01T00:00:00+01:00</lastmod>
     <priority>1.0</priority>
   </url>
-  ${itFeeds.map((feed) => 
-    feed.items.map((item) => (
-  `<url>
-    <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
-    <lastmod>${item.date_published}</lastmod>
-    <priority>1.0</priority>
-  </url>
-  `))).toString().split(',').join('')
-  } ${itFeeds.map((feed) =>(
-  `<url>
-    <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
-    <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-    <priority>1.0</priority>
-  </url>`)).toString().split(',').join('')}
+  ${locales.map((l: any) => (pages[l]).map((p: any) => (
+    `<url>
+      <loc>https://${host}/${p}</loc>
+      <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+      <priority>1.0</priority>
+    </url>`)).toString().split(',').join('')
+  )}
+  ${itFeeds.map((feed) => feed.items.map((item) => (
+    `<url>
+      <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
+      <lastmod>${item.date_published}</lastmod>
+      <priority>1.0</priority>
+    </url>`)).toString().split(',').join('')
+  )} 
+  ${itFeeds.map((feed) =>(
+    `<url>
+      <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
+      <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+      <priority>1.0</priority>
+    </url>`).toString().split(',').join('')
+  )}
 </urlset>
 `.trim()
 
