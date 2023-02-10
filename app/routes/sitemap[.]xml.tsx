@@ -52,20 +52,50 @@ export const loader: LoaderFunction = async ({ request }) => {
     return parsed.content
   }
 
-  const content = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  ${locales.map((l: any) => (
-  `<url>
-    <loc>https://${host}/${l}</loc>
-    <lastmod>2022-01-01T00:00:00+01:00</lastmod>${getAlternateLocales(l).map(al => (`
-    <xhtml:link
-                rel="alternate"
-                hreflang="${al}"
-                href="https://${host}/${al}"/>`)).toString().split(',').join('')}
-    <priority>1.0</priority>
-  </url>`)).toString().split(',').join('')
-  }
+const pagesList = locales.map((l: any) => (pages[l]).map((p: any) =>
+`<url>
+  <loc>https://${host}/${p}</loc>
+  <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+  <priority>1.0</priority>
+</url>
+`).join("")
+)
+
+const itFeedItemsList = itFeeds.map((feed) => feed.items.map((item) =>
+`<url>
+  <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
+  <lastmod>${item.date_published}</lastmod>
+  <priority>1.0</priority>
+</url>
+`).join("")
+).join("")
+
+const itFeedsList = itFeeds.map((feed) =>
+`<url>
+  <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
+  <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+  <priority>1.0</priority>
+</url>
+`
+).join("")
+
+const indexesList = locales.map((l: any) =>
+`<url>
+  <loc>https://${host}/${l}</loc>
+  <lastmod>2022-01-01T00:00:00+01:00</lastmod>
+  <priority>1.0</priority>
+</url>
+`).join("")
+  
+
+  const content = 
+`<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+>
+${indexesList}
   <url>
     <loc>https://${host}/it-IT/works</loc>
     <lastmod>2022-01-01T00:00:00+01:00</lastmod>
@@ -81,27 +111,9 @@ export const loader: LoaderFunction = async ({ request }) => {
     <lastmod>2022-01-01T00:00:00+01:00</lastmod>
     <priority>1.0</priority>
   </url>
-  ${locales.map((l: any) => (pages[l]).map((p: any) => (
-    `<url>
-      <loc>https://${host}/${p}</loc>
-      <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-      <priority>1.0</priority>
-    </url>`)).toString().split(',').join('')
-  )}
-  ${itFeeds.map((feed) => feed.items.map((item) => (
-    `<url>
-      <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
-      <lastmod>${item.date_published}</lastmod>
-      <priority>1.0</priority>
-    </url>`)).toString().split(',').join('')
-  )} 
-  ${itFeeds.map((feed) =>(
-    `<url>
-      <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
-      <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-      <priority>1.0</priority>
-    </url>`).toString().split(',').join('')
-  )}
+${pagesList}
+${itFeedItemsList} 
+${itFeedsList}
 </urlset>
 `.trim()
 
