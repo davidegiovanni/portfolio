@@ -23,10 +23,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const locales = defaultWebsiteRes.languageCodes
 
-  function getAlternateLocales(locale: string): string[] {
-    return defaultWebsiteRes.languageCodes.filter((l: any) => l !== locale)
-  }
-
   const [itWorkRes, itWorkErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=it-IT`)
   if (itWorkErr !== null) {
     throw new Error(`Error: ${itWorkErr.message} ${itWorkErr.code}`);
@@ -52,7 +48,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return parsed.content
   }
 
-const pagesList = locales.map((l: any) => (pages[l]).map((p: any) =>
+const pagesList = locales.map((l: any) => (pages[l])?.map((p: any) =>
 `<url>
   <loc>https://${host}/${p}</loc>
   <lastmod>2022-01-01T00:00:00+01:00</lastmod>
