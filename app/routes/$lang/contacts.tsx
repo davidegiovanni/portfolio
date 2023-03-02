@@ -1,4 +1,4 @@
-import { json, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json, LinksFunction, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
 import { Link, NavLink, useCatch, useLoaderData, useLocation, useParams } from "@remix-run/react";
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
@@ -11,7 +11,18 @@ import { Attachment } from "~/components/Attachment";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 import { page } from "~/api";
 import { Page } from "~/models";
+import { DynamicLinksFunction } from "remix-utils";
 
+let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
+  id,
+  data,
+  params,
+  location,
+  parentsData,
+}) => {
+  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${params.lang}/contacts` }];
+};
+export let handle = { dynamicLinks };
 
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'

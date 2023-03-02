@@ -1,4 +1,4 @@
-import { json, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json, LinksFunction, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
 import { Link, NavLink, useCatch, useLoaderData, useLocation, useParams } from "@remix-run/react";
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
@@ -8,6 +8,23 @@ import { Attachment } from "~/components/Attachment";
 import { feed, page } from "~/api";
 import { Page, Feed } from "~/models";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
+import { DynamicLinksFunction } from "remix-utils";
+
+// create the dynamicLinks function with the correct type
+// note: loader type is optional
+let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
+  id,
+  data,
+  params,
+  location,
+  parentsData,
+}) => {
+  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${params.lang}/works/${params.feed}` }];
+};
+
+// and export it through the handle, you could also create it inline here
+// if you don't care about the type
+export let handle = { dynamicLinks };
 
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
@@ -171,10 +188,10 @@ export default function FeedPage() {
           {loaderData.title}
         </h1>
       </div>
-      <div className="overflow-y-auto flex-1 fade-slide-in">
+      <div className="fade-slide-in overflow-y-auto flex-1">
         {
           loaderData.description !== "" &&
-          <div className="text-center py-4 px-4 border-b border-black">
+          <div className="fade-slide-in text-center py-4 px-4 border-b border-black">
             <div className="max-w-screen-md mx-auto" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
               {loaderData.description}
             </div>
@@ -182,7 +199,7 @@ export default function FeedPage() {
         }
         {
           loaderData.image !== "" &&
-          <div className="w-full aspect-[5/2] border-b border-black">
+          <div className="fade-slide-in w-full aspect-[5/2] border-b border-black">
             <Attachment size="object-cover" attachment={{
               id: "",
               mediaType: "image/",
@@ -191,7 +208,7 @@ export default function FeedPage() {
             }}></Attachment>
           </div>
         }
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black">
+        <div className="fade-slide-in grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black">
           {
             loaderData.works.map((i, index: any) => (
               <NavLink key={index} to={`${i.slug}`} className="border-b border-r last:border-b-0 border-black lg:grayscale lg:hover:grayscale-0 aspect-square p-2 lg:p-4">
@@ -230,7 +247,7 @@ export default function FeedPage() {
             {
                s.link.title !== "" && (
                   <div>
-                    <div className="bg-white border border-black hover:underline rounded-md px-4 py-2 uppercase w-10/12 lg:w-fit mx-auto block">
+                    <div className="bg-white border border-black hover:underline rounded-md px-4 py-2 uppercase w-fit mx-auto block">
                     {
                       s.link.isExternal ? (
                         <a href={s.link.url} >

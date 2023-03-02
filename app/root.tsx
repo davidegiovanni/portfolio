@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { DynamicLinks } from "remix-utils";
 import {
   createCookie,
   ErrorBoundaryComponent,
@@ -13,6 +14,7 @@ import {
   Links,
   LiveReload,
   Meta,
+  NavLink,
   Outlet,
   Scripts,
   ScrollRestoration,
@@ -130,7 +132,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       isExternal: isExternalLink(l.url)
     }
   })
-  console.log(webRes)
   const availableLocales: string[] = webRes.languageCodes.filter((l: string) => l !== params.lang)
   locales = availableLocales.map(al => {
     return {
@@ -185,17 +186,17 @@ export default function App() {
         <Meta />
         <link rel="icon" type="image/x-icon" href={loaderData.favicon} />
         <Links />
+        <DynamicLinks />
       </head>
       <body>
         <div style={style} className="fixed inset-0 overflow-hidden selection:bg-[blue] selection:text-[white] w-full h-full flex flex-col font-default">
           <div className="w-full flex-1 h-1 overflow-hidden">
             <Outlet />
           </div>
-          <hr className="border-t border-black w-full" />
           {
             loaderData.links.length > 0 &&
-            <nav>
-              <ul className="w-full flex items-center justify-between bg-white px-4 py-2" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+            <nav className="px-1 py-1 h-12 flex items-center border-y border-black">
+              <ul className="w-full flex items-center justify-between bg-white h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
                 {loaderData.links.map((link, index) => (
                   <li className="hover:underline uppercase" key={index}>
                     {
@@ -204,15 +205,16 @@ export default function App() {
                           {link.title}
                         </a>
                       ) : (
-                        <Link to={link.url}>
+                        <NavLink to={link.url} className={({ isActive }) =>
+                        isActive ? "uppercase bg-white border border-black group-hover:underline rounded-md px-2 py-1.5 inline-flex items-center text-center" : "hover:underline px-1 py-1.5 "
+                      }>
                           {link.title}
-                        </Link>
+                        </NavLink>
                       )
                     }
                   </li>
                 ))}
               </ul>
-              <hr className="border-t border-black w-full" />
             </nav>
           }
           <div style={{ fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-start px-4 py-2 uppercase">

@@ -1,4 +1,4 @@
-import { json, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json, LinksFunction, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
 import { Link, NavLink, useCatch, useLoaderData, useLocation, useParams } from "@remix-run/react";
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
@@ -8,6 +8,18 @@ import { Attachment } from "~/components/Attachment";
 import { feed, page } from "~/api";
 import { Page, Feed } from "~/models";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
+import { DynamicLinksFunction } from "remix-utils";
+
+let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
+  id,
+  data,
+  params,
+  location,
+  parentsData,
+}) => {
+  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${params.lang}/random` }];
+};
+export let handle = { dynamicLinks };
 
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
@@ -191,7 +203,7 @@ export default function FeedPage() {
             }}></Attachment>
           </div>
         }
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black fade-slide-in">
           {
             loaderData.works.map((i, index: any) => (
               <NavLink key={index} to={`${i.slug}`} className="border-b border-r last:border-b-0 border-black lg:grayscale lg:hover:grayscale-0 aspect-square p-2 lg:p-4">
@@ -230,7 +242,7 @@ export default function FeedPage() {
             {
                s.link.title !== "" && (
                   <div>
-                    <div className="bg-white border border-black hover:underline rounded-md px-4 py-2 uppercase w-10/12 lg:w-fit mx-auto block">
+                    <div className="bg-white border border-black hover:underline rounded-md px-4 py-2 uppercase w-fit mx-auto block">
                     {
                       s.link.isExternal ? (
                         <a href={s.link.url} >

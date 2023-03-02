@@ -1,4 +1,4 @@
-import { json, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
 import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react";
 import queryString from 'query-string'
 
@@ -8,10 +8,22 @@ import { Feed, FeedItem } from "api/models";
 import metadata from '~/utils/metadata'
 import { fluidType, formatDate } from '~/utils/helpers'
 import parse from 'html-react-parser'
-import { ArrowLeftIcon, ArrowRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
+import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
 import { useState } from "react";
 import { feed } from "~/api";
+import { DynamicLinksFunction } from "remix-utils";
+
+let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
+  id,
+  data,
+  params,
+  location,
+  parentsData,
+}) => {
+  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${params.lang}/works/${params.feed}/${params.item}` }];
+};
+export let handle = { dynamicLinks };
 
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
@@ -129,16 +141,15 @@ export default function ItemPage() {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <div className="flex items-center justify-between flex-none px-4 py-2 h-12 border-b border-black">
+      <div className="flex items-center justify-between flex-none px-2 py-2 h-12 border-b border-black">
         <div className="flex items-center" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
-          <Link to={`/${params.lang}/works/${params.feed}`} className="underline uppercase">
+          <Link to={`/${params.lang}/works/${params.feed}`} style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-1.5 inline-flex items-center lg:w-fit mx-auto mr-2">
             <p className="flex items-center">
+              <ChevronLeftIcon className="h-4 w-4 mr-2"   />
               {loaderData.feedTitle}
             </p>
           </Link>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="hidden md:block w-4 h-4 mx-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
+          <ChevronRightIcon className="hidden md:block w-4 h-4 mx-4" />
           <p className="hidden md:block  uppercase">
           {loaderData.title}
           </p>

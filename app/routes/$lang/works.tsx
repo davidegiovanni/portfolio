@@ -136,7 +136,7 @@ export default function Works() {
         </div>
       </div>
       <div className="overflow-y-auto flex-1">
-        <div className={(isListView ? "grid-cols-1" : "grid-cols-2 md:grid-cols-3") + " grid border-l border-black w-full "}>
+        <div className={(isListView ? "grid-cols-1" : "grid-cols-2 md:grid-cols-3") + " grid border-l border-black w-full fade-slide-in"}>
           {feeds.map((f, index) => (
             <div key={index} className="border-b border-r border-black last:border-b-0 relative group">
               <Link className={(isListView ? "flex items-center" : "") + ' text-center block w-full'} to={`/${params.lang}/works/${f.description}`}>
