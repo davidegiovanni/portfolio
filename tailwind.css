@@ -18,3 +18,38 @@ img {
     width: 0;  /* Remove scrollbar space */
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
+
+.fade-in {
+    animation: fadeIn 500ms 500ms ease-in-out;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+} 
+
+.fade-slide-in {
+    animation: fadeSlideIn 500ms 500ms ease-in-out;
+    animation-fill-mode: both;
+}
+
+.fade-slide-in > * {
+    animation: fadeSlideIn 500ms 700ms ease-in-out;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20%)
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0)
+    }
+} 

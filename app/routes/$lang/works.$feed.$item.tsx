@@ -11,9 +11,7 @@ import parse from 'html-react-parser'
 import { ArrowLeftIcon, ArrowRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
 import { useState } from "react";
-
-const i18nKeys = [] as const;
-type I18nKeys = typeof i18nKeys[number];
+import { feed } from "~/api";
 
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
@@ -22,12 +20,11 @@ export const meta: MetaFunction = ({ data, location }) => {
   let url = 'https://illos.davidegiovanni.com' + location.pathname
 
   if (data !== undefined) {
-    const page = data.item
-    title = (page.title !== '' ? page.title : "Page") + ' | Davide G. Steccanella'
-    description = page.summary !== '' ? page.summary : page.title !== '' ? page.title : "Le illustrazioni di Davide G. Steccanella"
-    image = page.image !== '' ? page.image : ""
+    const { meta } = data as LoaderData;
+    title = (meta.title !== '' ? meta.title : "Contatti") + ' | Davide G. Steccanella'
+    description = meta.description !== '' ? meta.description : "Contatta Davide Giovanni Steccanella per le sue illustrazioni"
+    image = meta.image !== '' ? meta.image : ''
     url = 'https://illos.davidegiovanni.com' + location.pathname
-
   }
 
   return metadata(
@@ -43,31 +40,41 @@ export const meta: MetaFunction = ({ data, location }) => {
 };
 
 type LoaderData = {
-  i18n: Record<I18nKeys, any>;
-  canonical: string;
-  item: FeedItem;
+  title: string;
+  description: string;
+  image: string;
   previous: string;
   current: number;
   next: string;
   feedTitle: string;
+  meta: {
+    title: string;
+    description: string;
+    image: string;
+  };
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
+  const incomingLocale = params.lang || ""
+  let meta = {
+    title: "",
+    description: "",
+    image: ""
+  }
 
-  const [feedRes, feedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/${params.feed}/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
+  const [feedRes, feedErr] = await feed(params.feed as string, params)
   if (feedErr !== null) {
-    throw new Response(`Page do not exist: ${feedRes.message} ${feedRes.code}`, {
+    throw new Response(`Feed do not exist: ${feedErr.message} ${feedErr.code}`, {
       status: 404,
     });
   }
 
-  const feed: Feed = feedRes
+  const feedObject: Feed = feedRes
   const slug = params.item
-  let foundNews = feed.items.find((i: any) => {
+  let foundImage = feedObject.items.find((i: any) => {
     return i.id.endsWith(slug)
   })
-  if (foundNews === undefined) {
+  if (foundImage === undefined) {
     throw new Response(`Page do not exist`, {
       status: 404,
     });
@@ -78,11 +85,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     return parsed.content
   }
 
-  const feedTitle = feed.title
+  const feedTitle = feedObject.title
 
-  const feedItemsToShow = feed.items.length > 1 ? feed.items.slice(0, -1) : feed.items
+  const feedItemsToShow = feedObject.items.length > 1 ? feedObject.items.slice(0, -1) : feedObject.items
 
-  let indexOfItem = feedItemsToShow.indexOf(foundNews)
+  let indexOfItem = feedItemsToShow.indexOf(foundImage)
   let nextItemIndex = indexOfItem !== feedItemsToShow.length - 1 ? indexOfItem + 1 : -1
   let nextItemSlug = nextItemIndex !== -1 ? feedItemsToShow[nextItemIndex].id : ''
   let previousItemIndex = indexOfItem > 0 ? indexOfItem - 1 : -1
@@ -90,31 +97,35 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   nextItemSlug = nextItemSlug !== '' ? getSlug(nextItemSlug) as string : ''
   previousItemSlug = previousItemSlug !== '' ? getSlug(previousItemSlug) as string : ''
 
-  const item: FeedItem = foundNews
+  const title = foundImage.title
+  const description = foundImage.summary
+  const image = foundImage.image
 
-  let url = new URL(request.url)
-  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illos.davidegiovanni.com' : url.host
-
-  const canonical = `${host}/${params.lang}/${params.feed}/${params.item}`
+  meta.title = title
+  meta.description = description
+  meta.image = image
 
   const loaderData: LoaderData = {
-    i18n,
-    canonical: canonical,
-    item: item as FeedItem,
+    title,
+    image,
+    description,
     current: indexOfItem,
     next: nextItemSlug,
     previous: previousItemSlug,
-    feedTitle
+    feedTitle,
+    meta
   }
 
   return json(loaderData);
 };
 
 export default function ItemPage() {
-  const { item, feedTitle, next, previous } = useLoaderData<LoaderData>();
+  const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
 
   const [isZoom, setZoom] = useState(false)
+  const previous = loaderData.previous
+  const next = loaderData.next
 
   return (
     <div className="h-full w-full flex flex-col">
@@ -122,14 +133,14 @@ export default function ItemPage() {
         <div className="flex items-center" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
           <Link to={`/${params.lang}/works/${params.feed}`} className="underline uppercase">
             <p className="flex items-center">
-              {feedTitle}
+              {loaderData.feedTitle}
             </p>
           </Link>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="hidden md:block w-4 h-4 mx-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
           <p className="hidden md:block  uppercase">
-          {item.title}
+          {loaderData.title}
           </p>
         </div>
         <div className="flex items-center justify-end">
@@ -157,8 +168,8 @@ export default function ItemPage() {
             <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-top " attachment={{
               id: "",
               mediaType: "image/",
-              url: item.image,
-              description: item.title
+              url: loaderData.image,
+              description: loaderData.title
             }}></Attachment>
           </div>
         </div>

@@ -25,7 +25,7 @@ export function Attachment(props: AttachmentProps) {
 
   useEffect(() => {
     const image = document.getElementById(id) as HTMLElement
-    const top = image.getBoundingClientRect().top
+    const top = image === null ? 0 : image.getBoundingClientRect().top
 
     if (top > 0 && top < window.innerHeight) {
       isLoadingLazy = false

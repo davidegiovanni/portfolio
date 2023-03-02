@@ -5,17 +5,13 @@ import { loadTranslations } from "~/helpers/i18n";
 import { WebPageModel, WebSectionModel } from "api/models";
 import metadata from '~/utils/metadata'
 import link from '~/utils/links'
-import { fluidType } from '~/utils/helpers'
-import { ArrowLeftIcon } from '@heroicons/react/outline'
+import { fluidType, isExternalLink } from '~/utils/helpers'
+import { useRouteLoaderData } from "@remix-run/react";
 import { Attachment } from "~/components/Attachment";
+import { ChevronLeftIcon } from "@heroicons/react/outline";
+import { page } from "~/api";
+import { Page } from "~/models";
 
-export const links: LinksFunction = () => {
-  return link(
-    {
-      canonical: 'https://illos.davidegiovanni.com/it-it/contacts'
-    }
-  )
-};
 
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
@@ -24,20 +20,20 @@ export const meta: MetaFunction = ({ data, location }) => {
   let url = 'https://illos.davidegiovanni.com' + location.pathname
 
   if (data !== undefined) {
-    const { page } = data as LoaderData;
-    title = (page.title !== '' ? page.title : "Contatti") + ' | Davide G. Steccanella'
-    description = page.description !== '' ? page.description : "Contatta Davide Giovanni Steccanella per le sue illustrazioni"
-    image = page.image !== '' ? page.image : ''
+    const { meta } = data as LoaderData;
+    title = (meta.title !== '' ? meta.title : "Contatti") + ' | Davide G. Steccanella'
+    description = meta.description !== '' ? meta.description : "Contatta Davide Giovanni Steccanella per le sue illustrazioni"
+    image = meta.image !== '' ? meta.image : ''
     url = 'https://illos.davidegiovanni.com' + location.pathname
   }
 
   return metadata(
     {
-      title: title, 
-      description: description, 
-      image: image, 
-      url: url, 
-      robots: 'all', 
+      title: title,
+      description: description,
+      image: image,
+      url: url,
+      robots: 'all',
       type: 'website',
     }
   )
@@ -47,51 +43,95 @@ const i18nKeys = [] as const;
 type I18nKeys = typeof i18nKeys[number];
 
 type LoaderData = {
-  i18n: Record<I18nKeys, any>;
-  page: WebPageModel;
-  sections: WebSectionModel[];
+  title: string;
+  description: string;
+  image: string;
+  link: {
+    title: string;
+    url: string;
+    isExternal: boolean;
+  };
+  meta: {
+    title: string;
+    description: string;
+    image: string;
+  };
 };
 
-export const loader: LoaderFunction = async ({request, params}) => {
-  const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
-  const url = new URL(request.url)
-  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illos.davidegiovanni.com' : url.host
+export const loader: LoaderFunction = async ({ request, params }) => {
+  const incomingLocale = params.lang || ""
+  let meta = {
+    title: "",
+    description: "",
+    image: ""
+  }
 
-  let lang = params.lang
-
-  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}/pages/contacts?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
+  const [pageRes, pageErr] = await page("contacts", params)
   if (pageErr !== null) {
     throw new Response(`Page do not exist: ${pageErr.message} ${pageErr.code}`, {
       status: 404,
     });
   }
 
-  const page: WebPageModel = pageRes.page
+  const pageObject: Page = pageRes.page
 
-  const sections: WebSectionModel[] = page.sections
+  let title = pageObject.blocks[0].items[0].title
+  let description = pageObject.blocks[0].items[0].description
+  let image = pageObject.blocks[0].items[0].attachment?.url || ""
+  let link = {
+    title: pageObject.blocks[0].items[0].link?.title as string,
+    url: pageObject.blocks[0].items[0].link?.url as string,
+    isExternal: isExternalLink(pageObject.blocks[0].items[0].link?.url as string)
+  }
+  meta.title = pageObject.title
+  meta.description = pageObject.description
+  meta.image = pageObject.imageUrl
 
   const loaderData: LoaderData = {
-    i18n,
-    page: page,
-    sections: sections
+    title,
+    description,
+    image,
+    link,
+    meta
   }
 
   return json(loaderData)
 };
 
 export default function Contacts() {
-  const { sections } = useLoaderData<LoaderData>();
+  const loaderData = useLoaderData<LoaderData>();
+  const params = useParams()
 
   return (
     <div className={"p-4 h-full w-full"}>
-      <div className="max-w-screen-sm">
-        <h1 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="w-full uppercase font-bold">{sections[0].title}</h1>
+      <div className="max-w-screen-sm fade-slide-in">
+        <Link to={`/${params.lang}`}>
+          <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md mb-4 pr-4 pl-2 py-2 inline-flex items-center lg:w-fit mx-auto">
+            <span>
+              <ChevronLeftIcon className="h-4 w-4 mr-2" />
+            </span>
+            Homepage
+          </p>
+        </Link>
+        <h1 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="w-full uppercase font-bold">
+          {loaderData.title}
+        </h1>
         <h2 className="my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
-          {sections[0].description}
+          {loaderData.description}
         </h2>
-        <a href={sections[0].primaryLink.url} className="inline-block uppercase underline text-[blue] hover:text-[darkblue] visited:text-[purple]" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-          {sections[0].primaryLink.title}
-        </a>
+        <div className="inline-block uppercase underline text-[blue] hover:text-[darkblue] visited:text-[purple]" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+          {
+            loaderData.link.isExternal ? (
+              <a href={loaderData.link.url} >
+                {loaderData.link.title}
+              </a>
+            ) : (
+              <Link to={loaderData.link.url} >
+                {loaderData.link.title}
+              </Link>
+            )
+          }
+        </div>
 
       </div>
     </div>

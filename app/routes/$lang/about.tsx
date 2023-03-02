@@ -7,27 +7,24 @@ import { Feed, FeedItem } from "api/models";
 import metadata from '~/utils/metadata'
 import { fluidType, formatDate } from '~/utils/helpers'
 import parse from 'html-react-parser'
-import { ArrowLeftIcon } from '@heroicons/react/outline'
+import { ArrowLeftIcon, ChevronLeftIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
-
-const i18nKeys = [] as const;
-type I18nKeys = typeof i18nKeys[number];
+import { feed } from "~/api";
 
 export const meta: MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
-  let image = 'https://cdn.revas.app/v0/01f9ekbw2n7m4sfc4xhtftyarv/01fv5pkdatk6nkxdmkhprnwxpz/01fv89a184detgp575h5zenqvq/holy-david-full-logo-png.png'
+  let image = ''
   let url = 'https://illos.davidegiovanni.com' + location.pathname
-  
-  if (data !== undefined) {
-    const page = data.item
-    title = (page.title !== '' ? page.title : "About") + ' | Davide G. Steccanella'
-    description = page.summary !== '' ? page.summary : "Il CV e altre informazioni sull'illustratore Davide G. Steccanella"
-    image = page.image !== '' ? page.image : "https://cdn.revas.app/v0/01f9ekbw2n7m4sfc4xhtftyarv/01fv5pkdatk6nkxdmkhprnwxpz/01fv89a184detgp575h5zenqvq/holy-david-full-logo-png.png"
-    url = 'https://illos.davidegiovanni.com' + location.pathname
 
+  if (data !== undefined) {
+    const { meta } = data as LoaderData;
+    title = (meta.title !== '' ? meta.title : "Contatti") + ' | Davide G. Steccanella'
+    description = meta.description !== '' ? meta.description : "Contatta Davide Giovanni Steccanella per le sue illustrazioni"
+    image = meta.image !== '' ? meta.image : ''
+    url = 'https://illos.davidegiovanni.com' + location.pathname
   }
-  
+
   return metadata(
     {
       title: title,
@@ -41,24 +38,35 @@ export const meta: MetaFunction = ({ data, location }) => {
 };
 
 type LoaderData = {
-  i18n: Record<I18nKeys, any>;
-  canonical: string;
-  item: FeedItem;
+  title: string;
+  description: string;
+  image: string;
+  html: string;
+  meta: {
+    title: string;
+    description: string;
+    image: string;
+  };
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
+  const incomingLocale = params.lang || ""
+  let meta = {
+    title: "",
+    description: "",
+    image: ""
+  }
 
-  const [feedRes, feedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/about/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
+  const [feedRes, feedErr] = await feed("about", params)
   if (feedErr !== null) {
-    throw new Response(`Page do not exist: ${feedRes.message} ${feedRes.code}`, {
+    throw new Response(`Feed do not exist: ${feedErr.message} ${feedErr.code}`, {
       status: 404,
     });
   }
 
-  const feed: Feed = feedRes
+  const feedObject: Feed = feedRes
   const slug = 'about'
-  let foundNews = feed.items.find((i: any) => {
+  let foundNews = feedObject.items.find((i: any) => {
     return i.id.endsWith(slug)
   })
   if (foundNews === undefined) {
@@ -68,44 +76,62 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
   const item: FeedItem = foundNews
 
-  const canonical = `https://illos.davidegiovanni.com/${params.lang}/${params.feed}/${params.item}`
+  let title = item.title
+  let description = item.summary
+  let image = item.image
+  let date = formatDate(item.date_published, params.lang as string, 'short')
+  let html = item.content_html
+
+  meta.title = title
+  meta.description = description
+  meta.image = image
 
   const loaderData: LoaderData = {
-    i18n,
-    canonical: canonical,
-    item: item as FeedItem
+    title,
+    description,
+    image,
+    html,
+    meta
   }
 
   return json(loaderData);
 };
 
 export default function About() {
-  const { i18n, item, canonical } = useLoaderData<LoaderData>();
+  const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
 
     return (
-      <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden">
+      <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden fade-slide-in">
         <div className="w-full h-full lg:flex items-stretch">
-          <div className="w-full aspect-video md:aspect-[4/2] lg:h-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-black">
+          <div className="relative w-full aspect-video md:aspect-[4/2] lg:h-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-black">
+          <Link to={`/${params.lang}`}>
+            <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-2 inline-flex items-center w-fit absolute m-2 z-20">
+              <span>
+                <ChevronLeftIcon className="h-4 w-4 mr-2"   />
+              </span>
+              Homepage
+            </p>
+          </Link>
             <Attachment size="object-cover" attachment={{
-                id: "",
+                id: "1",
                 mediaType: "image/",
-                url: item.image,
-                description: ""
+                url: loaderData.image,
+                description: "Davide Giovanni Steccanella"
               }}></Attachment>
           </div>
-          <div className="w-full lg:w-1/2 lg:overflow-y-auto">
+          <div className="w-full lg:w-1/2 lg:overflow-y-auto fade-slide-in">
             <div className="p-4 border-b border-black mb-2">
               <h1 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="w-full uppercase font-bold mb-2" >
-                  {item.title}
+                  {loaderData.title}
                 </h1>
                 <h2 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="mb-2">
-                  {item.summary}
+                  {loaderData.description}
                 </h2>
             </div>
-            { item.content_html !== "" && item.content_html !== undefined &&
+            { loaderData.html !== "" && loaderData.html !== undefined &&
                 <article className="p-4 block prose max-w-none text-black prose-a:text-[blue] prose-a:underline-offset-4 prose-blockquote:bg-gray-100 prose-blockquote:p-8 prose-blockquote:border-0 prose-blockquote:prose-p:first-of-type:before:opacity-0 prose-a:visited:text-[purple] prose-li:marker:text-[black]">
-                {parse(item.content_html)}
+                {parse(loaderData.html)}
               </article>
               }
           </div>

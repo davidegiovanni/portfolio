@@ -84,7 +84,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     slug: string;
   }[] = []
 
-  const [pageRes, pageErr] = await page(params.feed as string, params)
+  const [pageRes, pageErr] = await page("random", params)
   if (pageErr !== null) {
     throw new Response(`Page do not exist: ${pageErr.message} ${pageErr.code}`, {
       status: 404,
@@ -123,7 +123,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   meta.description = pageObject.description
   meta.image = pageObject.imageUrl
 
-  const feedName = params.feed || "";
+  const feedName = "random";
 
   const [feedRes, feedErr] = await feed(feedName, params)
   if (feedErr !== null) {
@@ -137,7 +137,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   works = feedObject.items.map((i, index) => {
     return {
       image: i.image || "",
-      slug: `/${incomingLocale}/works/${params.feed}/${getSlug(i.id)}`
+      slug: `/${params.lang}/works/random/${getSlug(i.id)}`
     }
   })
 
@@ -159,12 +159,12 @@ export default function FeedPage() {
   return (
     <div className="h-full w-full flex flex-col">
       <div className="px-2 py-2 h-12 flex items-center border-b border-black flex-none">
-        <Link to={`/${params.lang}/works`}>
+        <Link to={`/${params.lang}`}>
           <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-1.5 inline-flex items-center lg:w-fit mx-auto mr-2">
             <span>
               <ChevronLeftIcon className="h-4 w-4 mr-2" />
             </span>
-            Portfolio
+            Homepage
           </p>
         </Link>
         <h1 className="uppercase" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
