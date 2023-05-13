@@ -174,8 +174,7 @@ export default function App() {
   const style = {
     "--customfont": loaderData.fontFamily,
     fontFamily: loaderData.fontFamily,
-    // backgroundColor: loaderData.primaryColor,
-    backgroundColor: "gray",
+    backgroundColor: loaderData.primaryColor,
   }
 
   return (
@@ -186,6 +185,7 @@ export default function App() {
         <Meta />
         <link rel="icon" type="image/x-icon" href={loaderData.favicon} />
         <Links />
+        <DynamicLinks />
       </head>
       <body className="bg-gray-100">
         <div style={style} className="fixed inset-0 overflow-hidden selection:bg-[blue] selection:text-[white] w-full h-full flex flex-col font-default">
