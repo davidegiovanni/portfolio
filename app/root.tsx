@@ -193,7 +193,7 @@ export default function App() {
             <Outlet />
           </div>
           <div className="fixed bottom-0 inset-x-0 p-[2vmin] z-50">
-            <div className="overflow-hidden rounded-2xl bg-white bg-opacity-50 border border-black backdrop-blur-2xl">
+            <div className="overflow-hidden rounded-2xl bg-white bg-opacity-50 border border-black backdrop-blur-2xl mx-auto xl:max-w-screen-lg">
               {
                 loaderData.links.length > 0 &&
                 <nav className="px-1.5 h-12 flex items-center">
