@@ -121,7 +121,7 @@ export default function Works() {
           <div className="pb-[2vmin] last:pb-0">
             <div key={index} className="rounded-xl border border-black relative group overflow-hidden aspect-[5/2]">
               <Link className={' text-center block w-full h-full'} to={`/${params.lang}/works/${f.description}`}>
-                <div className={" h-full w-full relative z-10 lg:grayscale lg:group-hover:grayscale-0"}>
+                <div className={" h-full w-full relative z-10"}>
                   <Attachment size="object-cover" attachment={{
                     id: "",
                     mediaType: "image/",
