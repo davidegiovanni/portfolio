@@ -140,17 +140,15 @@ export default function ItemPage() {
   const next = loaderData.next
 
   return (
-    <div className="h-full w-full flex flex-col">
-      <div className="flex items-center justify-between flex-none px-2 py-2 h-12 border-b border-black">
+    <div className={`${isZoom ? "" : "pb-24"} h-full w-full overflow-auto touch-pinch-zoom touch-manipulation touch-pan-x touch-pan-y`}>
+      <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none px-2 py-2 h-12">
         <div className="flex items-center" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
-          <Link to={`/${params.lang}/works/${params.feed}`} style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-1.5 inline-flex items-center lg:w-fit mx-auto mr-2">
+          <Link to={`/${params.lang}/works/${params.feed}`} style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md h-full w-8 p-2 aspect-square inline-flex items-center lg:w-fit mx-auto">
             <p className="flex items-center">
-              <ChevronLeftIcon className="h-4 w-4 mr-2"   />
-              {loaderData.feedTitle}
+              <XIcon className="h-4 w-4"   />
             </p>
           </Link>
-          <ChevronRightIcon className="hidden md:block w-4 h-4 mx-4" />
-          <p className="hidden md:block  uppercase">
+          <p className="sr-only">
           {loaderData.title}
           </p>
         </div>
@@ -173,16 +171,14 @@ export default function ItemPage() {
           </Link>
         </div>
       </div>
-      <div className="flex-1 overflow-auto touch-pinch-zoom touch-manipulation touch-pan-x touch-pan-y">
-        <div className={(isZoom ? "cursor-zoom-out " : "cursor-zoom-in ") + "h-full w-full"} onClick={() => setZoom(!isZoom)}>
-          <div className={(isZoom ? "w-full h-auto origin-top-left scale-150 " : "w-full h-full") + ""}>
-            <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-top " attachment={{
-              id: "",
-              mediaType: "image/",
-              url: loaderData.image,
-              description: loaderData.title
-            }}></Attachment>
-          </div>
+      <div className={(isZoom ? "cursor-zoom-out " : "cursor-zoom-in ") + "h-full w-full"} onClick={() => setZoom(!isZoom)}>
+        <div className={(isZoom ? "w-full h-auto origin-top-left scale-150 " : "w-full h-full") + ""}>
+          <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-top " attachment={{
+            id: "",
+            mediaType: "image/",
+            url: loaderData.image,
+            description: loaderData.title
+          }}></Attachment>
         </div>
       </div>
     </div>

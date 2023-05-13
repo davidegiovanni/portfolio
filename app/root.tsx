@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { DynamicLinks } from "remix-utils";
 import {
   createCookie,
-  ErrorBoundaryComponent,
   json,
   LinksFunction,
   LoaderFunction,
@@ -175,7 +174,8 @@ export default function App() {
   const style = {
     "--customfont": loaderData.fontFamily,
     fontFamily: loaderData.fontFamily,
-    backgroundColor: loaderData.primaryColor,
+    // backgroundColor: loaderData.primaryColor,
+    backgroundColor: "gray",
   }
 
   return (
@@ -186,41 +186,44 @@ export default function App() {
         <Meta />
         <link rel="icon" type="image/x-icon" href={loaderData.favicon} />
         <Links />
-        <DynamicLinks />
       </head>
-      <body>
+      <body className="bg-gray-100">
         <div style={style} className="fixed inset-0 overflow-hidden selection:bg-[blue] selection:text-[white] w-full h-full flex flex-col font-default">
           <div className="w-full flex-1 h-1 overflow-hidden">
             <Outlet />
           </div>
-          {
-            loaderData.links.length > 0 &&
-            <nav className="px-1 py-1 h-12 flex items-center border-y border-black">
-              <ul className="w-full flex items-center justify-between bg-white h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-                {loaderData.links.map((link, index) => (
-                  <li className="hover:underline uppercase" key={index}>
-                    {
-                      link.isExternal ? (
-                        <a href={link.url}>
-                          {link.title}
-                        </a>
-                      ) : (
-                        <NavLink to={link.url} className={({ isActive }) =>
-                        isActive ? "uppercase bg-white border border-black group-hover:underline rounded-md px-2 py-1.5 inline-flex items-center text-center" : "hover:underline px-1 py-1.5 "
-                      }>
-                          {link.title}
-                        </NavLink>
-                      )
-                    }
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          }
-          <div style={{ fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-start px-4 py-2 uppercase">
-            {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | WEBSITE BUILT BY ME | </a> {loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link key={l.code} to={`/${l.code}`} reloadDocument className="md:ml-2 underline">
-              {l.title}
-            </Link></span>)) : null}
+          <div className="fixed bottom-0 inset-x-0 p-[2vmin] z-50">
+            <div className="overflow-hidden rounded-2xl bg-white bg-opacity-50 border border-black backdrop-blur-2xl">
+              {
+                loaderData.links.length > 0 &&
+                <nav className="px-1.5 h-12 flex items-center">
+                  <ul className="w-full flex items-center justify-between h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+                    {loaderData.links.map((link, index) => (
+                      <li className="" key={index}>
+                        {
+                          link.isExternal ? (
+                            <a href={link.url}>
+                              {link.title}
+                            </a>
+                          ) : (
+                            <NavLink to={link.url} className={({ isActive }) =>
+                            `${isActive ? "border border-black" : "hover:bg-opacity-50 hover:ring-1 hover:ring-black"} hover:bg-white uppercase rounded-lg px-2 py-1.5`
+                          }>
+                              {link.title}
+                            </NavLink>
+                          )
+                        }
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              }
+              <div style={{ fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-center px-4 py-2 uppercase text-center w-full bg-white">
+                {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | WEBSITE BUILT BY ME | </a> {loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link key={l.code} to={`/${l.code}`} reloadDocument className="md:ml-2 underline">
+                  {l.title}
+                </Link></span>)) : null}
+              </div>
+            </div>
           </div>
         </div>
         <ScrollRestoration />

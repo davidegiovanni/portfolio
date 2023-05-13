@@ -169,24 +169,13 @@ export default function FeedPage() {
   const params = useParams()
 
   return (
-    <div className="h-full w-full flex flex-col">
-      <div className="px-2 py-2 h-12 flex items-center border-b border-black flex-none">
-        <Link to={`/${params.lang}`}>
-          <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-1.5 inline-flex items-center lg:w-fit mx-auto mr-2">
-            <span>
-              <ChevronLeftIcon className="h-4 w-4 mr-2" />
-            </span>
-            Homepage
-          </p>
-        </Link>
+    <div className="h-full w-full flex flex-col bg-white px-[2vmin] py-[2vmin] pb-32 gap-4 overflow-y-auto">
         <h1 className="uppercase" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
           {loaderData.title}
         </h1>
-      </div>
-      <div className="overflow-y-auto flex-1 fade-slide-in">
         {
           loaderData.description !== "" &&
-          <div className="text-center py-4 px-4 border-b border-black">
+          <div className="text-center py-4 px-4">
             <div className="max-w-screen-md mx-auto" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
               {loaderData.description}
             </div>
@@ -194,7 +183,7 @@ export default function FeedPage() {
         }
         {
           loaderData.image !== "" &&
-          <div className="w-full aspect-[5/2] border-b border-black">
+          <div className="w-full aspect-[5/2]">
             <Attachment size="object-cover" attachment={{
               id: "",
               mediaType: "image/",
@@ -203,10 +192,10 @@ export default function FeedPage() {
             }}></Attachment>
           </div>
         }
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black fade-slide-in">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20">
           {
             loaderData.works.map((i, index: any) => (
-              <NavLink key={index} to={`${i.slug}`} className="border-b border-r last:border-b-0 border-black lg:grayscale lg:hover:grayscale-0 aspect-square p-2 lg:p-4">
+              <NavLink key={index} to={`${i.slug}`} className="p-2 lg:p-4">
                 <Attachment size="object-contain" attachment={{
                   id: "",
                   mediaType: "image/",
@@ -261,7 +250,6 @@ export default function FeedPage() {
             </div>
           ))
         }
-      </div>
     </div>
   );
 }

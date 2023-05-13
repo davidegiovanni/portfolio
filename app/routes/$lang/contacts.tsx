@@ -115,7 +115,7 @@ export default function Contacts() {
 
   return (
     <div className={"p-4 h-full w-full"}>
-      <div className="max-w-screen-sm fade-slide-in">
+      <div className="max-w-screen-sm">
         <Link to={`/${params.lang}`}>
           <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md mb-4 pr-4 pl-2 py-2 inline-flex items-center lg:w-fit mx-auto">
             <span>

@@ -127,7 +127,7 @@ export default function Index() {
   const params = useParams()
   const location = useLocation()
 
-  const outletHeight: string = 'border-t border-black h-full '
+  const outletHeight: string = 'h-full '
 
 
   return (

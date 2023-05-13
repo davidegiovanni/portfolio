@@ -114,17 +114,15 @@ export default function About() {
   const params = useParams()
 
     return (
-      <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden fade-slide-in">
+      <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden">
         <div className="w-full h-full lg:flex items-stretch">
-          <div className="relative w-full aspect-video md:aspect-[4/2] lg:h-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-black">
+          <div className="relative w-full p-[2vmin] lg:p-[1vmin] aspect-video md:aspect-[4/2] lg:h-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-black">
           <Link to={`/${params.lang}`}>
             <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-2 inline-flex items-center w-fit absolute m-2 z-20">
-              <span>
-                <ChevronLeftIcon className="h-4 w-4 mr-2"   />
-              </span>
               Homepage
             </p>
           </Link>
+          <div className="relative h-full w-full ring-1 ring-black rounded-xl overflow-hidden">
             <Attachment size="object-cover" attachment={{
                 id: "1",
                 mediaType: "image/",
@@ -132,7 +130,8 @@ export default function About() {
                 description: "Davide Giovanni Steccanella"
               }}></Attachment>
           </div>
-          <div className="w-full lg:w-1/2 lg:overflow-y-auto fade-slide-in">
+          </div>
+          <div className="w-full lg:w-1/2 lg:overflow-y-auto pb-32">
             <div className="p-4 border-b border-black mb-2">
               <h1 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="w-full uppercase font-bold mb-2" >
                   {loaderData.title}

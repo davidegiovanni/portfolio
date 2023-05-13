@@ -174,97 +174,93 @@ export default function FeedPage() {
   const params = useParams()
 
   return (
-    <div className="h-full w-full flex flex-col">
-      <div className="px-2 py-2 h-12 flex items-center border-b border-black flex-none">
-        <Link to={`/${params.lang}/works`}>
-          <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-1.5 inline-flex items-center lg:w-fit mx-auto mr-2">
-            <span>
-              <ChevronLeftIcon className="h-4 w-4 mr-2" />
-            </span>
-            Portfolio
-          </p>
-        </Link>
-        <h1 className="uppercase" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
+    <div className="h-full w-full flex flex-col bg-white pb-32 overflow-y-auto gap-4">
+      <div className="px-[2vmin] pt-[2vmin]">
+        <h1 className="uppercase " style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
           {loaderData.title}
         </h1>
-      </div>
-      <div className="fade-slide-in overflow-y-auto flex-1">
         {
           loaderData.description !== "" &&
-          <div className="fade-slide-in text-center py-4 px-4 border-b border-black">
-            <div className="max-w-screen-md mx-auto" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
-              {loaderData.description}
-            </div>
-          </div>
+          <h2>
+            {loaderData.description}
+          </h2>
         }
-        {
-          loaderData.image !== "" &&
-          <div className="fade-slide-in w-full aspect-[5/2] border-b border-black">
-            <Attachment size="object-cover" attachment={{
-              id: "",
-              mediaType: "image/",
-              url: loaderData.image,
-              description: loaderData.title
-            }}></Attachment>
-          </div>
-        }
-        <div className="fade-slide-in grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20 border-l border-black">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative">
           {
             loaderData.works.map((i, index: any) => (
-              <NavLink key={index} to={`${i.slug}`} className="border-b border-r last:border-b-0 border-black lg:grayscale lg:hover:grayscale-0 aspect-square p-2 lg:p-4">
-                <Attachment size="object-contain" attachment={{
-                  id: "",
-                  mediaType: "image/",
-                  url: i.image,
-                  description: i.slug
-                }}></Attachment>
+              <NavLink key={index} to={`${i.slug}`} className="p-2 lg:p-4">
+                  <Attachment size="object-contain" attachment={{
+                    id: "",
+                    mediaType: "image/",
+                    url: i.image,
+                    description: i.slug
+                  }}></Attachment>
               </NavLink>
             ))
           }
         </div>
         {
-          loaderData.sections.length > 0 && loaderData.sections.map(s => (
-            <div className="border-t border-black py-4 px-4">
+          (loaderData.image !== "" || loaderData.sections.length > 0) && (
+            <div className="max-w-prose flex flex-col gap-4">
             {
-              s.description !== "" &&
-              <div className="text-center pb-4">
-                <div className="max-w-screen-md mx-auto" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
-                  {s.description}
+              loaderData.image !== "" &&
+              <div className="w-full aspect-[5/2] p-4 border">
+                <div className="w-full h-full relative rounded-xl overflow-hidden bg-gray-100">
+                  <Attachment size="object-cover" attachment={{
+                    id: "",
+                    mediaType: "image/",
+                    url: loaderData.image,
+                    description: loaderData.title
+                  }}></Attachment>
                 </div>
               </div>
             }
             {
-              s.image !== "" &&
-              <div className="w-full aspect-[5/2] border-y border-black">
-                <Attachment size="object-cover" attachment={{
-                  id: "",
-                  mediaType: "image/",
-                  url: s.image,
-                  description: s.title
-                }}></Attachment>
-              </div>
-            }
-            {
-               s.link.title !== "" && (
-                  <div>
-                    <div className="bg-white border border-black hover:underline rounded-md px-4 py-2 uppercase w-fit mx-auto block">
-                    {
-                      s.link.isExternal ? (
-                        <a href={s.link.url} >
-                          {s.link.title}
-                        </a>
-                      ) : (
-                        <Link to={s.link.url} >
-                          {s.link.title}
-                        </Link>
-                      )
-                    }
-                    </div>
+              loaderData.sections.length > 0 && loaderData.sections.map(s => (
+                <div className="">
+                {
+                  s.description !== "" &&
+                  <div className="pb-4">
+                    <p>
+                      {s.description}
+                    </p>
                   </div>
-                )
-              }
+                }
+                {
+                  s.image !== "" &&
+                  <div className="w-full aspect-[5/2] border-y border-black">
+                    <Attachment size="object-cover" attachment={{
+                      id: "",
+                      mediaType: "image/",
+                      url: s.image,
+                      description: s.title
+                    }}></Attachment>
+                  </div>
+                }
+                {
+                    s.link.title !== "" && (
+                      <div>
+                        <div className="bg-white border border-black hover:underline rounded-md px-4 py-2 uppercase w-fit block">
+                        {
+                          s.link.isExternal ? (
+                            <a href={s.link.url} >
+                              {s.link.title}
+                            </a>
+                          ) : (
+                            <Link to={s.link.url} >
+                              {s.link.title}
+                            </Link>
+                          )
+                        }
+                        </div>
+                      </div>
+                    )
+                  }
+                </div>
+              ))
+            }
             </div>
-          ))
+          )
         }
       </div>
     </div>
