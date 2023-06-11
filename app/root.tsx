@@ -220,9 +220,9 @@ export default function App() {
         <div style={style} className="fixed inset-0 overflow-hidden selection:bg-[blue] selection:text-[white] w-full h-full flex flex-col-reverse font-default">
           {
             cursor === "" ? (
-              <div ref={followerDivRef} className="fixed top-0 left-0 w-3 h-3 z-[1000] bg-black rounded-full pointer-events-none select-none origin-center cursor-none" />
+              <div ref={followerDivRef} className="hidden xl:block fixed top-0 left-0 w-3 h-3 z-[1000] bg-black rounded-full pointer-events-none select-none origin-center cursor-none" />
             ) : (
-              <div ref={followerDivRef} className="fixed top-0 left-0 w-3 h-3 z-[1000] pointer-events-none cursor-none select-none origin-center cursor-none">
+              <div ref={followerDivRef} className="hidden xl:block fixed top-0 left-0 w-3 h-3 z-[1000] pointer-events-none select-none origin-center cursor-none">
                 <img src={cursor} alt="Cursor" />
               </div>
             )
