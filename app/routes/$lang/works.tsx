@@ -102,43 +102,25 @@ export default function Works() {
   const [isListView, setView] = useState(false)
 
   return (
-    <div className="h-full w-full flex flex-col overflow-y-auto pb-32">
-      <div className="px-[2vmin] py-[2vmin] fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none">
-        <Link to={`/${params.lang}`}>
-          <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-1.5 inline-flex items-center lg:w-fit mx-auto">
-            <span>
-              <ChevronLeftIcon className="h-4 w-4 mr-2" />
-            </span>
-            Homepage
-          </p>
-        </Link>
-        <h1 className="sr-only" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
-          {mainSection.title}
-        </h1>
-      </div>
-      <div className={"p-2"}>
-        {feeds.map((f, index) => (
-          <div className="pb-[2vmin] last:pb-0">
-            <div key={index} className="rounded-xl border border-black relative group overflow-hidden aspect-[5/2]">
-              <Link className={' text-center block w-full h-full'} to={`/${params.lang}/works/${f.description}`}>
-                <div className={" h-full w-full relative z-10"}>
-                  <Attachment size="object-cover" attachment={{
-                    id: "",
-                    mediaType: "image/",
-                    url: f.image,
-                    description: f.title
-                  }}></Attachment>
-                </div>
-                <div className={"absolute inset-x-0 bottom-0  text-center z-20 px-2"}>
-                  <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="bg-white border border-black group-hover:underline rounded-md mb-4 px-4 py-2 uppercase inline-block w-10/12 lg:w-fit mx-auto">
-                    {f.title}
-                  </p>
-                </div>
-              </Link>
+    <div className="h-full w-full overflow-y-auto scrollbar-hidden flex flex-wrap items-start justify-start gap-4 lg:gap-0 pb-16 lg:pb-0">
+      <h1 className="sr-only">
+        {mainSection.title}
+      </h1>
+      {feeds.map((f, index) => (
+          <Link className={'relative flex-grow w-full lg:w-1/3 overflow-hidden text-center gap-4 border-black flex flex-col items-center justify-start uppercase group'} to={`/${params.lang}/works/${f.description}`}>
+            <div className={"w-full relative aspect-square overflow-hidden"}>
+              <Attachment size="object-cover" attachment={{
+                id: "",
+                mediaType: "image/",
+                url: f.image,
+                description: f.title
+              }}></Attachment>
             </div>
-          </div>
+            <p >
+              {f.title}
+            </p>
+          </Link>
         ))}
-      </div>
     </div>
   );
 }

@@ -11,7 +11,7 @@ import { Attachment } from "~/components/Attachment";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 import { page } from "~/api";
 import { Page } from "~/models";
-import { DynamicLinksFunction } from "remix-utils";
+import { DynamicLinksFunction } from "~/utils/dynamic-links";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -114,36 +114,25 @@ export default function Contacts() {
   const params = useParams()
 
   return (
-    <div className={"p-4 h-full w-full"}>
-      <div className="max-w-screen-sm">
-        <Link to={`/${params.lang}`}>
-          <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md mb-4 pr-4 pl-2 py-2 inline-flex items-center lg:w-fit mx-auto">
-            <span>
-              <ChevronLeftIcon className="h-4 w-4 mr-2" />
-            </span>
-            Homepage
-          </p>
-        </Link>
-        <h1 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="w-full uppercase font-bold">
-          {loaderData.title}
-        </h1>
-        <h2 className="my-4" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
-          {loaderData.description}
-        </h2>
-        <div className="inline-block uppercase underline text-[blue] hover:text-[darkblue] visited:text-[purple]" style={{ fontSize: fluidType(16, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-          {
-            loaderData.link.isExternal ? (
-              <a href={loaderData.link.url} >
-                {loaderData.link.title}
-              </a>
-            ) : (
-              <Link to={loaderData.link.url} >
-                {loaderData.link.title}
-              </Link>
-            )
-          }
-        </div>
-
+    <div className={"p-4 h-full w-full flex flex-col gap-2 text-center items-center justify-center uppercase scrollbar-hidden"}>
+      <h1 className="w-full max-w-screen-sm font-semibold">
+        {loaderData.title}
+      </h1>
+      <h2 className="max-w-screen-sm ">
+        {loaderData.description}
+      </h2>
+      <div className="inline-block text-[blue]">
+        {
+          loaderData.link.isExternal ? (
+            <a href={loaderData.link.url} >
+              {loaderData.link.title}
+            </a>
+          ) : (
+            <Link to={loaderData.link.url} >
+              {loaderData.link.title}
+            </Link>
+          )
+        }
       </div>
     </div>
   );

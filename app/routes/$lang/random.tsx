@@ -3,12 +3,13 @@ import { Link, NavLink, useCatch, useLoaderData, useLocation, useParams } from "
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
 import metadata from '~/utils/metadata'
-import { fluidType, getSlug, isExternalLink } from '~/utils/helpers'
+import { fluidType, getSlug, isExternalLink, makeDivDraggable, reduceOpacityOnHover, scatterDivsRandomly } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
 import { feed, page } from "~/api";
 import { Page, Feed } from "~/models";
 import { ChevronLeftIcon } from "@heroicons/react/outline";
-import { DynamicLinksFunction } from "remix-utils";
+import { DynamicLinksFunction } from "~/utils/dynamic-links";
+import { useEffect, useRef } from "react";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -168,23 +169,35 @@ export default function FeedPage() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
 
+  // const draggableDivRefs = useRef(Array(loaderData.works.length).fill(null));
+
+  useEffect(() => {
+    scatterDivsRandomly("scattered")
+
+    // draggableDivRefs.current.forEach((ref) => {
+    //   if (ref) {
+    //     makeDivDraggable(ref);
+    //   }
+    // });
+
+    //nel div: ref={(ref) => (draggableDivRefs.current[index] = ref)}
+  }, [])
+
   return (
-    <div className="h-full w-full flex flex-col bg-white px-[2vmin] py-[2vmin] pb-32 gap-4 overflow-y-auto">
-        <h1 className="uppercase" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
+    <div className="h-full w-full flex flex-col bg-white gap-4 overflow-y-auto relative text-center py-1 scrollbar-hidden">
+        <h1 className="sr-only">
           {loaderData.title}
         </h1>
         {
           loaderData.description !== "" &&
-          <div className="text-center py-4 px-4">
-            <div className="max-w-screen-md mx-auto" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
-              {loaderData.description}
-            </div>
-          </div>
+          <h2>
+            {loaderData.description}
+          </h2>
         }
         {
           loaderData.image !== "" &&
           <div className="w-full aspect-[5/2]">
-            <Attachment size="object-cover" attachment={{
+            <Attachment size="object-contain" attachment={{
               id: "",
               mediaType: "image/",
               url: loaderData.image,
@@ -192,64 +205,24 @@ export default function FeedPage() {
             }}></Attachment>
           </div>
         }
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative z-20">
+        <div id="scattered">
           {
             loaderData.works.map((i, index: any) => (
-              <NavLink key={index} to={`${i.slug}`} className="p-2 lg:p-4">
-                <Attachment size="object-contain" attachment={{
-                  id: "",
-                  mediaType: "image/",
-                  url: i.image,
-                  description: i.slug
-                }}></Attachment>
-              </NavLink>
+              <div key={index} id={`id-${index}`}  className="absolute hover:z-[90] hover:scale-110 hover:shadow-2xl transition-transform ease-in-out duration-300">
+                <NavLink to={`${i.slug}`} className="aspect-square overflow-hidden">
+                  <div className="w-32 mx-auto">
+                    <Attachment size="object-contain" attachment={{
+                      id: "",
+                      mediaType: "image/",
+                      url: i.image,
+                      description: i.slug
+                    }}></Attachment>
+                  </div>
+                </NavLink>
+              </div>
             ))
           }
         </div>
-        {
-          loaderData.sections.length > 0 && loaderData.sections.map(s => (
-            <div className="border-t border-black py-4 px-4">
-            {
-              s.description !== "" &&
-              <div className="text-center pb-4">
-                <div className="max-w-screen-md mx-auto" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }}>
-                  {s.description}
-                </div>
-              </div>
-            }
-            {
-              s.image !== "" &&
-              <div className="w-full aspect-[5/2] border-y border-black">
-                <Attachment size="object-cover" attachment={{
-                  id: "",
-                  mediaType: "image/",
-                  url: s.image,
-                  description: s.title
-                }}></Attachment>
-              </div>
-            }
-            {
-               s.link.title !== "" && (
-                  <div>
-                    <div className="bg-white border border-black hover:underline rounded-md px-4 py-2 uppercase w-fit mx-auto block">
-                    {
-                      s.link.isExternal ? (
-                        <a href={s.link.url} >
-                          {s.link.title}
-                        </a>
-                      ) : (
-                        <Link to={s.link.url} >
-                          {s.link.title}
-                        </Link>
-                      )
-                    }
-                    </div>
-                  </div>
-                )
-              }
-            </div>
-          ))
-        }
     </div>
   );
 }

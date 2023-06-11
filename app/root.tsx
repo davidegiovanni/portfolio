@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { DynamicLinks } from "remix-utils";
+import { useEffect, useRef, useState } from "react";
 import {
   createCookie,
   json,
@@ -17,7 +16,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useCatch,
   useLoaderData,
   useLocation,
   useMatches,
@@ -26,11 +24,12 @@ import {
 
 import tailwind from "./styles/tailwind.css"
 import { loadTranslations, fallbackLocale, getMatchingLocale } from "./helpers/i18n";
-import { fluidType, isExternalLink } from "./utils/helpers";
+import { createMouseFollower, fluidType, getContrast, isExternalLink } from "./utils/helpers";
 import { safeGet } from "./utils/safe-post";
 import { WebLinkModel } from "api/models";
-import { website } from "./api";
-import { Website } from "./models";
+import { page, website } from "./api";
+import { Page, Website } from "./models";
+import { DynamicLinks } from "./utils/dynamic-links";
 
 export const links: LinksFunction = () => {
   return [
@@ -53,10 +52,11 @@ type LoaderData = {
     isExternal: boolean;
   }[];
   incomingLocale: string;
-  locales: {code: string; title: string;}[];
+  locales: { code: string; title: string; }[];
   fontUrl: string;
   fontFamily: string;
   logoUrl: string;
+  cursor: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -122,7 +122,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const favicon = websiteObject.theme.iconUrl
   const fontUrl = websiteObject.theme.fontFamilyUrl
   const fontFamily = websiteObject.theme.fontFamily
-  const logoUrl =  websiteObject.theme.logoUrl
+  const logoUrl = websiteObject.theme.logoUrl
 
   links = websiteObject.navigation.map(l => {
     return {
@@ -139,6 +139,17 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     }
   })
 
+  const [pageRes, pageErr] = await page("index", params)
+  if (pageErr !== null) {
+    throw new Response(`Page do not exist: ${pageErr.message} ${pageErr.code}`, {
+      status: 404,
+    });
+  }
+
+  const pageObject: Page = pageRes.page
+
+  const cursor = pageObject.blocks[1].items[0].attachment?.url || ""
+
 
   const loaderData: LoaderData = {
     primaryColor,
@@ -148,7 +159,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     links,
     locales,
     fontFamily,
-    logoUrl
+    logoUrl,
+    cursor
   }
 
   return json(loaderData)
@@ -156,14 +168,15 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function App() {
   const loaderData = useLoaderData<LoaderData>()
+  const params = useParams()
 
-  const [currentTime, setCurrentTime] = useState('-------')
+  const [currentTime, setCurrentTime] = useState('✻☯︎')
 
   const getTimeDate = () => {
     var date = new Date();
     var current_date = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
     var current_time = `${date.getHours() < 10 ? '0' : ''}${date.getHours()}` + ":" + `${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}` + ":" + `${date.getSeconds()}${date.getSeconds() < 10 ? '0' : ''}`;
-    var date_time = current_date + " - " + current_time;
+    var date_time = current_date + " ✶ " + current_time;
     setCurrentTime(date_time)
   }
 
@@ -174,8 +187,24 @@ export default function App() {
   const style = {
     "--customfont": loaderData.fontFamily,
     fontFamily: loaderData.fontFamily,
-    backgroundColor: loaderData.primaryColor,
+    backgroundColor: "white",
   }
+
+  const style2 = {
+    color: getContrast("#ffffff")
+  }
+
+  const [isMenuOpen, togglemenuOpen] = useState<boolean>(false)
+
+  const followerDivRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (followerDivRef.current) {
+      createMouseFollower(followerDivRef.current);
+    }
+  }, []);
+
+  const cursor = loaderData.cursor
 
   return (
     <html lang={loaderData.incomingLocale}>
@@ -187,43 +216,67 @@ export default function App() {
         <Links />
         <DynamicLinks />
       </head>
-      <body className="bg-gray-100">
-        <div style={style} className="fixed inset-0 overflow-hidden selection:bg-[blue] selection:text-[white] w-full h-full flex flex-col font-default">
-          <div className="w-full flex-1 h-1 overflow-hidden">
-            <Outlet />
-          </div>
-          <div className="fixed bottom-0 inset-x-0 p-[2vmin] z-50">
-            <div className="overflow-hidden rounded-2xl bg-white bg-opacity-50 border border-black backdrop-blur-2xl mx-auto xl:max-w-screen-lg">
-              {
-                loaderData.links.length > 0 &&
-                <nav className="px-1.5 h-12 flex items-center">
-                  <ul className="w-full flex items-center justify-between h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-                    {loaderData.links.map((link, index) => (
-                      <li className="" key={index}>
-                        {
-                          link.isExternal ? (
-                            <a href={link.url}>
-                              {link.title}
-                            </a>
-                          ) : (
-                            <NavLink to={link.url} className={({ isActive }) =>
-                            `${isActive ? "border border-black" : "hover:bg-opacity-50 hover:ring-1 hover:ring-black"} hover:bg-white uppercase rounded-lg px-2 py-1.5`
-                          }>
-                              {link.title}
-                            </NavLink>
-                          )
-                        }
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              }
-              <div style={{ fontSize: fluidType(12, 16, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="flex items-center flex-wrap justify-center px-4 py-2 uppercase text-center w-full bg-white">
-                {currentTime} | Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella | WEBSITE BUILT BY ME | </a> {loaderData.locales.length > 0 ? loaderData.locales.map(l => (<span><Link key={l.code} to={`/${l.code}`} reloadDocument className="md:ml-2 underline">
-                  {l.title}
-                </Link></span>)) : null}
+      <body className="cursor-none">
+        <div style={style} className="fixed inset-0 overflow-hidden selection:bg-[blue] selection:text-[white] w-full h-full flex flex-col-reverse font-default">
+          {
+            cursor === "" ? (
+              <div ref={followerDivRef} className="fixed top-0 left-0 w-3 h-3 z-[1000] bg-black rounded-full pointer-events-none select-none origin-center cursor-none" />
+            ) : (
+              <div ref={followerDivRef} className="fixed top-0 left-0 w-3 h-3 z-[1000] pointer-events-none cursor-none select-none origin-center cursor-none">
+                <img src={cursor} alt="Cursor" />
               </div>
-            </div>
+            )
+          }
+          <div style={style2} className="fixed bottom-0 z-50 inset-x-0 w-full flex items-center justify-between uppercase px-2 text-lg lg:text-base">
+            <Link to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className="hover:rotate-45 transition-all ease-in-out duration-300">
+              ✻
+            </Link>
+            <p className="w-48 whitespace-nowrap absolute inset-x-0 mx-auto text-center">
+              {currentTime}
+            </p>
+            <button onClick={() => togglemenuOpen(!isMenuOpen)} className={`${isMenuOpen ? "rotate-45" : ""} relative z-50 transition-all ease-in-out duration-300`}>
+              <p className="sr-only">
+                Menu
+              </p>
+              ＋
+            </button>
+          </div>
+          <div className="relative z-10 w-full flex-1 overflow-hidden">
+            <Outlet />
+            {
+              isMenuOpen && (
+                <div className="absolute inset-0 w-full h-full z-40 flex items-center justify-center p-[1.5vmin] bg-white bg-opacity-50 backdrop-blur-2xl">
+                  {
+                    loaderData.links.length > 0 &&
+                    <nav className="flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center h-full justify-between uppercase">
+                      <p className="text-xs">
+                        Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella </a>
+                      </p>
+                      <ul className="w-full flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center justify-center h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+                        {loaderData.links.map((link, index) => (
+                          <li key={index} onClick={() => togglemenuOpen(false)}>
+                            {
+                              link.isExternal ? (
+                                <a href={link.url} className="block">
+                                  {link.title}
+                                </a>
+                              ) : (
+                                <NavLink to={link.url} className={({ isActive }) =>
+                                  `${isActive ? "opacity-50" : "hover:opacity-50"} opacity-100 block`
+                                }>
+                                  {link.title}
+                                </NavLink>
+                              )
+                            }
+                          </li>
+                        ))}
+                      </ul>
+                      <div></div>
+                    </nav>
+                  }
+                </div>
+              )
+            }
           </div>
         </div>
         <ScrollRestoration />
@@ -239,7 +292,6 @@ export default function App() {
 }
 
 export function CatchBoundary() {
-  const caught = useCatch()
 
   return (
     <html lang="en">
@@ -257,7 +309,7 @@ export function CatchBoundary() {
               Error ಥ_ಥ
             </h1>
             <p className="text-white my-4">
-              {caught.status} {caught.data}
+              This page did not load correctly
             </p>
             <Link to={'/'} className="block underline mb-4 text-white" reloadDocument>
               Go to homepage

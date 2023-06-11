@@ -5,12 +5,12 @@ import { loadTranslations } from "~/helpers/i18n";
 import { WebPageModel, WebSectionModel } from "api/models";
 import metadata from '~/utils/metadata'
 import link from '~/utils/links'
-import { fluidType } from '~/utils/helpers'
+import { createMouseFollower, fluidType, makeDivDraggable } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { page, website } from "~/api";
 import { Page, Website } from "~/models";
-import { DynamicLinksFunction } from "remix-utils";
+import { DynamicLinksFunction } from "~/utils/dynamic-links";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -63,6 +63,7 @@ type LoaderData = {
   };
   logoUrl: string;
   mainColor: string;
+  backImage: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -106,6 +107,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   let description = pageObject.blocks[0].items[0].description
   let image = pageObject.blocks[0].items[0].attachment?.url || ""
 
+  const backImage = pageObject.blocks[2].items[0].attachment?.url || ""
+
   meta.title = pageObject.title
   meta.description = pageObject.description
   meta.image = pageObject.imageUrl
@@ -116,7 +119,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     image,
     meta,
     mainColor,
-    logoUrl
+    logoUrl,
+    backImage
   }
 
   return json(loaderData)
@@ -129,28 +133,32 @@ export default function Index() {
 
   const outletHeight: string = 'h-full '
 
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (divRef.current) {
+      makeDivDraggable(divRef.current);
+    }
+  }, []);
+
 
   return (
-    <div className="h-full w-full relative">
-      <div>
-        <div className="absolute inset-0 w-full h-full flex flex-col overflow-hidden">
-          <div className="absolute inset-0 w-full h-full fade-in">
-            <Attachment size="object-fill" attachment={{
-              id: "",
-              mediaType: "image/",
-              url: loaderData.image ,
-              description: "Davide Giovanni Steccanella"
-            }}></Attachment>
-          </div>
-          <div className="w-full h-0 flex-1">
-          </div>
-          <>
-            <div className={((location.pathname.includes('works') || location.pathname.includes('about') || location.pathname.includes('contacts') || location.pathname.includes('random')) ? outletHeight : "h-0 " ) + "relative z-30 w-full bg-white transition-all ease-in-out duration-500 max-h-full"}>
-              <Outlet />
-            </div>
-          </>
-        </div>
+    <div className="h-full w-full relative flex items-center justify-center scrollbar-hidden">
+      <div className="w-full max-w-2xl fade-in absolute z-20 bg-gray-100" ref={divRef}>
+        <Attachment size="object-contain" attachment={{
+          id: "",
+          mediaType: "image/",
+          url: loaderData.image ,
+          description: "Davide Giovanni Steccanella"
+        }}></Attachment>
       </div>
+      {
+        loaderData.backImage !== "" && (
+          <div className="relative z-10 w-24 lg:w-32 fade-in">
+            <img src={loaderData.backImage} alt="Davide Giovanni Steccanella" />
+          </div>
+        )
+      }
     </div>
   );
 }

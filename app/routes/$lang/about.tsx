@@ -10,7 +10,7 @@ import parse from 'html-react-parser'
 import { ArrowLeftIcon, ChevronLeftIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
 import { feed } from "~/api";
-import { DynamicLinksFunction } from "remix-utils";
+import { DynamicLinksFunction } from "~/utils/dynamic-links";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -114,34 +114,32 @@ export default function About() {
   const params = useParams()
 
     return (
-      <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden">
+      <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden scrollbar-hidden uppercase">
         <div className="w-full h-full lg:flex items-stretch">
-          <div className="relative w-full p-[2vmin] lg:p-[1vmin] aspect-video md:aspect-[4/2] lg:h-full lg:w-1/2 border-b lg:border-b-0 lg:border-r border-black">
-          <Link to={`/${params.lang}`}>
-            <p style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md pr-4 pl-2 py-2 inline-flex items-center w-fit absolute m-2 z-20">
-              Homepage
-            </p>
-          </Link>
-          <div className="relative h-full w-full ring-1 ring-black rounded-xl overflow-hidden">
-            <Attachment size="object-cover" attachment={{
-                id: "1",
-                mediaType: "image/",
-                url: loaderData.image,
-                description: "Davide Giovanni Steccanella"
-              }}></Attachment>
+          <div className="relative w-full aspect-square md:aspect-[4/2] lg:h-full lg:w-1/2 ">
+            <div className="relative h-full w-full overflow-hidden">
+              <Attachment size="object-cover" attachment={{
+                  id: "1",
+                  mediaType: "image/",
+                  url: loaderData.image,
+                  description: "Davide Giovanni Steccanella"
+                }}></Attachment>
+            </div>
           </div>
-          </div>
-          <div className="w-full lg:w-1/2 lg:overflow-y-auto pb-32">
-            <div className="p-4 border-b border-black mb-2">
-              <h1 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="w-full uppercase font-bold mb-2" >
+          <div className="w-full lg:w-1/2 lg:overflow-y-auto pb-4 flex flex-col items-stretch justify-start gap-4">
+            <div className="p-4 text-center">
+              <h1 className="w-full uppercase font-semibold mb-2 max-w-sm mx-auto" >
                   {loaderData.title}
                 </h1>
-                <h2 style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(16, 20, 300, 2400, 1.5).lineHeight }} className="mb-2">
+                <h2 className="mb-2 max-w-lg mx-auto">
                   {loaderData.description}
                 </h2>
             </div>
+            <p className="text-center text-2xl">
+            ✏︎ ✳︎ ✏︎
+            </p>
             { loaderData.html !== "" && loaderData.html !== undefined &&
-                <article className="p-4 block prose max-w-none text-black prose-a:text-[blue] prose-a:underline-offset-4 prose-blockquote:bg-gray-100 prose-blockquote:p-8 prose-blockquote:border-0 prose-blockquote:prose-p:first-of-type:before:opacity-0 prose-a:visited:text-[purple] prose-li:marker:text-[black]">
+                <article className="p-4 block prose-sm prose-a:underline prose-a:underline-offset-2 max-w-lg text-justify mx-auto">
                 {parse(loaderData.html)}
               </article>
               }

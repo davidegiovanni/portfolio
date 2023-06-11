@@ -5,51 +5,52 @@
 /* commento */
 
 img {
-    @apply select-none pointer-events-none
+  @apply select-none pointer-events-none
 }
 
-@media screen and (max-width: 767px) {
-    _::-webkit-full-page-media, _:future, :root .safari_only {
-        padding-bottom: 65px !important;
-    }
-}
-
-::-webkit-scrollbar {
-    width: 0;  /* Remove scrollbar space */
-    background: transparent;  /* Optional: just make scrollbar invisible */
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 .fade-in {
-    animation: fadeIn 500ms 500ms ease-in-out;
-    animation-fill-mode: both;
+  animation: fadeIn 500ms 500ms ease-in-out;
+  animation-fill-mode: both;
 }
 
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-} 
+  0% {
+    opacity: 0;
+  }
 
-.fade-slide-in {
-    animation: fadeSlideIn 500ms 500ms ease-in-out;
-    animation-fill-mode: both;
+  100% {
+    opacity: 1;
+  }
 }
 
-.fade-slide-in > * {
-    animation: fadeSlideIn 500ms 700ms ease-in-out;
-    animation-fill-mode: both;
+.fade-slide-in {
+  animation: fadeSlideIn 500ms 500ms ease-in-out;
+  animation-fill-mode: both;
+}
+
+.fade-slide-in>* {
+  animation: fadeSlideIn 500ms 700ms ease-in-out;
+  animation-fill-mode: both;
 }
 
 @keyframes fadeSlideIn {
-    0% {
-        opacity: 0;
-        transform: translateY(20%)
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0)
-    }
-} 
+  0% {
+    opacity: 0;
+    transform: translateY(20%)
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0)
+  }
+}
+
+button,
+a {
+  cursor: none !important;
+}

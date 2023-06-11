@@ -6,13 +6,13 @@ import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
 import { Feed, FeedItem } from "api/models";
 import metadata from '~/utils/metadata'
-import { fluidType, formatDate } from '~/utils/helpers'
+import { fluidType, formatDate, makeDivDraggable } from '~/utils/helpers'
 import parse from 'html-react-parser'
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { feed } from "~/api";
-import { DynamicLinksFunction } from "remix-utils";
+import { DynamicLinksFunction } from "~/utils/dynamic-links";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -140,40 +140,37 @@ export default function ItemPage() {
   const next = loaderData.next
 
   return (
-    <div className={`${isZoom ? "" : "pb-24"} h-full w-full overflow-auto touch-pinch-zoom touch-manipulation touch-pan-x touch-pan-y`}>
-      <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none px-2 py-2 h-12">
-        <div className="flex items-center" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 12, 300, 2400, 1.5).lineHeight }}>
-          <Link to={`/${params.lang}/works/${params.feed}`} style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }} className="uppercase bg-white border border-black group-hover:underline rounded-md h-full w-8 p-2 aspect-square inline-flex items-center lg:w-fit mx-auto">
-            <p className="flex items-center">
-              <XIcon className="h-4 w-4"   />
+    <div className={`h-full w-full overflow-auto touch-pinch-zoom touch-manipulation touch-pan-x touch-pan-y`}>
+      <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-lg lg:text-base">
+        <div className="flex items-center">
+          <Link to={`/${params.lang}/works/${params.feed}`} >
+            <p className="sr-only">
+              Close
             </p>
+            ✕
           </Link>
           <p className="sr-only">
           {loaderData.title}
           </p>
         </div>
-        <div className="flex items-center justify-end">
-          <Link to={`/${params.lang}/works/${params.feed}/${previous}`} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "") + "bg-white border border-black border-r-0 group-hover:underline rounded-l-md p-2 uppercase inline-block w-fit mx-auto"}>
+        <div className="flex items-center justify-end gap-8">
+          <Link to={`/${params.lang}/works/${params.feed}/${previous}`} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "")}>
             <p className="sr-only">
               {'Indietro'}
             </p>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 rotate-180">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
+            ←
           </Link>
-          <Link to={`/${params.lang}/works/${params.feed}/${next}`} className={(next === "" ? "pointer-events-none opacity-50 select-none " : "") + "bg-white border border-black group-hover:underline rounded-r-md p-2 uppercase inline-block w-fit mx-auto"}>
+          <Link to={`/${params.lang}/works/${params.feed}/${next}`} className={(next === "" ? "pointer-events-none opacity-50 select-none " : "")}>
             <p className="sr-only">
               {'Avanti'}
             </p>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
+            →
           </Link>
         </div>
       </div>
       <div className={(isZoom ? "cursor-zoom-out " : "cursor-zoom-in ") + "h-full w-full"} onClick={() => setZoom(!isZoom)}>
-        <div className={(isZoom ? "w-full h-auto origin-top-left scale-150 " : "w-full h-full") + ""}>
-          <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-top " attachment={{
+        <div className={(isZoom ? "w-full h-auto origin-top-left scale-[4] lg:scale-[2]" : "w-full h-full origin-center") + " transition-all ease-in-out duration-300"}>
+          <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-center " attachment={{
             id: "",
             mediaType: "image/",
             url: loaderData.image,
