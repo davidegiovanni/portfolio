@@ -13,6 +13,7 @@ import { Attachment } from "~/components/Attachment";
 import { useEffect, useRef, useState } from "react";
 import { feed } from "~/api";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
+import ZoomableImage from "~/components/zommable";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -140,7 +141,7 @@ export default function ItemPage() {
   const next = loaderData.next
 
   return (
-    <div className={`h-full w-full overflow-auto touch-pinch-zoom touch-manipulation touch-pan-x touch-pan-y`}>
+    <div className={`h-full w-full overflow-hidden`}>
       <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-lg lg:text-base">
         <div className="flex items-center">
           <Link to={`/${params.lang}/works/${params.feed}`} >
@@ -168,16 +169,14 @@ export default function ItemPage() {
           </Link>
         </div>
       </div>
-      <div className={(isZoom ? "cursor-zoom-out " : "cursor-zoom-in ") + "h-full w-full"} onClick={() => setZoom(!isZoom)}>
-        <div className={(isZoom ? "w-full h-auto origin-top-left scale-[4] lg:scale-[2]" : "w-full h-full origin-center") + " transition-all ease-in-out duration-300"}>
-          <Attachment size={isZoom ? "object-cover" : "object-contain"} align="object-center " attachment={{
-            id: "",
-            mediaType: "image/",
-            url: loaderData.image,
-            description: loaderData.title
-          }}></Attachment>
+      <div className='h-full w-full'>
+          <ZoomableImage attachment={{
+          mediaType: "image/",
+          url: loaderData.image,
+          description: loaderData.title,
+          metadata: {}
+        }}></ZoomableImage>
         </div>
-      </div>
     </div>
   );
 }

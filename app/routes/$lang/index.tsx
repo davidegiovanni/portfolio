@@ -128,19 +128,33 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function Index() {
   const loaderData = useLoaderData<LoaderData>();
-  const params = useParams()
-  const location = useLocation()
-
-  const outletHeight: string = 'h-full '
 
   const divRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (divRef.current) {
-      makeDivDraggable(divRef.current);
-    }
-  }, []);
+    const draggableDiv = divRef.current;
 
+    if (draggableDiv) {
+      const { handleMouseDown, handleMouseMove, handleMouseUp } = makeDivDraggable(draggableDiv);
+
+      draggableDiv.addEventListener('mousedown', handleMouseDown);
+      draggableDiv.addEventListener('touchstart', handleMouseDown);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('touchmove', handleMouseMove, { passive: false });
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchend', handleMouseUp);
+
+      return () => {
+        draggableDiv.removeEventListener('mousedown', handleMouseDown);
+        draggableDiv.removeEventListener('touchstart', handleMouseDown);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('touchmove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchend', handleMouseUp);
+      };
+    }
+
+  }, []);
 
   return (
     <div className="h-full w-full relative flex items-center justify-center scrollbar-hidden">

@@ -59,17 +59,40 @@ const getContrast = function (hexcolor: string){
 //   let offsetY = 0;
 //   let isDragging = false;
 
-//   function handleMouseDown(event: MouseEvent) {
+//   function handleMouseDown(event: MouseEvent | TouchEvent) {
+//     event.preventDefault(); // Prevent default behavior for touch events
+//     event.stopPropagation();
 //     isDragging = true;
-//     offsetX = event.clientX - draggableDiv.getBoundingClientRect().left;
-//     offsetY = event.clientY - draggableDiv.getBoundingClientRect().top;
+
+//     if (event instanceof MouseEvent) {
+//       offsetX = event.clientX - draggableDiv.getBoundingClientRect().left;
+//       offsetY = event.clientY - draggableDiv.getBoundingClientRect().top;
+//     } else if (event instanceof TouchEvent && event.touches.length === 1) {
+//       offsetX = event.touches[0].clientX - draggableDiv.getBoundingClientRect().left;
+//       offsetY = event.touches[0].clientY - draggableDiv.getBoundingClientRect().top;
+//     }
+
 //     draggableDiv.style.pointerEvents = "none"; // Disable pointer events on the draggable div
 //   }
 
-//   function handleMouseMove(event: MouseEvent) {
+//   function handleMouseMove(event: MouseEvent | TouchEvent) {
+//     event.preventDefault(); // Prevent default behavior for touch events
+//     event.stopPropagation();
+
 //     if (isDragging) {
-//       const left = event.clientX - offsetX;
-//       const top = event.clientY - offsetY;
+//       let clientX = 0;
+//       let clientY = 0;
+
+//       if (event instanceof MouseEvent) {
+//         clientX = event.clientX;
+//         clientY = event.clientY;
+//       } else if (event instanceof TouchEvent && event.touches.length === 1) {
+//         clientX = event.touches[0].clientX;
+//         clientY = event.touches[0].clientY;
+//       }
+
+//       const left = clientX - offsetX;
+//       const top = clientY - offsetY;
 //       draggableDiv.style.left = left + "px";
 //       draggableDiv.style.top = top + "px";
 //     }
@@ -82,8 +105,11 @@ const getContrast = function (hexcolor: string){
 
 //   // Attach event listeners for mousedown, mousemove, and mouseup events
 //   draggableDiv.addEventListener("mousedown", handleMouseDown);
+//   draggableDiv.addEventListener("touchstart", handleMouseDown);
 //   document.addEventListener("mousemove", handleMouseMove);
+//   document.addEventListener("touchmove", handleMouseMove, { passive: false });
 //   document.addEventListener("mouseup", handleMouseUp);
+//   document.addEventListener("touchend", handleMouseUp);
 // }
 
 function makeDivDraggable(draggableDiv: HTMLElement) {
@@ -93,6 +119,7 @@ function makeDivDraggable(draggableDiv: HTMLElement) {
 
   function handleMouseDown(event: MouseEvent | TouchEvent) {
     event.preventDefault(); // Prevent default behavior for touch events
+    event.stopPropagation();
     isDragging = true;
 
     if (event instanceof MouseEvent) {
@@ -108,6 +135,7 @@ function makeDivDraggable(draggableDiv: HTMLElement) {
 
   function handleMouseMove(event: MouseEvent | TouchEvent) {
     event.preventDefault(); // Prevent default behavior for touch events
+    event.stopPropagation();
 
     if (isDragging) {
       let clientX = 0;
@@ -135,15 +163,29 @@ function makeDivDraggable(draggableDiv: HTMLElement) {
 
   // Attach event listeners for mousedown, mousemove, and mouseup events
   draggableDiv.addEventListener("mousedown", handleMouseDown);
-  draggableDiv.addEventListener("touchstart", handleMouseDown);
+  draggableDiv.addEventListener("touchstart", handleMouseDown, { passive: false });
   document.addEventListener("mousemove", handleMouseMove);
   document.addEventListener("touchmove", handleMouseMove, { passive: false });
   document.addEventListener("mouseup", handleMouseUp);
   document.addEventListener("touchend", handleMouseUp);
+
+  return {
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp
+  };
 }
 
 
+
+
 function createMouseFollower(followerDiv: HTMLElement) {
+  const supportsHover = window.matchMedia("(hover: hover)").matches;
+
+  if (!supportsHover) {
+    return; // Exit the function if the device doesn't support hover events (touch devices)
+  }
+
   function handleMouseMove(event: MouseEvent) {
     const isClickableElement = event.target instanceof HTMLAnchorElement || event.target instanceof HTMLButtonElement;
 

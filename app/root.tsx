@@ -199,6 +199,12 @@ export default function App() {
   const followerDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const supportsHover = window.matchMedia("(hover: hover)").matches;
+
+    if (!supportsHover || !followerDivRef.current) {
+      return; // Exit the useEffect hook if hover is not supported or the ref is not available
+    }
+
     if (followerDivRef.current) {
       createMouseFollower(followerDivRef.current);
     }
@@ -216,7 +222,7 @@ export default function App() {
         <Links />
         <DynamicLinks />
       </head>
-      <body className="cursor-none">
+      <body>
         <div style={style} className="fixed inset-0 overflow-hidden selection:bg-[blue] selection:text-[white] w-full h-full flex flex-col-reverse font-default">
           {
             cursor === "" ? (
@@ -242,7 +248,6 @@ export default function App() {
             </button>
           </div>
           <div className="relative z-10 w-full flex-1 overflow-hidden">
-            <Outlet />
             {
               isMenuOpen && (
                 <div className="absolute inset-0 w-full h-full z-40 flex items-center justify-center p-[1.5vmin] bg-white bg-opacity-50 backdrop-blur-2xl">
@@ -277,6 +282,7 @@ export default function App() {
                 </div>
               )
             }
+            <Outlet />
           </div>
         </div>
         <ScrollRestoration />

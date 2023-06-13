@@ -114,7 +114,7 @@ export default function About() {
   const params = useParams()
 
     return (
-      <div className="h-full w-full overflow-y-auto lg:overflow-y-hidden scrollbar-hidden uppercase">
+      <div className="h-full w-full overflow-y-scroll lg:scrollbar-hidden uppercase">
         <div className="w-full h-full lg:flex items-stretch">
           <div className="relative w-full aspect-square md:aspect-[4/2] lg:h-full lg:w-1/2 ">
             <div className="relative h-full w-full overflow-hidden">
