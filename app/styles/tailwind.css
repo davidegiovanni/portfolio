@@ -867,20 +867,20 @@ video {
   aspect-ratio: 16 / 9;
 }
 
-.h-3 {
-  height: 0.75rem;
+.h-12 {
+  height: 3rem;
 }
 
 .h-full {
   height: 100%;
 }
 
-.w-24 {
-  width: 6rem;
+.w-12 {
+  width: 3rem;
 }
 
-.w-3 {
-  width: 0.75rem;
+.w-24 {
+  width: 6rem;
 }
 
 .w-32 {
@@ -927,8 +927,8 @@ video {
   flex-grow: 1;
 }
 
-.origin-center {
-  transform-origin: center;
+.origin-top-left {
+  transform-origin: top left;
 }
 
 .rotate-45 {
