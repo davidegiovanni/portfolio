@@ -148,7 +148,7 @@ export default function ItemPage() {
           {loaderData.title}
           </p>
         </div>
-        <div className="flex items-center justify-end gap-8">
+        <div className="flex items-center justify-end gap-8 -translate-x-8 lg:-translate-x-12 translate-y-1">
           <Link to={`/${params.lang}/works/${params.feed}/${previous}`} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "")}>
             <p className="sr-only">
               {'Indietro'}

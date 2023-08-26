@@ -29,6 +29,7 @@ import { page, website } from "./api";
 import { Page, Website } from "./models";
 import { DynamicLinks } from "./utils/dynamic-links";
 import defaultCss from "./default.css";
+import MSPaint from "./components/PaintCanvas";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -212,6 +213,8 @@ export default function App() {
     () => { setTimeout(getTimeDate, 1000) }
   )
 
+  const [isShowingCanvas, setShowCanvas] = useState<boolean>(false)
+
   const style = {
     "--customfont": loaderData.fontFamily,
     fontFamily: loaderData.fontFamily,
@@ -241,7 +244,7 @@ export default function App() {
   const cursor = loaderData.cursor
   return (
     <Document lang={loaderData.incomingLocale} favicon={loaderData.favicon} fontUrl={loaderData.fontUrl}>
-      <div style={style} className="fixed inset-0 overflow-hidden selection:bg-slate-100 w-full h-full flex flex-col-reverse font-default cursor-none">
+      <div style={style} className="fixed inset-0 overflow-hidden  selection:bg-slate-100 w-full h-full flex flex-col-reverse font-default cursor-none">
         {(navigationStart || navigationEnd) && (
           <div
             data-navigation-start={navigationStart}
@@ -249,16 +252,7 @@ export default function App() {
             className="loading-bar"
           />
         )}
-        {
-          cursor === "" ? (
-            <div ref={followerDivRef} className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] bg-black rounded-full pointer-events-none select-none origin-top-left cursor-none" />
-          ) : (
-            <div ref={followerDivRef} className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] pointer-events-none select-none origin-top-left cursor-none">
-              <img src={cursor} alt="Cursor" />
-            </div>
-          )
-        }
-        <div style={style2} className="fixed bottom-0 z-50 inset-x-0 w-full flex items-center justify-between uppercase px-2 text-lg lg:text-base">
+        <div style={style2} data-disabled={isShowingCanvas} className="fixed bottom-0 z-50 data-[disabled=true]:translate-y-8 transition-all duration-200 ease-in-out inset-x-0 w-full flex items-center justify-between uppercase px-2 text-lg lg:text-base">
           <Link to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className="hover:rotate-45 transition-all ease-in-out duration-300">
             ✻
           </Link>
@@ -272,40 +266,62 @@ export default function App() {
             ＋
           </button>
         </div>
-        <div className="relative z-10 w-full flex-1 overflow-hidden">
-          <div data-visible={isMenuOpen} className="absolute opacity-0 h-0 overflow-hidden data-[visible=true]:h-full data-[visible=true]:opacity-100 inset-0 w-full z-40 flex items-center justify-center p-[1.5vmin] bg-white bg-opacity-50 backdrop-blur-2xl">
-            {
-              loaderData.links.length > 0 &&
-              <nav className="flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center h-full justify-between uppercase">
-                <p className="text-xs">
-                  Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella </a>
-                </p>
-                <ul className="w-full flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center justify-center h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-                  {loaderData.links.map((link, index) => (
-                    <li key={index} onClick={() => togglemenuOpen(false)}>
-                      {
-                        link.isExternal ? (
-                          <a href={link.url} className="block">
-                            {link.title}
-                          </a>
-                        ) : (
-                          <NavLink to={link.url} className={({ isActive }) =>
-                            `${isActive ? "opacity-50" : "hover:opacity-50"} opacity-100 block`
-                          }>
-                            {link.title}
-                          </NavLink>
-                        )
-                      }
-                    </li>
-                  ))}
-                </ul>
-                <div></div>
-              </nav>
-            }
-          </div>
+        <div data-visible={isMenuOpen} className="fixed opacity-0 h-0 p-0 overflow-hidden data-[visible=true]:h-full data-[visible=true]:opacity-100 inset-0 w-full z-40 flex items-center justify-center data-[visible=true]:p-[1.5vmin] bg-white bg-opacity-50">
+          {
+            loaderData.links.length > 0 &&
+            <nav className="flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center h-full justify-between uppercase">
+              <p className="text-xs">
+                Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella </a>
+              </p>
+              <ul className="w-full flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center justify-center h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+                {loaderData.links.map((link, index) => (
+                  <li key={index} onClick={() => togglemenuOpen(false)}>
+                    {
+                      link.isExternal ? (
+                        <a href={link.url} className="block">
+                          {link.title}
+                        </a>
+                      ) : (
+                        <NavLink to={link.url} className={({ isActive }) =>
+                          `${isActive ? "opacity-50" : "hover:opacity-50"} opacity-100 block`
+                        }>
+                          {link.title}
+                        </NavLink>
+                      )
+                    }
+                  </li>
+                ))}
+              </ul>
+              <div></div>
+            </nav>
+          }
+        </div>
+        <div data-visible={isMenuOpen} className="w-full flex-1 overflow-hidden data-[visible=true]:blur-2xl">
           <Outlet />
         </div>
       </div>
+      <MSPaint isShowingCanvas={isShowingCanvas} />
+      {!isMenuOpen && (
+          <button className="fixed top-0 right-0 m-4 z-50" onClick={() => setShowCanvas(!isShowingCanvas)}>
+            {
+              isShowingCanvas ? (
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+              ) : (
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8536 1.14645C11.6583 0.951184 11.3417 0.951184 11.1465 1.14645L3.71455 8.57836C3.62459 8.66832 3.55263 8.77461 3.50251 8.89155L2.04044 12.303C1.9599 12.491 2.00189 12.709 2.14646 12.8536C2.29103 12.9981 2.50905 13.0401 2.69697 12.9596L6.10847 11.4975C6.2254 11.4474 6.3317 11.3754 6.42166 11.2855L13.8536 3.85355C14.0488 3.65829 14.0488 3.34171 13.8536 3.14645L11.8536 1.14645ZM4.42166 9.28547L11.5 2.20711L12.7929 3.5L5.71455 10.5784L4.21924 11.2192L3.78081 10.7808L4.42166 9.28547Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+              )
+            }
+          </button>
+        )}
+      {
+        cursor === "" && <div ref={followerDivRef} className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] bg-black rounded-full pointer-events-none select-none origin-top-left cursor-none" />
+      }
+      {
+        cursor !== "" && (
+          <div ref={followerDivRef} className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] pointer-events-none select-none origin-top-left cursor-none">
+            <img src={cursor} alt="Cursor" />
+          </div>
+        )
+      }
     </Document>
   )
 }

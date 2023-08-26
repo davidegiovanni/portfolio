@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { page, website } from "~/api";
 import { Page, Website } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
+import MSPaint from "~/components/PaintCanvas";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
