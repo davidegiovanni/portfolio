@@ -100,7 +100,7 @@ const canvasRef = useRef<HTMLCanvasElement | null>(null);
         onTouchEnd={handleTouchEnd}
         style={{ width: '100%', height: '100%' }}
       />
-      <div data-showing={props.isShowingCanvas} className='absolute transition-all -translate-y-12 data-[showing=true]:delay-200 data-[showing=true]:duration-300 data-[showing=true]:ease-in-out data-[showing=true]:translate-y-0 left-0 top-0 z-20 inline-flex flex-wrap max-w-[200px] items-center gap-4 p-4 bg-white'>
+      <div data-showing={props.isShowingCanvas} className='absolute transition-all -translate-y-12 data-[showing=true]:delay-200 data-[showing=true]:duration-300 data-[showing=true]:ease-in-out data-[showing=true]:translate-y-0 left-0 top-0 z-20 inline-flex flex-wrap max-w-[300px] lg:max-w-full items-center gap-4 p-4 bg-white'>
         <button onClick={() => setColorHandler('black')} data-selected={color === "black"} className='bg-black w-4 h-4 rounded-full data-[selected=true]:ring-black data-[selected=true]:ring data-[selected=true]:ring-offset-2' aria-label="Black Paint"></button>
         <button onClick={() => setColorHandler('blue')} data-selected={color === "blue"} className='bg-blue-500 w-4 h-4 rounded-full data-[selected=true]:ring-blue-500 data-[selected=true]:ring-2 data-[selected=true]:ring-offset-2' aria-label="Red Paint"></button>
         <button onClick={() => setColorHandler('red')} data-selected={color === "red"} className='bg-red-500 w-4 h-4 rounded-full data-[selected=true]:ring-red-500 data-[selected=true]:ring-2 data-[selected=true]:ring-offset-2' aria-label="Red Paint"></button>
