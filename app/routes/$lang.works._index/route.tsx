@@ -1,14 +1,12 @@
 import { json, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
-import { Link, NavLink, Outlet, useCatch, useLoaderData, useLocation, useParams } from "@remix-run/react";
+import { Link, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
-import { WebPageModel, WebSectionModel } from "api/models";
 import metadata from '~/utils/metadata'
 import link from '~/utils/links'
-import { fluidType } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
 import { useState } from "react";
-import { ChevronLeftIcon } from "@heroicons/react/outline";
+import { WebPageModel, WebSectionModel } from "~/models";
 
 export const links: LinksFunction = () => {
   return link(
@@ -18,7 +16,7 @@ export const links: LinksFunction = () => {
   )
 };
 
-export const meta: MetaFunction = ({ data, location }) => {
+export const meta: V2_MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
   let image = ''
@@ -110,10 +108,10 @@ export default function Works() {
           <Link className={'relative flex-grow w-full lg:w-1/3 overflow-hidden text-center gap-4 border-black flex flex-col items-center justify-start uppercase group'} to={`/${params.lang}/works/${f.description}`}>
             <div className={"w-full relative aspect-square overflow-hidden"}>
               <Attachment size="object-cover" attachment={{
-                id: "",
                 mediaType: "image/",
                 url: f.image,
-                description: f.title
+                description: f.title,
+                metadata: {}
               }}></Attachment>
             </div>
             <p >

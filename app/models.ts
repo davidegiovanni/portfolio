@@ -108,3 +108,37 @@ export class FeedItem {
   date_published: Date = new Date()
   content_html: string = ''
 }
+
+export class WebLinkModel {
+  title: string = ''
+  url: string = ''
+}
+
+export class WebSectionModel {
+  type: string = '' // hero or simple
+  title: string = ''
+  description: string = ''
+  image: string = ''
+  itemsUrl: string = '' // type: directory > revasos://directory?directorySlug=....
+  primaryLink: WebLinkModel = {
+    title: '',
+    url: ''
+  }
+  secondaryLink: WebLinkModel = {
+    title: '',
+    url: ''
+  }
+}
+
+export class WebPageModel {
+  id: string = ''
+  organizationId: string = ''
+  websiteId: string = ''
+  createTime: Date = new Date()
+  updateTime: Date = new Date()
+  name: string = ''
+  title: string = ''
+  description: string = ''
+  image: string = ''
+  sections: WebSectionModel[] = []
+}

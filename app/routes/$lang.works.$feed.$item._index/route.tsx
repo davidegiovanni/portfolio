@@ -1,19 +1,13 @@
 import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
-import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react";
+import { Link, useLoaderData, useParams, V2_MetaFunction } from "@remix-run/react";
 import queryString from 'query-string'
 
-import { safeGet } from "~/utils/safe-post";
-import { loadTranslations } from "~/helpers/i18n";
-import { Feed, FeedItem } from "api/models";
 import metadata from '~/utils/metadata'
-import { fluidType, formatDate, makeDivDraggable } from '~/utils/helpers'
-import parse from 'html-react-parser'
-import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon, ViewGridAddIcon, ViewGridIcon, XIcon } from '@heroicons/react/outline'
-import { Attachment } from "~/components/Attachment";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { feed } from "~/api";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import ZoomableImage from "~/components/zommable";
+import { Feed } from "~/models";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -26,7 +20,7 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
 };
 export let handle = { dynamicLinks };
 
-export const meta: MetaFunction = ({ data, location }) => {
+export const meta: V2_MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
   let image = ''

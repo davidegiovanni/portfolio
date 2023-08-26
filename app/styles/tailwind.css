@@ -752,6 +752,10 @@ video {
   pointer-events: none;
 }
 
+.visible {
+  visibility: visible;
+}
+
 .static {
   position: static;
 }
@@ -823,6 +827,11 @@ video {
   margin-bottom: 1rem;
 }
 
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -867,8 +876,16 @@ video {
   aspect-ratio: 16 / 9;
 }
 
+.h-0 {
+  height: 0px;
+}
+
 .h-12 {
   height: 3rem;
+}
+
+.h-4 {
+  height: 1rem;
 }
 
 .h-full {
@@ -885,6 +902,10 @@ video {
 
 .w-32 {
   width: 8rem;
+}
+
+.w-4 {
+  width: 1rem;
 }
 
 .w-48 {
@@ -944,6 +965,27 @@ video {
 
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+@keyframes pulseSlow {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+.animate-pulsing {
+  animation: pulseSlow 6s infinite ease-in-out;
 }
 
 .cursor-none {
@@ -1018,6 +1060,10 @@ video {
 
 .overflow-y-auto {
   overflow-y: auto;
+}
+
+.overflow-x-hidden {
+  overflow-x: hidden;
 }
 
 .overflow-y-scroll {
@@ -1154,12 +1200,21 @@ video {
   text-decoration-line: underline;
 }
 
+.opacity-0 {
+  opacity: 0;
+}
+
 .opacity-100 {
   opacity: 1;
 }
 
 .opacity-50 {
   opacity: 0.5;
+}
+
+.blur-md {
+  --tw-blur: blur(12px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .filter {
@@ -1199,8 +1254,6 @@ video {
 .ease-in-out {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* commento */
 
 img {
   pointer-events: none;
@@ -1266,16 +1319,6 @@ a {
   background-color: rgb(0 0 255 / var(--tw-bg-opacity));
 }
 
-.selection\:bg-white *::-moz-selection {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.selection\:bg-white *::selection {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
 .selection\:bg-yellow-500 *::-moz-selection {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
@@ -1284,6 +1327,26 @@ a {
 .selection\:bg-yellow-500 *::selection {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
+}
+
+.selection\:bg-slate-50 *::-moz-selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 250 252 / var(--tw-bg-opacity));
+}
+
+.selection\:bg-slate-50 *::selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 250 252 / var(--tw-bg-opacity));
+}
+
+.selection\:bg-slate-100 *::-moz-selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+}
+
+.selection\:bg-slate-100 *::selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
 }
 
 .selection\:text-\[white\] *::-moz-selection {
@@ -1316,16 +1379,6 @@ a {
   background-color: rgb(0 0 255 / var(--tw-bg-opacity));
 }
 
-.selection\:bg-white::-moz-selection {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.selection\:bg-white::selection {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
 .selection\:bg-yellow-500::-moz-selection {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
@@ -1334,6 +1387,26 @@ a {
 .selection\:bg-yellow-500::selection {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
+}
+
+.selection\:bg-slate-50::-moz-selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 250 252 / var(--tw-bg-opacity));
+}
+
+.selection\:bg-slate-50::selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 250 252 / var(--tw-bg-opacity));
+}
+
+.selection\:bg-slate-100::-moz-selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+}
+
+.selection\:bg-slate-100::selection {
+  --tw-bg-opacity: 1;
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
 }
 
 .selection\:text-\[white\]::-moz-selection {
@@ -1379,6 +1452,14 @@ a {
   --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.data-\[visible\=true\]\:h-full[data-visible=true] {
+  height: 100%;
+}
+
+.data-\[visible\=true\]\:opacity-100[data-visible=true] {
+  opacity: 1;
 }
 
 .prose-a\:underline :is(:where(a):not(:where([class~="not-prose"] *))) {
@@ -1432,6 +1513,10 @@ a {
 
   .lg\:overflow-y-auto {
     overflow-y: auto;
+  }
+
+  .lg\:p-8 {
+    padding: 2rem;
   }
 
   .lg\:pb-0 {

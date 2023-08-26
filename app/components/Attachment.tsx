@@ -1,9 +1,10 @@
-import { Attachment } from "api/models";
-import { useEffect } from "react";
+
+import { useEffect, useState } from "react";
+import { Attachment as AttachmentType } from "~/models";
 
 
 type AttachmentProps = {
-  attachment: Attachment;
+  attachment: AttachmentType;
   align?: string;
   size?: string;
   dimensions?: string;
@@ -23,17 +24,27 @@ export function Attachment(props: AttachmentProps) {
 
   let isLoadingLazy = true
 
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
+
   useEffect(() => {
     const image = document.getElementById(id) as HTMLElement
+    const imageElement = document.getElementById(`src-${id}`) as HTMLImageElement
     const top = image === null ? 0 : image.getBoundingClientRect().top
 
+    if (imageElement.complete) {
+      setIsLoaded(true)
+    } else {
+      imageElement.onload = function() {
+        setIsLoaded(true)
+      };
+    }
     if (top > 0 && top < window.innerHeight) {
       isLoadingLazy = false
     }
   })
 
   return (
-    <figure id={props.attachment.id} className="w-full h-full relative" role="figure">
+    <figure id={id} className="w-full h-full relative" role="figure">
       {props.attachment.mediaType.startsWith("image/") && (
         <picture id={id} className="h-full w-full">
           <source
@@ -49,6 +60,7 @@ export function Attachment(props: AttachmentProps) {
             srcSet={buildSrcset(props.attachment.url, "avif")}
           ></source>
           <img
+          id={`src-${id}`}
             srcSet={buildSrcset(props.attachment.url, "")}
             sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
             src={props.attachment.url}
@@ -69,6 +81,12 @@ export function Attachment(props: AttachmentProps) {
           allowFullScreen
         ></iframe>
       )}
+      {
+        !isLoaded && (
+          <div className="absolute inset-0 mx-auto my-auto w-4 h-4 blur-md bg-black animate-pulsing">
+          </div>
+        )
+      }
     </figure>
   );
 }

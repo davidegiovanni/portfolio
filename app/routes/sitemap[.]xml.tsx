@@ -1,7 +1,7 @@
 import { LoaderFunction } from "@remix-run/node";
-import { Feed, FeedItem, WebPageModel, WebSectionModel } from "api/models";
 import { safeGet } from "~/utils/safe-post";
 import queryString from 'query-string'
+import { WebPageModel, WebSectionModel, Feed } from "~/models";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url)
@@ -51,8 +51,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 const pagesList = locales.map((l: any) => (pages[l])?.map((p: any) =>
 `<url>
   <loc>https://${host}/${p}</loc>
-  <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-  <priority>1.0</priority>
 </url>
 `).join("")
 )
@@ -60,8 +58,6 @@ const pagesList = locales.map((l: any) => (pages[l])?.map((p: any) =>
 const itFeedItemsList = itFeeds.map((feed) => feed.items.map((item) =>
 `<url>
   <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}/${getSlug(item.id)}</loc>
-  <lastmod>${item.date_published}</lastmod>
-  <priority>1.0</priority>
 </url>
 `).join("")
 ).join("")
@@ -69,8 +65,6 @@ const itFeedItemsList = itFeeds.map((feed) => feed.items.map((item) =>
 const itFeedsList = itFeeds.map((feed) =>
 `<url>
   <loc>https://${host}/it-IT/works/${feed.title.toLowerCase().split(' ').join('-')}</loc>
-  <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-  <priority>1.0</priority>
 </url>
 `
 ).join("")
@@ -78,8 +72,6 @@ const itFeedsList = itFeeds.map((feed) =>
 const indexesList = locales.map((l: any) =>
 `<url>
   <loc>https://${host}/${l}</loc>
-  <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-  <priority>1.0</priority>
 </url>
 `).join("")
   
@@ -94,18 +86,12 @@ const indexesList = locales.map((l: any) =>
 ${indexesList}
   <url>
     <loc>https://${host}/it-IT/works</loc>
-    <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-    <priority>1.0</priority>
   </url>
   <url>
     <loc>https://${host}/it-IT/contacts</loc>
-    <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-    <priority>1.0</priority>
   </url>
   <url>
     <loc>https://${host}/it-IT/about</loc>
-    <lastmod>2022-01-01T00:00:00+01:00</lastmod>
-    <priority>1.0</priority>
   </url>
 ${pagesList}
 ${itFeedItemsList} 

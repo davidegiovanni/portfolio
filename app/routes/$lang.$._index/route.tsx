@@ -1,5 +1,5 @@
 import { LoaderFunction } from "@remix-run/node";
-import { useCatch, Link } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { fluidType } from "~/utils/helpers";
 
 export const loader: LoaderFunction = async () => {

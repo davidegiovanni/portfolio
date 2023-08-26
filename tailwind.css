@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* commento */
-
 img {
   @apply select-none pointer-events-none
 }

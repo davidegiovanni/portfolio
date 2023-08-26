@@ -1,9 +1,8 @@
 import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
-import { Link, useCatch, useLoaderData, useParams } from "@remix-run/react";
+import { Link, useLoaderData, useParams, V2_MetaFunction } from "@remix-run/react";
  
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
-import { Feed, FeedItem } from "api/models";
 import metadata from '~/utils/metadata'
 import { fluidType, formatDate } from '~/utils/helpers'
 import parse from 'html-react-parser'
@@ -11,6 +10,7 @@ import { ArrowLeftIcon, ChevronLeftIcon } from '@heroicons/react/outline'
 import { Attachment } from "~/components/Attachment";
 import { feed } from "~/api";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
+import { Feed, FeedItem } from "~/models";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -23,7 +23,7 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
 };
 export let handle = { dynamicLinks };
 
-export const meta: MetaFunction = ({ data, location }) => {
+export const meta: V2_MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
   let image = ''
@@ -119,10 +119,10 @@ export default function About() {
           <div className="relative w-full aspect-square md:aspect-[4/2] lg:h-full lg:w-1/2 ">
             <div className="relative h-full w-full overflow-hidden">
               <Attachment size="object-cover" attachment={{
-                  id: "1",
                   mediaType: "image/",
                   url: loaderData.image,
-                  description: "Davide Giovanni Steccanella"
+                  description: "Davide Giovanni Steccanella",
+                  metadata: {}
                 }}></Attachment>
             </div>
           </div>
@@ -139,7 +139,7 @@ export default function About() {
             ✏︎ ✳︎ ✏︎
             </p>
             { loaderData.html !== "" && loaderData.html !== undefined &&
-                <article className="p-4 block prose-sm prose-a:underline prose-a:underline-offset-2 max-w-lg text-justify mx-auto">
+                <article className="p-4 lg:p-8 block prose-sm prose-a:underline prose-a:underline-offset-2 text-justify mx-auto">
                 {parse(loaderData.html)}
               </article>
               }

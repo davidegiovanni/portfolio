@@ -1,17 +1,10 @@
-import { json, LinksFunction, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
-import { Link, NavLink, useCatch, useLoaderData, useLocation, useParams } from "@remix-run/react";
-import { safeGet } from "~/utils/safe-post";
-import { loadTranslations } from "~/helpers/i18n";
-import { WebPageModel, WebSectionModel } from "api/models";
+import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
+import { Link, useLoaderData, useParams, V2_MetaFunction } from "@remix-run/react";
 import metadata from '~/utils/metadata'
-import link from '~/utils/links'
-import { fluidType, isExternalLink } from '~/utils/helpers'
-import { useRouteLoaderData } from "@remix-run/react";
-import { Attachment } from "~/components/Attachment";
-import { ChevronLeftIcon } from "@heroicons/react/outline";
 import { page } from "~/api";
 import { Page } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
+import { isExternalLink } from "~/utils/helpers";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -24,7 +17,7 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
 };
 export let handle = { dynamicLinks };
 
-export const meta: MetaFunction = ({ data, location }) => {
+export const meta: V2_MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
   let image = ''

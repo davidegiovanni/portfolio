@@ -1,11 +1,7 @@
-import { json, LinksFunction, LoaderFunction, MetaFunction, redirect, SerializeFrom } from "@remix-run/node";
-import { Link, NavLink, Outlet, useCatch, useLoaderData, useLocation, useParams } from "@remix-run/react";
-import { safeGet } from "~/utils/safe-post";
-import { loadTranslations } from "~/helpers/i18n";
-import { WebPageModel, WebSectionModel } from "api/models";
+import { json, LoaderFunction, MetaFunction, redirect, SerializeFrom } from "@remix-run/node";
+import { useLoaderData, V2_MetaFunction } from "@remix-run/react";
 import metadata from '~/utils/metadata'
-import link from '~/utils/links'
-import { createMouseFollower, fluidType, makeDivDraggable } from '~/utils/helpers'
+import { makeDivDraggable } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
 import { useEffect, useRef, useState } from "react";
 import { page, website } from "~/api";
@@ -23,7 +19,7 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
 };
 export let handle = { dynamicLinks };
 
-export const meta: MetaFunction = ({ data, location }) => {
+export const meta: V2_MetaFunction = ({ data, location }) => {
   let title = 'Website error'
   let description = 'The website didn\'t load correctly'
   let image = ''
@@ -160,10 +156,10 @@ export default function Index() {
     <div className="h-full w-full relative flex items-center justify-center scrollbar-hidden">
       <div className="w-full max-w-2xl fade-in absolute z-20 bg-gray-100" ref={divRef}>
         <Attachment size="object-contain" attachment={{
-          id: "",
           mediaType: "image/",
           url: loaderData.image ,
-          description: "Davide Giovanni Steccanella"
+          description: "Davide Giovanni Steccanella",
+          metadata: {}
         }}></Attachment>
       </div>
       {
