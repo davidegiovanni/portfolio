@@ -17,6 +17,7 @@ import {
   V2_MetaFunction,
   isRouteErrorResponse,
   useLoaderData,
+  useLocation,
   useNavigation,
   useParams,
   useRouteError,
@@ -179,6 +180,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function App() {
   const loaderData = useLoaderData<LoaderData>()
   const params = useParams()
+  const location = useLocation()
 
   const navigation = useNavigation();
 
@@ -300,8 +302,11 @@ export default function App() {
           <Outlet />
         </div>
       </div>
+      {
+
+      }
       <MSPaint isShowingCanvas={isShowingCanvas} />
-      {!isMenuOpen && (
+      {!isMenuOpen && location.pathname.endsWith(loaderData.incomingLocale) && (
           <button className="fixed top-0 right-0 m-4 z-50" onClick={() => setShowCanvas(!isShowingCanvas)}>
             {
               isShowingCanvas ? (
