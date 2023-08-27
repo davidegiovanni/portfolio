@@ -91,15 +91,6 @@ const indexesList = locales.map((l: any) =>
   xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
 >
 ${indexesList}
-  <url>
-    <loc>https://${host}/it-IT/works</loc>
-  </url>
-  <url>
-    <loc>https://${host}/it-IT/contacts</loc>
-  </url>
-  <url>
-    <loc>https://${host}/it-IT/about</loc>
-  </url>
 ${pagesList}
 ${itFeedItemsList} 
 ${itFeedsList}
