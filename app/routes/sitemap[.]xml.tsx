@@ -12,6 +12,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     'it-IT': [
       'it-IT/about',
       'it-IT/works',
+      'it-IT/random',
       'it-IT/contacts'
     ]
   }
@@ -42,6 +43,12 @@ export const loader: LoaderFunction = async ({ request }) => {
     }
     itFeeds.push(itFeedRes)
   }
+  
+  const [randomFeedRes, randomFeedErr] = await safeGet<any>(request, `https://cdn.revas.app/contents/v0/directories/random/feed.json?public_key=01exy3y9j9pdvyzhchkpj9vc5w`)
+  if (randomFeedRes !== null) {
+    throw new Error(`${randomFeedRes.message} ${randomFeedRes.code}, feed: random`);
+  }
+  itFeeds.push(randomFeedRes)
 
   function getSlug (url: string) {
     const parsed = queryString.parse(url)
