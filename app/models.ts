@@ -142,3 +142,27 @@ export class WebPageModel {
   image: string = ''
   sections: WebSectionModel[] = []
 }
+
+export type UILink = {
+  title: string;
+  url: string;
+  isExternal: boolean;
+}
+
+export type UIItem = {
+  title: string,
+  description: string,
+  image: Attachment;
+  slug: string;
+  date_published: string;
+  content: string;
+  id: string;
+}
+
+export type UISection = {
+  title: string,
+  description: string,
+  image: Attachment;
+  link: UILink;
+  id: string;
+}

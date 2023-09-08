@@ -7,6 +7,7 @@ import link from '~/utils/links'
 import { Attachment } from "~/components/Attachment";
 import { useState } from "react";
 import { WebPageModel, WebSectionModel } from "~/models";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 export const links: LinksFunction = () => {
   return link(
@@ -100,13 +101,16 @@ export default function Works() {
   const [isListView, setView] = useState(false)
 
   return (
-    <div className="h-full w-full overflow-y-auto scrollbar-hidden flex flex-wrap items-start justify-start gap-4 lg:gap-0 pb-16 lg:pb-0">
-      <h1 className="sr-only">
-        {mainSection.title}
-      </h1>
+    <div className="h-full w-full overflow-y-auto scrollbar-hidden flex flex-col">
+      <div className="p-4 border-b border-black aspect-square lg:aspect-[3/1] uppercase">
+        <h1>
+          {mainSection.title}
+        </h1>
+      </div>
       {feeds.map((f, index) => (
-          <Link className={'relative flex-grow w-full lg:w-1/3 overflow-hidden text-center gap-4 border-black flex flex-col items-center justify-start uppercase group'} to={`/${params.lang}/works/${f.description}`}>
-            <div className={"w-full relative aspect-square overflow-hidden"}>
+        <Link className={'relative group flex items-center justify-between w-full border-b border-black last:border-0 p-4 uppercase'} to={`/${params.lang}/works/${f.description}`}>
+          <div className="flex items-center justify-start gap-4">
+            <div className={"w-32 aspect-video rounded-full overflow-hidden"}>
               <Attachment size="object-cover" attachment={{
                 mediaType: "image/",
                 url: f.image,
@@ -114,11 +118,15 @@ export default function Works() {
                 metadata: {}
               }}></Attachment>
             </div>
-            <p >
+            <h2>
               {f.title}
-            </p>
-          </Link>
-        ))}
+            </h2>
+          </div>
+          <div className="w-10 h-10 flex rounded-full border border-black group-hover:bg-black group-hover:text-white">
+          <ArrowRightIcon className="w-6 h-6 m-auto" />
+          </div>
+        </Link>
+      ))}
     </div>
   );
 }

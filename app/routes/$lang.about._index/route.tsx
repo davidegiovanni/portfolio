@@ -127,7 +127,7 @@ export default function About() {
             </div>
           </div>
           <div className="w-full lg:w-1/2 lg:overflow-y-auto pb-4 flex flex-col items-stretch justify-start gap-4">
-            <div className="p-4 text-center">
+            <div className="p-4 text-center border-b border-black">
               <h1 className="w-full uppercase font-semibold mb-2 max-w-sm mx-auto" >
                   {loaderData.title}
                 </h1>
@@ -135,9 +135,6 @@ export default function About() {
                   {loaderData.description}
                 </h2>
             </div>
-            <p className="text-center text-2xl">
-            ✏︎ ✳︎ ✏︎
-            </p>
             { loaderData.html !== "" && loaderData.html !== undefined &&
                 <article className="p-4 lg:p-8 block prose-sm prose-a:underline prose-a:underline-offset-2 text-justify mx-auto">
                 {parse(loaderData.html)}

@@ -276,6 +276,11 @@ export default function App() {
                 Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella </a>
               </p>
               <ul className="w-full flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center justify-center h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+                  <NavLink to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className={({ isActive }) =>
+                    `block`
+                  }>
+                    HOME
+                  </NavLink>
                 {loaderData.links.map((link, index) => (
                   <li key={index} onClick={() => togglemenuOpen(false)}>
                     {

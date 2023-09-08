@@ -187,53 +187,55 @@ export default function FeedPage() {
   const params = useParams()
 
   return (
-    <div className="h-full w-full overflow-y-auto text-center uppercase scrollbar-hidden flex flex-col gap-4">
+    <div className="h-full w-full overflow-y-auto text-center uppercase scrollbar-hidden">
       <Link to={`/${params.lang}/works`} className="absolute top-0 left-0 z-50 m-2">
         <p className="sr-only">
           Close
         </p>
           ✕
         </Link>
-      <h1 className="font-semibold pt-4">
-        {loaderData.title}
-      </h1>
-      {
-        loaderData.description !== "" &&
-        <h2 className="max-w-prose mx-auto">
-          {loaderData.description}
-        </h2>
-      }
-      {
-        loaderData.link !== null && (
-          <div className="inline-block text-[blue]">
-            {
-              loaderData.link.isExternal ? (
-                <a href={loaderData.link.url} >
-                  {loaderData.link.title}
-                </a>
-              ) : (
-                <Link to={loaderData.link.url} >
-                  {loaderData.link.title}
-                </Link>
-              )
-            }
-          </div>
-        )
-      }
-      <div className="w-full h-full mx-auto">
+      <div className="w-full h-full sticky top-0 flex flex-col gap-4 items-center justify-center px-4">
+        <h1 className="font-semibold">
+          {loaderData.title}
+        </h1>
         {
-          loaderData.works.map((i, index: any) => (
-            <NavLink key={index} to={`${i.slug}`} className={'block aspect-video'}>
-              <Attachment size="object-contain" attachment={{
-                  mediaType: "image/",
-                  url: i.image,
-                  description: i.slug,
-                  metadata: {}
-                }}></Attachment>
-            </NavLink>
-          ))
+          loaderData.description !== "" &&
+          <h2 className="max-w-prose">
+            {loaderData.description}
+          </h2>
+        }
+        {
+          loaderData.link !== null && (
+            <div className="inline-block text-[blue]">
+              {
+                loaderData.link.isExternal ? (
+                  <a href={loaderData.link.url} >
+                    {loaderData.link.title}
+                  </a>
+                ) : (
+                  <Link to={loaderData.link.url} >
+                    {loaderData.link.title}
+                  </Link>
+                )
+              }
+            </div>
+          )
         }
       </div>
+      {
+          loaderData.works.map((i, index: any) => (
+            <div data-index={index % 3} className={`w-full h-full origin-center sticky top-0 overflow-hidden`}>
+              <NavLink key={index} to={`${i.slug}`} className={'h-full'}>
+                <Attachment attachment={{
+                    mediaType: "image/",
+                    url: i.image,
+                    description: i.slug,
+                    metadata: {}
+                  }}></Attachment>
+              </NavLink>
+            </div>
+          ))
+        }
     </div>
   );
 }
