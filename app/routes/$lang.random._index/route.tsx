@@ -176,7 +176,7 @@ export default function FeedPage() {
     loaderData.works.forEach((work, index) => {
       const imageCard = document.getElementById(`image-card-${index}`)
       if (imageCard) {
-        animate(imageCard, { opacity: 100 }, { duration: 0.5, delay: index * 0.3})
+        animate(imageCard, { opacity: 100 }, { duration: 0.5, delay: 1, ease: "circOut"})
       }
     })
   }, [])
@@ -234,8 +234,8 @@ export default function FeedPage() {
                     mass: 20,
                   }
                 }}
-                className="absolute opacity-0">
-                <NavLink to={`${i.slug}`} className="aspect-square overflow-hidden">
+                className="absolute opacity-0 will-change-transform">
+                <NavLink to={`${i.slug}`} className="aspect-square overflow-hidden" >
                   <div className="w-32 mx-auto">
                     <Attachment size="object-contain" attachment={{
                       mediaType: "image/",

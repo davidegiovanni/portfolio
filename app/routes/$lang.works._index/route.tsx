@@ -5,9 +5,11 @@ import { loadTranslations } from "~/helpers/i18n";
 import metadata from '~/utils/metadata'
 import link from '~/utils/links'
 import { Attachment } from "~/components/Attachment";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { WebPageModel, WebSectionModel } from "~/models";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { scatterDivsRandomly } from "~/utils/helpers";
+import { motion } from "framer-motion";
 
 export const links: LinksFunction = () => {
   return link(
@@ -98,35 +100,69 @@ export default function Works() {
   const params = useParams()
   const location = useLocation()
 
-  const [isListView, setView] = useState(false)
+  const constraintRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    scatterDivsRandomly("scattered")
+  })
 
   return (
-    <div className="h-full w-full overflow-y-auto scrollbar-hidden flex flex-col">
-      <div className="p-4 border-b border-black aspect-square lg:aspect-[3/1] uppercase">
-        <h1>
-          {mainSection.title}
-        </h1>
+    <div ref={constraintRef} id="scattered" className="h-full w-full overflow-hidden scrollbar-hidden flex flex-col">
+      <h1 className="sr-only">
+        {mainSection.title}
+      </h1>
+      <div id="scattered" className="h-full w-full overflow-x-hidden">
+        {feeds.map((f, index) => (
+          <motion.div
+            drag={true}
+            dragConstraints={constraintRef}
+            whileDrag={{ pointerEvents: "none"}}
+            whileHover={{
+              zIndex: 90
+            }}
+            whileTap={{
+              zIndex: 90
+            }}
+            className="w-full aspect-video max-w-screen-sm absolute will-change-transform">
+            <Link className={'w-full h-full block'} to={`/${params.lang}/works/${f.description}`}>
+                <motion.div 
+                  whileHover={{
+                    scale: 1.1,
+                    boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                    zIndex: 90,
+                    transition: {
+                      duration: 0.3,
+                      delay: 0.1,
+                      ease: "easeInOut",
+                      mass: 20,
+                    }
+                  }}
+                  whileTap={{
+                    scale: 1.1,
+                    boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                    zIndex: 90,
+                    transition: {
+                      duration: 0.3,
+                      delay: 0.1,
+                      ease: "easeInOut",
+                      mass: 20,
+                    }
+                  }}
+                  className={"w-full h-full"}>
+                  <Attachment size="object-cover" attachment={{
+                    mediaType: "image/",
+                    url: f.image,
+                    description: f.title,
+                    metadata: {}
+                  }}></Attachment>
+                </motion.div>
+                <h2 className="sr-onl">
+                  {f.title}
+                </h2>
+            </Link>
+          </motion.div>
+        ))}
       </div>
-      {feeds.map((f, index) => (
-        <Link className={'relative group flex items-center justify-between w-full border-b border-black last:border-0 p-4 uppercase'} to={`/${params.lang}/works/${f.description}`}>
-          <div className="flex items-center justify-start gap-4">
-            <div className={"w-32 aspect-video rounded-full overflow-hidden"}>
-              <Attachment size="object-cover" attachment={{
-                mediaType: "image/",
-                url: f.image,
-                description: f.title,
-                metadata: {}
-              }}></Attachment>
-            </div>
-            <h2>
-              {f.title}
-            </h2>
-          </div>
-          <div className="w-10 h-10 flex rounded-full border border-black group-hover:bg-black group-hover:text-white">
-          <ArrowRightIcon className="w-6 h-6 m-auto" />
-          </div>
-        </Link>
-      ))}
     </div>
   );
 }

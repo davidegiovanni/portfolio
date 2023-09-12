@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Attachment as AttachmentType } from "~/models";
+import { motion } from "framer-motion";
 
 
 type AttachmentProps = {
@@ -27,9 +28,7 @@ export function Attachment(props: AttachmentProps) {
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
   useEffect(() => {
-    const image = document.getElementById(id) as HTMLElement
     const imageElement = document.getElementById(`src-${id}`) as HTMLImageElement
-    const top = image === null ? 0 : image.getBoundingClientRect().top
 
     if (imageElement.complete) {
       setIsLoaded(true)
@@ -38,13 +37,15 @@ export function Attachment(props: AttachmentProps) {
         setIsLoaded(true)
       };
     }
-    if (top > 0 && top < window.innerHeight) {
-      isLoadingLazy = false
-    }
   })
 
   return (
-    <figure id={id} className="w-full h-full relative" role="figure">
+    <motion.figure
+      initial={{ display: "hidden", opacity: 0}}
+      whileInView={{ display: "block", opacity: 1}}
+      id={id}
+      className="w-full h-full relative"
+      role="figure">
       {props.attachment.mediaType.startsWith("image/") && (
         <picture id={id} className="h-full w-full">
           <source
@@ -87,6 +88,6 @@ export function Attachment(props: AttachmentProps) {
           </div>
         )
       }
-    </figure>
+    </motion.figure>
   );
 }

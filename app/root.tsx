@@ -25,12 +25,13 @@ import {
 import { cssBundleHref } from "@remix-run/css-bundle";
 
 import tailwind from "./styles/tailwind.css"
-import { createMouseFollower, fluidType, getContrast, isExternalLink } from "./utils/helpers";
+import { createMouseFollower, fluidType, getContrast, isExternalLink, useFollowPointer } from "./utils/helpers";
 import { page, website } from "./api";
 import { Page, Website } from "./models";
 import { DynamicLinks } from "./utils/dynamic-links";
 import defaultCss from "./default.css";
 import MSPaint from "./components/PaintCanvas";
+import { motion } from "framer-motion";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -230,22 +231,32 @@ export default function App() {
   const [isMenuOpen, togglemenuOpen] = useState<boolean>(false)
 
   const followerDivRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const supportsHover = window.matchMedia("(hover: hover)").matches;
-
-    if (!supportsHover || !followerDivRef.current) {
-      return; // Exit the useEffect hook if hover is not supported or the ref is not available
-    }
-
-    if (followerDivRef.current) {
-      createMouseFollower(followerDivRef.current);
-    }
-  }, []);
+  const { x, y } = useFollowPointer(followerDivRef)
 
   const cursor = loaderData.cursor
   return (
     <Document lang={loaderData.incomingLocale} favicon={loaderData.favicon} fontUrl={loaderData.fontUrl}>
+      {
+        cursor === "" && 
+          <motion.div
+            ref={followerDivRef}
+            className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] bg-black rounded-full pointer-events-none select-none origin-top-left cursor-none" />
+      }
+      {
+        cursor !== "" && (
+          <motion.div
+            ref={followerDivRef}
+            animate={{ x, y }}
+            transition={{
+              type: "tween",
+              ease: "linear",
+              duration: 0
+            }}
+            className="hidden fixed top-0 left-0 xl:block w-12 h-12 z-[1000] pointer-events-none select-none cursor-none will-change-transform">
+            <img className="translate-x-[50%] translate-y-[50%]" src={cursor} alt="Cursor" />
+          </motion.div>
+        )
+      }
       <div style={style} className="fixed inset-0 overflow-hidden  selection:bg-slate-100 w-full h-full flex flex-col-reverse font-default cursor-none">
         {(navigationStart || navigationEnd) && (
           <div
@@ -322,16 +333,6 @@ export default function App() {
             }
           </button>
         )}
-      {
-        cursor === "" && <div ref={followerDivRef} className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] bg-black rounded-full pointer-events-none select-none origin-top-left cursor-none" />
-      }
-      {
-        cursor !== "" && (
-          <div ref={followerDivRef} className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] pointer-events-none select-none origin-top-left cursor-none">
-            <img src={cursor} alt="Cursor" />
-          </div>
-        )
-      }
     </Document>
   )
 }

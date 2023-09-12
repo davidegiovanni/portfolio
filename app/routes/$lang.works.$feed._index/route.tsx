@@ -6,6 +6,8 @@ import { Attachment } from "~/components/Attachment";
 import { feed, page } from "~/api";
 import { Page, Feed } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
+import { motion, useAnimate, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 // create the dynamicLinks function with the correct type
 // note: loader type is optional
@@ -186,56 +188,78 @@ export default function FeedPage() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
 
+  const containerRef = useRef(null);
+
   return (
-    <div className="h-full w-full overflow-y-auto text-center uppercase scrollbar-hidden">
+    <div className="h-full w-full overflow-hidden text-center uppercase">
       <Link to={`/${params.lang}/works`} className="absolute top-0 left-0 z-50 m-2">
         <p className="sr-only">
           Close
         </p>
           ✕
-        </Link>
-      <div className="w-full h-full sticky top-0 flex flex-col gap-4 items-center justify-center px-4">
-        <h1 className="font-semibold">
-          {loaderData.title}
-        </h1>
+      </Link>
+      <div ref={containerRef} className="w-full h-full overflow-y-auto overflow-x-hidden">
+        <div className="w-full h-full sticky top-0 flex flex-col gap-4 items-center justify-center px-4">
+          <h1 className="font-semibold">
+            {loaderData.title}
+          </h1>
+          {
+            loaderData.description !== "" &&
+            <h2 className="max-w-prose">
+              {loaderData.description}
+            </h2>
+          }
+          {
+            loaderData.link !== null && (
+              <div className="inline-block text-[blue]">
+                {
+                  loaderData.link.isExternal ? (
+                    <a href={loaderData.link.url} >
+                      {loaderData.link.title}
+                    </a>
+                  ) : (
+                    <Link to={loaderData.link.url} >
+                      {loaderData.link.title}
+                    </Link>
+                  )
+                }
+              </div>
+            )
+          }
+        </div>
         {
-          loaderData.description !== "" &&
-          <h2 className="max-w-prose">
-            {loaderData.description}
-          </h2>
-        }
-        {
-          loaderData.link !== null && (
-            <div className="inline-block text-[blue]">
-              {
-                loaderData.link.isExternal ? (
-                  <a href={loaderData.link.url} >
-                    {loaderData.link.title}
-                  </a>
-                ) : (
-                  <Link to={loaderData.link.url} >
-                    {loaderData.link.title}
-                  </Link>
-                )
-              }
-            </div>
-          )
-        }
+            loaderData.works.map((i, index: any) => (
+              <ScrollingImage key={index} image={i.image} slug={i.slug} index={index} container={containerRef} />
+            ))
+          }
       </div>
-      {
-          loaderData.works.map((i, index: any) => (
-            <div data-index={index % 3} className={`w-full h-full origin-center sticky top-0 overflow-hidden`}>
-              <NavLink key={index} to={`${i.slug}`} className={'h-full'}>
-                <Attachment attachment={{
-                    mediaType: "image/",
-                    url: i.image,
-                    description: i.slug,
-                    metadata: {}
-                  }}></Attachment>
-              </NavLink>
-            </div>
-          ))
-        }
     </div>
   );
+}
+
+function ScrollingImage (props: { image: string; slug: string; index: number, container: React.MutableRefObject<null>}) {
+  const index = props.index
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    container: props.container,
+    target: ref,
+    offset: ["start end", "start start"]
+  });
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, (index % 3 === 0 ? 10 : index % 3 === 1 ? -10 : 4) + index])
+  
+  return (
+    <div ref={ref} className="w-screen h-screen max-w-screen-md mx-auto sticky top-0 inset-x-0">
+      <motion.div
+        data-index={index % 3}
+        style={{ zIndex: index + 1, rotate }}
+        className={`drop-shadow-xl w-full h-full will-change-transform origin-center`}>
+        <Attachment attachment={{
+          mediaType: "image/",
+          url: props.image,
+          description: props.slug,
+          metadata: {}
+        }}></Attachment>
+      </motion.div>
+    </div>
+  )
 }
