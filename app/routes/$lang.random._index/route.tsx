@@ -182,7 +182,7 @@ export default function FeedPage() {
   }, [])
 
   return (
-    <div ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-y-auto overflow-x-hidden relative text-center py-1 scrollbar-hidden">
+    <div ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-hidden relative text-center py-1 scrollbar-hidden">
         <h1 className="sr-only">
           {loaderData.title}
         </h1>
