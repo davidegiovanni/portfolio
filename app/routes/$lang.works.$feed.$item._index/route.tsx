@@ -3,7 +3,7 @@ import { Link, useLoaderData, useParams, V2_MetaFunction } from "@remix-run/reac
 import queryString from 'query-string'
 
 import metadata from '~/utils/metadata'
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { feed } from "~/api";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import ZoomableImage from "~/components/zommable";
@@ -130,12 +130,12 @@ export default function ItemPage() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
 
-  const [isZoom, setZoom] = useState(false)
+  const constraintRef = useRef<HTMLDivElement>(null)
   const previous = loaderData.previous
   const next = loaderData.next
 
   return (
-    <div className={`h-full w-full overflow-hidden`}>
+    <div ref={constraintRef} className={`h-full w-full overflow-hidden`}>
       <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-lg lg:text-base">
         <div className="flex items-center">
           <Link to={`/${params.lang}/works/${params.feed}`} >
@@ -169,7 +169,7 @@ export default function ItemPage() {
           url: loaderData.image,
           description: loaderData.title,
           metadata: {}
-        }}></ZoomableImage>
+        }} dragConstraints={constraintRef}></ZoomableImage>
         </div>
     </div>
   );

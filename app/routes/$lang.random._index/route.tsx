@@ -6,7 +6,8 @@ import { Attachment } from "~/components/Attachment";
 import { feed, page } from "~/api";
 import { Page, Feed } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { motion, animate } from "framer-motion"
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -166,22 +167,22 @@ export default function FeedPage() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
 
+  const constraintRef = useRef<HTMLDivElement>(null)
+
   // const draggableDivRefs = useRef(Array(loaderData.works.length).fill(null));
 
   useEffect(() => {
     scatterDivsRandomly("scattered")
-
-    // draggableDivRefs.current.forEach((ref) => {
-    //   if (ref) {
-    //     makeDivDraggable(ref);
-    //   }
-    // });
-
-    //nel div: ref={(ref) => (draggableDivRefs.current[index] = ref)}
+    loaderData.works.forEach((work, index) => {
+      const imageCard = document.getElementById(`image-card-${index}`)
+      if (imageCard) {
+        animate(imageCard, { opacity: 100 }, { duration: 0.5, delay: index * 0.3})
+      }
+    })
   }, [])
 
   return (
-    <div className="h-full w-full flex flex-col bg-white gap-4 overflow-y-auto overflow-x-hidden relative text-center py-1 scrollbar-hidden">
+    <div ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-y-auto overflow-x-hidden relative text-center py-1 scrollbar-hidden">
         <h1 className="sr-only">
           {loaderData.title}
         </h1>
@@ -205,7 +206,35 @@ export default function FeedPage() {
         <div id="scattered">
           {
             loaderData.works.map((i, index: any) => (
-              <div key={index} id={`id-${index}`}  className="absolute hover:z-[90] hover:scale-110 hover:shadow-2xl transition-transform ease-in-out duration-300">
+              <motion.div
+                key={index}
+                id={`image-card-${index}`}
+                drag={true}
+                dragConstraints={constraintRef}
+                whileDrag={{ pointerEvents: "none"}}
+                whileHover={{
+                  scale: 1.1,
+                  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                  zIndex: 90,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.1,
+                    ease: "easeInOut",
+                    mass: 20,
+                  }
+                }}
+                whileTap={{
+                  scale: 1.1,
+                  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                  zIndex: 90,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.1,
+                    ease: "easeInOut",
+                    mass: 20,
+                  }
+                }}
+                className="absolute opacity-0">
                 <NavLink to={`${i.slug}`} className="aspect-square overflow-hidden">
                   <div className="w-32 mx-auto">
                     <Attachment size="object-contain" attachment={{
@@ -216,7 +245,7 @@ export default function FeedPage() {
                     }}></Attachment>
                   </div>
                 </NavLink>
-              </div>
+              </motion.div>
             ))
           }
         </div>

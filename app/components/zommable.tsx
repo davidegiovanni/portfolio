@@ -2,19 +2,18 @@ import React, { useState, MouseEvent, useRef, useEffect } from 'react';
 import { Attachment } from '~/models';
 import { Attachment as AttachmentComponent } from './Attachment';
 import { makeDivDraggable } from '~/utils/helpers';
+import { motion, animate } from "framer-motion"
 
 type AttachmentProps = {
   attachment: Attachment;
   align?: string;
   size?: string;
   dimensions?: string;
+  dragConstraints: React.RefObject<HTMLDivElement>
 };
 
 function ZoomableImage(props: AttachmentProps) {
   const [isZoomed, setIsZoomed] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const divRef = useRef<HTMLDivElement>(null);
 
   const handleDoubleClick = (e: MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
@@ -24,46 +23,30 @@ function ZoomableImage(props: AttachmentProps) {
       setIsZoomed(true);
     } else {
       setIsZoomed(false);
-      setIsDragging(false);
-      setPosition({ x: 0, y: 0 });
     }
   };
 
-  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-
-    e.preventDefault();
-    setIsDragging(true);
-    setInitialPosition({ x: e.clientX - position.x, y: e.clientY - position.y });
-  };
-
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (isDragging) {
-      setPosition({ x: e.clientX - initialPosition.x, y: e.clientY - initialPosition.y });
+  useEffect(() => {
+    const imageCard = document.getElementById(`imageCard`)
+    if (imageCard) {
+      animate(imageCard, { scale: isZoomed ? 4 : 1 }, { duration: 0.5, delay: 0.1, stiffness: 10, bounce: 10})
     }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+  }, [isZoomed])
 
   return (
     <div
-      className={`image-container ${isZoomed ? "scale-[2] lg:scale-[4]" : ""} w-full h-full relative`}
+    id="imageCard"
+      className={`image-container w-full h-full relative`}
       onDoubleClick={handleDoubleClick}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
     >
-      <div ref={divRef} style={{
-        transform: isZoomed ? `translate(${position.x}px, ${position.y}px)` : 'none',
-      }} className='h-full w-full relative'>
+      <motion.div drag={isZoomed} dragSnapToOrigin dragConstraints={isZoomed ? undefined : props.dragConstraints} ref={divRef} className='h-full w-full relative'>
         <AttachmentComponent attachment={{
-          id: '',
           mediaType: 'image/',
           url: props.attachment.url,
-          description: ''
+          description: '',
+          metadata: {}
         }}></AttachmentComponent>
-      </div>
+      </motion.div>
     </div>
   );
 };

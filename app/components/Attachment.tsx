@@ -83,7 +83,7 @@ export function Attachment(props: AttachmentProps) {
       )}
       {
         !isLoaded && (
-          <div className="absolute inset-0 mx-auto my-auto w-4 h-4 blur-md bg-black animate-pulsing">
+          <div className="w-full h-full blur-md bg-neutral-200 aspect-video">
           </div>
         )
       }
