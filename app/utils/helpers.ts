@@ -215,8 +215,8 @@ function scatterDivsRandomly(parentId: string) {
     return;
   }
 
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
+  const viewportWidth = parentDiv.getBoundingClientRect().width;
+  const viewportHeight = parentDiv.getBoundingClientRect().height;
 
   const divs = parentDiv.querySelectorAll("div");
 

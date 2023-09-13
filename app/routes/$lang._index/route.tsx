@@ -8,6 +8,7 @@ import { page, website } from "~/api";
 import { Page, Website } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import MSPaint from "~/components/PaintCanvas";
+import { motion } from "framer-motion";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -127,42 +128,21 @@ export default function Index() {
   const loaderData = useLoaderData<LoaderData>();
 
   const divRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const draggableDiv = divRef.current;
-
-    if (draggableDiv) {
-      const { handleMouseDown, handleMouseMove, handleMouseUp } = makeDivDraggable(draggableDiv);
-
-      draggableDiv.addEventListener('mousedown', handleMouseDown);
-      draggableDiv.addEventListener('touchstart', handleMouseDown);
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('touchmove', handleMouseMove, { passive: false });
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchend', handleMouseUp);
-
-      return () => {
-        draggableDiv.removeEventListener('mousedown', handleMouseDown);
-        draggableDiv.removeEventListener('touchstart', handleMouseDown);
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('touchmove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.removeEventListener('touchend', handleMouseUp);
-      };
-    }
-
-  }, []);
+  let constraintRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div className="h-full w-full relative flex items-center justify-center scrollbar-hidden">
-      <div className="w-full max-w-2xl fade-in absolute z-20 bg-gray-100" ref={divRef}>
+    <div ref={constraintRef} className="h-full w-full relative flex items-center justify-center scrollbar-hidden">
+      <motion.div 
+        drag={true}
+        dragConstraints={constraintRef}
+        className="w-full max-w-2xl fade-in absolute z-20 bg-gray-100" ref={divRef}>
         <Attachment size="object-contain" attachment={{
           mediaType: "image/",
           url: loaderData.image ,
           description: "Davide Giovanni Steccanella",
           metadata: {}
         }}></Attachment>
-      </div>
+      </motion.div>
       {
         loaderData.backImage !== "" && (
           <div className="relative z-10 w-24 lg:w-32 fade-in">

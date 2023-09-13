@@ -6,7 +6,7 @@ import { Attachment } from "~/components/Attachment";
 import { feed, page } from "~/api";
 import { Page, Feed } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
-import { motion, useAnimate, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, MotionValue, useAnimate, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 // create the dynamicLinks function with the correct type
@@ -243,17 +243,17 @@ function ScrollingImage (props: { image: string; slug: string; index: number, co
   const { scrollYProgress } = useScroll({
     container: props.container,
     target,
-    offset: ["start end", "start start"],
+    offset: ["start center", "start start"],
     layoutEffect: false,
   });
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, (index % 3 === 0 ? 10 : index % 3 === 1 ? -10 : 4) + index])
-  
+  let rotate = useTransform(scrollYProgress, [0, 1], [0, (index % 3 === 0 ? 10 : index % 3 === 1 ? -10 : 4) + index])
+  rotate = useSpring(rotate)
   return (
     <div ref={target} className="w-screen h-screen max-w-screen-md mx-auto sticky top-0 inset-x-0">
       <motion.div
         data-index={index % 3}
         style={{ zIndex: index + 1, rotate }}
-        className={`drop-shadow-xl w-full h-full will-change-transform origin-center`}>
+        className={`w-full h-full origin-center will-change-transform`}>
         <Attachment attachment={{
           mediaType: "image/",
           url: props.image,

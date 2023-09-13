@@ -111,7 +111,7 @@ export default function Works() {
       <h1 className="sr-only">
         {mainSection.title}
       </h1>
-      <div id="scattered" className="h-full w-full overflow-x-hidden">
+      <div className="h-full w-full overflow-x-hidden">
         {feeds.map((f, index) => (
           <motion.div
             drag={true}

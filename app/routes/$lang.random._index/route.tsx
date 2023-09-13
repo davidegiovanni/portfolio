@@ -182,7 +182,7 @@ export default function FeedPage() {
   }, [])
 
   return (
-    <div ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-hidden relative text-center py-1 scrollbar-hidden">
+    <div id="scattered" ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-hidden relative text-center py-1 scrollbar-hidden">
         <h1 className="sr-only">
           {loaderData.title}
         </h1>
@@ -203,7 +203,7 @@ export default function FeedPage() {
             }}></Attachment>
           </div>
         }
-        <div id="scattered">
+        <div>
           {
             loaderData.works.map((i, index: any) => (
               <motion.div
