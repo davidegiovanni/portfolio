@@ -192,17 +192,6 @@ export default function FeedPage() {
             {loaderData.description}
           </h2>
         }
-        {
-          loaderData.image !== "" &&
-          <div className="w-full aspect-[5/2]">
-            <Attachment size="object-contain" attachment={{
-              mediaType: "image/",
-              url: loaderData.image,
-              description: loaderData.title,
-              metadata: {}
-            }}></Attachment>
-          </div>
-        }
         <div>
           {
             loaderData.works.map((i, index: any) => (
@@ -212,9 +201,10 @@ export default function FeedPage() {
                 drag={true}
                 dragConstraints={constraintRef}
                 whileDrag={{ pointerEvents: "none"}}
+                initial={{ filter: "drop-shadow(0 0 #0000)"}}
                 whileHover={{
                   scale: 1.1,
-                  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                  filter: "drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))",
                   zIndex: 90,
                   transition: {
                     duration: 0.3,
@@ -225,7 +215,7 @@ export default function FeedPage() {
                 }}
                 whileTap={{
                   scale: 1.1,
-                  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                  filter: "drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))",
                   zIndex: 90,
                   transition: {
                     duration: 0.3,
@@ -234,9 +224,9 @@ export default function FeedPage() {
                     mass: 20,
                   }
                 }}
-                className="absolute opacity-0 will-change-transform">
-                <NavLink to={`${i.slug}`} className="aspect-square overflow-hidden" >
-                  <div className="w-32 mx-auto">
+                className="w-32 absolute aspect-square opacity-0 will-change-transform">
+                <NavLink to={`${i.slug}`} className="h-full w-full overflow-hidden" >
+                  <div className="h-full w-full mx-auto">
                     <Attachment size="object-contain" attachment={{
                       mediaType: "image/",
                       url: i.image,
