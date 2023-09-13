@@ -239,16 +239,17 @@ export default function FeedPage() {
 
 function ScrollingImage (props: { image: string; slug: string; index: number, container: React.MutableRefObject<null>}) {
   const index = props.index
-  const ref = useRef(null);
+  const target = useRef(null);
   const { scrollYProgress } = useScroll({
     container: props.container,
-    target: ref,
-    offset: ["start end", "start start"]
+    target,
+    offset: ["start end", "start start"],
+    layoutEffect: false,
   });
   const rotate = useTransform(scrollYProgress, [0, 1], [0, (index % 3 === 0 ? 10 : index % 3 === 1 ? -10 : 4) + index])
   
   return (
-    <div ref={ref} className="w-screen h-screen max-w-screen-md mx-auto sticky top-0 inset-x-0">
+    <div ref={target} className="w-screen h-screen max-w-screen-md mx-auto sticky top-0 inset-x-0">
       <motion.div
         data-index={index % 3}
         style={{ zIndex: index + 1, rotate }}
