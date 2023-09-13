@@ -224,16 +224,14 @@ export default function FeedPage() {
                     mass: 20,
                   }
                 }}
-                className="w-32 absolute aspect-square opacity-0 will-change-transform">
-                <NavLink to={`${i.slug}`} className="h-full w-full overflow-hidden" >
-                  <div className="h-full w-full mx-auto">
+                className="w-32 absolute h-32 opacity-0 will-change-transform">
+                <NavLink to={`${i.slug}`} className="w-32 h-32 overflow-hidden block" >
                     <Attachment size="object-contain" attachment={{
                       mediaType: "image/",
                       url: i.image,
                       description: i.slug,
                       metadata: {}
                     }}></Attachment>
-                  </div>
                 </NavLink>
               </motion.div>
             ))

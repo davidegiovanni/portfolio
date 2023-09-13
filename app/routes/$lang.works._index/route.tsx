@@ -111,58 +111,56 @@ export default function Works() {
       <h1 className="sr-only">
         {mainSection.title}
       </h1>
-      <div className="h-full w-full overflow-x-hidden">
-        {feeds.map((f, index) => (
-          <motion.div
-            drag={true}
-            dragConstraints={constraintRef}
-            whileDrag={{ pointerEvents: "none"}}
-            whileHover={{
-              zIndex: 90
-            }}
-            whileTap={{
-              zIndex: 90
-            }}
-            className="w-full aspect-video max-w-screen-sm absolute will-change-transform">
-            <Link className={'w-full h-full block'} to={`/${params.lang}/works/${f.description}`}>
-                <motion.div 
-                  whileHover={{
-                    scale: 1.1,
-                    boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-                    zIndex: 90,
-                    transition: {
-                      duration: 0.3,
-                      delay: 0.1,
-                      ease: "easeInOut",
-                      mass: 20,
-                    }
-                  }}
-                  whileTap={{
-                    scale: 1.1,
-                    boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-                    zIndex: 90,
-                    transition: {
-                      duration: 0.3,
-                      delay: 0.1,
-                      ease: "easeInOut",
-                      mass: 20,
-                    }
-                  }}
-                  className={"w-full h-full"}>
-                  <Attachment size="object-cover" attachment={{
-                    mediaType: "image/",
-                    url: f.image,
-                    description: f.title,
-                    metadata: {}
-                  }}></Attachment>
-                </motion.div>
-                <h2 className="sr-onl">
-                  {f.title}
-                </h2>
-            </Link>
-          </motion.div>
-        ))}
-      </div>
+      {feeds.map((f, index) => (
+        <motion.div
+          drag={true}
+          dragConstraints={constraintRef}
+          whileDrag={{ pointerEvents: "none"}}
+          whileHover={{
+            zIndex: 90
+          }}
+          whileTap={{
+            zIndex: 90
+          }}
+          className="w-full aspect-video max-w-screen-sm absolute will-change-transform">
+          <Link className={'w-full h-full block'} to={`/${params.lang}/works/${f.description}`}>
+              <motion.div 
+                whileHover={{
+                  scale: 1.1,
+                  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                  zIndex: 90,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.1,
+                    ease: "easeInOut",
+                    mass: 20,
+                  }
+                }}
+                whileTap={{
+                  scale: 1.1,
+                  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+                  zIndex: 90,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.1,
+                    ease: "easeInOut",
+                    mass: 20,
+                  }
+                }}
+                className={"w-full h-full"}>
+                <Attachment size="object-cover" attachment={{
+                  mediaType: "image/",
+                  url: f.image,
+                  description: f.title,
+                  metadata: {}
+                }}></Attachment>
+              </motion.div>
+              <h2 className="sr-onl">
+                {f.title}
+              </h2>
+          </Link>
+        </motion.div>
+      ))}
     </div>
   );
 }

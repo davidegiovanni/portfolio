@@ -131,11 +131,11 @@ export default function Index() {
   let constraintRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div ref={constraintRef} className="h-full w-full relative flex items-center justify-center scrollbar-hidden">
+    <div ref={constraintRef} className="h-full w-full relative flex items-center justify-center scrollbar-hidden overflow-hidden">
       <motion.div 
         drag={true}
         dragConstraints={constraintRef}
-        className="w-full max-w-2xl fade-in absolute z-20 bg-gray-100" ref={divRef}>
+        className="w-full h-full max-w-2xl fade-in absolute z-20 bg-gray-100" ref={divRef}>
         <Attachment size="object-contain" attachment={{
           mediaType: "image/",
           url: loaderData.image ,
