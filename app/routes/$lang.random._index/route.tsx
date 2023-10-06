@@ -1,7 +1,7 @@
 import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
-import { NavLink, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
+import { Link, NavLink, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
 import metadata from '~/utils/metadata'
-import { getSlug, isExternalLink, scatterDivsRandomly } from '~/utils/helpers'
+import { getSlug, isExternalLink, useScatterDivsRandomly } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
 import { feed, page } from "~/api";
 import { Page, Feed } from "~/models";
@@ -171,17 +171,7 @@ export default function FeedPage() {
 
   const constraintRef = useRef<HTMLDivElement>(null)
 
-  // const draggableDivRefs = useRef(Array(loaderData.works.length).fill(null));
-
-  useEffect(() => {
-    scatterDivsRandomly("scattered")
-    loaderData.works.forEach((work, index) => {
-      const imageCard = document.getElementById(`image-card-${index}`)
-      if (imageCard) {
-        animate(imageCard, { opacity: 100 }, { duration: 0.5, delay: 1, ease: "circOut"})
-      }
-    })
-  }, [])
+  useScatterDivsRandomly({parentRef: constraintRef})
 
   const portofolioSchema = {
     "@context": "https://schema.org",
@@ -202,7 +192,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div id="scattered" ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-hidden relative text-center py-1 scrollbar-hidden">
+    <div ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-hidden relative text-center">
         <StructuredData schema={portofolioSchema} />
         <h1 className="sr-only">
           {loaderData.title}
@@ -213,9 +203,9 @@ export default function FeedPage() {
             {loaderData.description}
           </h2>
         }
-        <div>
-          {
-            loaderData.works.map((i, index: any) => (
+        {
+          loaderData.works.map((i, index: any) => (
+            <Link to={`${i.slug}`} >
               <motion.div
                 key={index}
                 id={`image-card-${index}`}
@@ -245,19 +235,17 @@ export default function FeedPage() {
                     mass: 20,
                   }
                 }}
-                className="w-32 absolute h-32 opacity-0 will-change-transform">
-                <NavLink to={`${i.slug}`} className="w-32 h-32 overflow-hidden block" >
+                className="w-32 absolute h-32 will-change-transform">
                     <Attachment size="object-contain" attachment={{
                       mediaType: "image/",
                       url: i.image,
                       description: i.slug,
                       metadata: {}
                     }}></Attachment>
-                </NavLink>
               </motion.div>
-            ))
-          }
-        </div>
+            </Link>
+          ))
+        }
     </div>
   );
 }

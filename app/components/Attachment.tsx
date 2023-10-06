@@ -44,7 +44,8 @@ export function Attachment(props: AttachmentProps) {
       initial={{ display: "hidden", opacity: 0}}
       whileInView={{ display: "block", opacity: 1}}
       id={id}
-      className="w-full h-full relative"
+      data-loaded={isLoaded}
+      className="w-full h-full relative data-[loaded=false]:bg-gray-50"
       role="figure">
       {props.attachment.mediaType.startsWith("image/") && (
         <picture id={id} className="h-full w-full">
@@ -82,12 +83,6 @@ export function Attachment(props: AttachmentProps) {
           allowFullScreen
         ></iframe>
       )}
-      {
-        !isLoaded && (
-          <div className="w-full h-full blur-md bg-neutral-200 aspect-video">
-          </div>
-        )
-      }
     </motion.figure>
   );
 }

@@ -67,7 +67,6 @@ ${page}
 `
 ).join("")
 }
-</urlset>
 `.trim()
 
   // Return the response with the content, a status 200 message, and the appropriate headers for an XML page

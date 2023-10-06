@@ -170,7 +170,7 @@ export default function Index() {
       <motion.div 
         drag={true}
         dragConstraints={constraintRef}
-        className="w-full h-full max-w-2xl fade-in absolute z-20" ref={divRef}>
+        className="w-full max-w-2xl fade-in absolute z-20" ref={divRef}>
         <Attachment size="object-contain" attachment={{
           mediaType: "image/",
           url: loaderData.image ,

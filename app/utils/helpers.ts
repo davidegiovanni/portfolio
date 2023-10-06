@@ -208,34 +208,41 @@ function createMouseFollower(followerDiv: HTMLElement) {
   followerDiv.style.transition = "transform 0.7s ease"
 }
 
-function scatterDivsRandomly(parentId: string) {
-  const parentDiv = document.getElementById(parentId);
-  if (!parentDiv) {
-    console.error(`Element with ID '${parentId}' not found.`);
-    return;
-  }
+type Options = {
+  parentRef: RefObject<HTMLElement>;
+};
 
-  const viewportWidth = parentDiv.getBoundingClientRect().width;
-  const viewportHeight = parentDiv.getBoundingClientRect().height;
+function useScatterDivsRandomly({ parentRef }: Options) {
+  useEffect(() => {
+    const parentDiv = parentRef.current;
+    if (!parentDiv) {
+      console.error(`Parent ref is not valid.`);
+      return;
+    }
 
-  const divs = parentDiv.querySelectorAll("div");
+    const viewportWidth = parentDiv.getBoundingClientRect().width;
+    const viewportHeight = parentDiv.getBoundingClientRect().height;
 
-  divs.forEach((div: HTMLElement) => {
-    const divWidth = div.offsetWidth;
-    const divHeight = div.offsetHeight;
+    const divs = parentDiv.querySelectorAll("div");
 
-    const maxLeft = viewportWidth - divWidth;
-    const maxTop = viewportHeight - divHeight;
+    divs.forEach((div: HTMLElement) => {
+      const divWidth = div.offsetWidth;
+      const divHeight = div.offsetHeight;
 
-    const randomLeft = Math.floor(Math.random() * maxLeft);
-    const randomTop = Math.floor(Math.random() * maxTop);
+      const maxLeft = viewportWidth - divWidth;
+      const maxTop = viewportHeight - divHeight;
 
-    const boundedLeft = Math.max(0, randomLeft);
-    const boundedTop = Math.max(0, randomTop);
+      const randomLeft = Math.floor(Math.random() * maxLeft);
+      const randomTop = Math.floor(Math.random() * maxTop);
 
-    div.style.left = `${boundedLeft}px`;
-    div.style.top = `${boundedTop}px`;
-  });
+      const boundedLeft = Math.max(0, randomLeft);
+      const boundedTop = Math.max(0, randomTop);
+
+      div.style.position = 'absolute';
+      div.style.left = `${boundedLeft}px`;
+      div.style.top = `${boundedTop}px`;
+    });
+  }, [parentRef]);
 }
 
 function reduceOpacityOnHover(targetDivId: string) {
@@ -316,7 +323,7 @@ export {
   getContrast,
   makeDivDraggable,
   createMouseFollower,
-  scatterDivsRandomly,
+  useScatterDivsRandomly,
   reduceOpacityOnHover,
   useFollowPointer
 }

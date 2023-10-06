@@ -8,7 +8,7 @@ import { Attachment } from "~/components/Attachment";
 import { useEffect, useRef, useState } from "react";
 import { WebPageModel, WebSectionModel } from "~/models";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { scatterDivsRandomly } from "~/utils/helpers";
+import { useScatterDivsRandomly } from "~/utils/helpers";
 import { motion } from "framer-motion";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 
@@ -106,10 +106,6 @@ export default function Works() {
 
   const constraintRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    scatterDivsRandomly("scattered")
-  })
-
   const portofolioSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -134,62 +130,39 @@ export default function Works() {
       // Add more Portfolio items for each project in your portfolio
     ]
   }
+
+  useScatterDivsRandomly({parentRef: constraintRef})
   
 
   return (
-    <div ref={constraintRef} id="scattered" className="h-full w-full overflow-hidden scrollbar-hidden flex flex-col">
+    <div ref={constraintRef} className="h-full w-full overflow-hidden scrollbar-hidden flex flex-col">
       <h1 className="sr-only">
         {mainSection.title}
       </h1>
       {feeds.map((f, index) => (
-        <motion.div
-          drag={true}
-          dragConstraints={constraintRef}
-          whileDrag={{ pointerEvents: "none"}}
-          whileHover={{
-            zIndex: 90
-          }}
-          whileTap={{
-            zIndex: 90
-          }}
-          className="w-full aspect-video max-w-screen-sm absolute will-change-transform">
-          <Link className={'w-full h-full block'} to={`/${params.lang}/works/${f.description}`}>
-              <motion.div 
-                whileHover={{
-                  scale: 1.1,
-                  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-                  zIndex: 90,
-                  transition: {
-                    duration: 0.3,
-                    delay: 0.1,
-                    ease: "easeInOut",
-                    mass: 20,
-                  }
-                }}
-                whileTap={{
-                  scale: 1.1,
-                  boxShadow: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
-                  zIndex: 90,
-                  transition: {
-                    duration: 0.3,
-                    delay: 0.1,
-                    ease: "easeInOut",
-                    mass: 20,
-                  }
-                }}
-                className={"w-full h-full"}>
-                <Attachment size="object-cover" attachment={{
-                  mediaType: "image/",
-                  url: f.image,
-                  description: f.title,
-                  metadata: {}
-                }}></Attachment>
-              </motion.div>
-              <h2 className="sr-onl">
+        <Link to={`/${params.lang}/works/${f.description}`}>
+            <motion.div 
+              drag={true}
+              dragConstraints={constraintRef}
+              whileDrag={{ pointerEvents: "none"}}
+              whileHover={{
+                zIndex: 90
+              }}
+              whileTap={{
+                zIndex: 90
+              }}
+              className={"w-full aspect-square max-w-md will-change-transform"}>
+              <Attachment size="object-cover" attachment={{
+                mediaType: "image/",
+                url: f.image,
+                description: f.title,
+                metadata: {}
+              }}></Attachment>
+              <h2 className="sr-only">
                 {f.title}
               </h2>
-          </Link>
-        </motion.div>
+            </motion.div>
+        </Link>
       ))}
     </div>
   );

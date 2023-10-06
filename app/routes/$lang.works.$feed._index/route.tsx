@@ -271,7 +271,7 @@ function ScrollingImage (props: { image: string; slug: string; index: number, co
   let rotate = useTransform(scrollYProgress, [0, 1], [0, (index % 3 === 0 ? 10 : index % 3 === 1 ? -10 : 4) + index])
   rotate = useSpring(rotate)
   return (
-    <div ref={target} className="w-screen h-screen max-w-screen-md mx-auto sticky top-0 inset-x-0">
+    <div ref={target} className="w-screen h-screen max-w-screen-md mx-auto sticky top-0 inset-x-0 flex items-center justify-center">
       <motion.div
         data-index={index % 3}
         style={{ zIndex: index + 1, rotate }}
