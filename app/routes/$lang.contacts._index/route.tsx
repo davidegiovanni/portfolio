@@ -1,10 +1,11 @@
 import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
-import { Link, useLoaderData, useParams, V2_MetaFunction } from "@remix-run/react";
+import { Link, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
 import metadata from '~/utils/metadata'
 import { page } from "~/api";
 import { Page } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import { isExternalLink } from "~/utils/helpers";
+import { StructuredData } from "~/utils/schema-data";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -105,9 +106,42 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function Contacts() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
+  const location = useLocation()
+
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": loaderData.title,
+    "description": loaderData.description,
+    "url": `https://illos.davidegiovanni.com/${location.pathname}`,
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": `https://illos.davidegiovanni.com/${params.locale}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": loaderData.title,
+          "item": `https://illos.davidegiovanni.com/${location.pathname}`
+        }
+      ]
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": loaderData.image,
+      "width": 800,
+      "height": 600
+    }
+  }
 
   return (
     <div className={"p-4 h-full w-full flex flex-col gap-2 text-center items-center justify-center uppercase scrollbar-hidden"}>
+      <StructuredData schema={webPageSchema} />
       <h1 className="w-full max-w-screen-sm font-semibold">
         {loaderData.title}
       </h1>

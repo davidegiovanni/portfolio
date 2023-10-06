@@ -1,5 +1,5 @@
 import { json, LoaderFunction, MetaFunction, redirect, SerializeFrom } from "@remix-run/node";
-import { useLoaderData, V2_MetaFunction } from "@remix-run/react";
+import { useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
 import metadata from '~/utils/metadata'
 import { makeDivDraggable } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
@@ -9,6 +9,7 @@ import { Page, Website } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import MSPaint from "~/components/PaintCanvas";
 import { motion } from "framer-motion";
+import { StructuredData } from "~/utils/schema-data";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -17,7 +18,7 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   location,
   parentsData,
 }) => {
-  return location.pathname.endsWith(`/${params.lang}`) ? [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${params.lang}` }] : [];
+  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${location.pathname}` }]
 };
 export let handle = { dynamicLinks };
 
@@ -126,16 +127,50 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function Index() {
   const loaderData = useLoaderData<LoaderData>();
+  const location = useLocation()
+  const params = useParams()
 
   const divRef = useRef<HTMLDivElement>(null);
   let constraintRef = useRef<HTMLDivElement>(null)
 
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": loaderData.title,
+    "description": loaderData.description,
+    "url": `https://illos.davidegiovanni.com/${location.pathname}`,
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": `https://illos.davidegiovanni.com/${params.locale}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": loaderData.title,
+          "item": `https://illos.davidegiovanni.com/${location.pathname}`
+        }
+      ]
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": loaderData.image,
+      "width": 800,
+      "height": 600
+    }
+  }
+
   return (
-    <div ref={constraintRef} className="h-full w-full relative flex items-center justify-center scrollbar-hidden overflow-hidden">
+    <div ref={constraintRef} className="h-full w-full relative flex items-center justify-center scrollbar-hidden">
+      <StructuredData schema={webPageSchema} />
       <motion.div 
         drag={true}
         dragConstraints={constraintRef}
-        className="w-full h-full max-w-2xl fade-in absolute z-20 bg-gray-100" ref={divRef}>
+        className="w-full h-full max-w-2xl fade-in absolute z-20" ref={divRef}>
         <Attachment size="object-contain" attachment={{
           mediaType: "image/",
           url: loaderData.image ,

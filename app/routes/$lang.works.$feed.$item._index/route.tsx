@@ -16,7 +16,7 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   location,
   parentsData,
 }) => {
-  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${params.lang}/works/${params.feed}/${params.item}` }];
+  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${location.pathname}` }];
 };
 export let handle = { dynamicLinks };
 

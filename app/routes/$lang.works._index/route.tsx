@@ -1,4 +1,4 @@
-import { json, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json, LoaderFunction, SerializeFrom } from "@remix-run/node";
 import { Link, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
@@ -10,14 +10,18 @@ import { WebPageModel, WebSectionModel } from "~/models";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { scatterDivsRandomly } from "~/utils/helpers";
 import { motion } from "framer-motion";
+import { DynamicLinksFunction } from "~/utils/dynamic-links";
 
-export const links: LinksFunction = () => {
-  return link(
-    {
-      canonical: 'https://illos.davidegiovanni.com/it-it/works',
-    }
-  )
+let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
+  id,
+  data,
+  params,
+  location,
+  parentsData,
+}: any) => {
+  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${params.lang}/works` }];
 };
+export let handle = { dynamicLinks };
 
 export const meta: V2_MetaFunction = ({ data, location }) => {
   let title = 'Website error'
@@ -96,7 +100,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 export default function Works() {
-  const { mainSection, feeds } = useLoaderData<LoaderData>();
+  const { mainSection, feeds, page } = useLoaderData<LoaderData>();
   const params = useParams()
   const location = useLocation()
 
@@ -105,6 +109,32 @@ export default function Works() {
   useEffect(() => {
     scatterDivsRandomly("scattered")
   })
+
+  const portofolioSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": page.title,
+    "description": page.description,
+    "url": `https://illos.davidegiovanni.com/${location.pathname}`,
+    "itemListElement": [
+      {
+        "@type": "Portfolio",
+        "name": "Project 1 Name",
+        "description": "Description of Project 1",
+        "image": "URL_OF_PROJECT_1_IMAGE",
+        "url": "URL_OF_PROJECT_1_PAGE"
+      },
+      {
+        "@type": "Portfolio",
+        "name": "Project 2 Name",
+        "description": "Description of Project 2",
+        "image": "URL_OF_PROJECT_2_IMAGE",
+        "url": "URL_OF_PROJECT_2_PAGE"
+      },
+      // Add more Portfolio items for each project in your portfolio
+    ]
+  }
+  
 
   return (
     <div ref={constraintRef} id="scattered" className="h-full w-full overflow-hidden scrollbar-hidden flex flex-col">

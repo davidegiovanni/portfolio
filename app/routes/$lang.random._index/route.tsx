@@ -1,5 +1,5 @@
 import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
-import { NavLink, useLoaderData, useParams, V2_MetaFunction } from "@remix-run/react";
+import { NavLink, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
 import metadata from '~/utils/metadata'
 import { getSlug, isExternalLink, scatterDivsRandomly } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
@@ -8,6 +8,7 @@ import { Page, Feed } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import { useEffect, useRef } from "react";
 import { motion, animate } from "framer-motion"
+import { StructuredData } from "~/utils/schema-data";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -166,6 +167,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function FeedPage() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
+  const location = useLocation()
 
   const constraintRef = useRef<HTMLDivElement>(null)
 
@@ -181,8 +183,27 @@ export default function FeedPage() {
     })
   }, [])
 
+  const portofolioSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": loaderData.title,
+    "description": loaderData.description,
+    "url": `https://illos.davidegiovanni.com/${location.pathname}`,
+    "itemListElement": [
+      ...loaderData.works.map(item => {
+        return {
+          "@type": "Portfolio",
+          "name": item.slug,
+          "image": item.image,
+          "url": `https://illos.davidegiovanni.com/${params.locale}/random/${item.slug}`
+        }
+      })
+    ]
+  }
+
   return (
     <div id="scattered" ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-hidden relative text-center py-1 scrollbar-hidden">
+        <StructuredData schema={portofolioSchema} />
         <h1 className="sr-only">
           {loaderData.title}
         </h1>

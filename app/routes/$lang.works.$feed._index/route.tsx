@@ -1,5 +1,5 @@
 import { json, LoaderFunction, MetaFunction, redirect, SerializeFrom } from "@remix-run/node";
-import { Link, NavLink, useLoaderData, useParams, V2_MetaFunction } from "@remix-run/react";
+import { Link, NavLink, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
 import metadata from '~/utils/metadata'
 import { getSlug, isExternalLink } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
@@ -8,6 +8,7 @@ import { Page, Feed } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import { motion, MotionValue, useAnimate, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { StructuredData } from "~/utils/schema-data";
 
 // create the dynamicLinks function with the correct type
 // note: loader type is optional
@@ -18,7 +19,7 @@ let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   location,
   parentsData,
 }) => {
-  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${params.lang}/works/${params.feed}` }];
+  return [{ rel: "canonical", href: `https://illos.davidegiovanni.com/${location.pathname}` }];
 };
 
 // and export it through the handle, you could also create it inline here
@@ -187,11 +188,32 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function FeedPage() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
+  const location = useLocation()
 
   const containerRef = useRef(null);
 
+  const portofolioSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": loaderData.title,
+    "description": loaderData.description,
+    "url": `https://illos.davidegiovanni.com/${location.pathname}`,
+    "itemListElement": [
+      ...loaderData.sections.map(item => {
+        return {
+          "@type": "Portfolio",
+          "name": item.title,
+          "description": item.description,
+          "image": item.image,
+          "url": `https://illos.davidegiovanni.com/${location.pathname}/${item.slug}`
+        }
+      })
+    ]
+  }
+
   return (
     <div className="h-full w-full overflow-hidden text-center uppercase">
+      <StructuredData schema={portofolioSchema} />
       <Link to={`/${params.lang}/works`} className="absolute top-0 left-0 z-50 m-2">
         <p className="sr-only">
           Close
