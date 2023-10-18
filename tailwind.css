@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 img {
   @apply select-none pointer-events-none
 }
