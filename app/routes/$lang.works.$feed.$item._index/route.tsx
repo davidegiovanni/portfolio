@@ -136,8 +136,8 @@ export default function ItemPage() {
 
   return (
     <div id="details" key={"details"} ref={constraintRef} className={`absolute z-50 inset-0 bg-black p-4 lg:p-12 overflow-hidden`}>
-      <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-lg lg:text-sm text-white">
-        <div className="flex items-center">
+      <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
+        <div className="flex items-center justify-between">
           <Link to={`/${params.lang}/works/${params.feed}`} >
             CHIUDI
           </Link>
