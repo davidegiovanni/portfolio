@@ -268,7 +268,7 @@ export default function App() {
         )}
         <div style={style2} data-disabled={isShowingCanvas} className="fixed bottom-0 z-50 data-[disabled=true]:translate-y-16 transition-all duration-200 ease-in-out inset-x-0 w-fulle p-2 text-sm lg:text-base">
           <div className="flex items-center justify-between uppercase rounded-md bg-neutral-100 bg-opacity-50 backdrop-blur-lg backdrop-saturate-200 p-2">
-            <Link to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className="hover:-rotate-45 transition-all ease-in-out duration-300 pl-2">
+            <Link to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className="lg:hover:-rotate-45 transition-all ease-in-out duration-300 pl-2">
               {loaderData.logoUrl === "" && `✻`}
               {loaderData.logoUrl !== "" && <img src={loaderData.logoUrl} className="h-4 lg:h-8" />}
             </Link>
