@@ -135,33 +135,24 @@ export default function ItemPage() {
   const next = loaderData.next
 
   return (
-    <div ref={constraintRef} className={`h-full w-full overflow-hidden`}>
-      <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-lg lg:text-base">
+    <div ref={constraintRef} className={`absolute z-50 inset-0 bg-black p-4 lg:p-12 overflow-hidden`}>
+      <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-lg lg:text-base text-white">
         <div className="flex items-center">
           <Link to={`/${params.lang}/works/${params.feed}`} >
-            <p className="sr-only">
-              Close
-            </p>
-            ✕
+            CHIUDI
           </Link>
           <p className="sr-only">
           {loaderData.title}
           </p>
         </div>
-        <div className="flex items-center justify-end gap-8">
+      </div>
+      <div className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-lg lg:text-base text-white">
           <Link to={`/${params.lang}/works/${params.feed}/${previous}`} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "")}>
-            <p className="sr-only">
-              {'Indietro'}
-            </p>
-            ←
+            INDIETRO
           </Link>
           <Link to={`/${params.lang}/works/${params.feed}/${next}`} className={(next === "" ? "pointer-events-none opacity-50 select-none " : "")}>
-            <p className="sr-only">
-              {'Avanti'}
-            </p>
-            →
+            AVANTI
           </Link>
-        </div>
       </div>
       <div className='h-full w-full'>
           <ZoomableImage attachment={{

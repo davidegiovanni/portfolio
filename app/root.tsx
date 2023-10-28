@@ -32,6 +32,7 @@ import { DynamicLinks } from "./utils/dynamic-links";
 import defaultCss from "./default.css";
 import MSPaint from "./components/PaintCanvas";
 import { motion } from "framer-motion";
+import { image } from "remix-utils";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -265,28 +266,30 @@ export default function App() {
             className="loading-bar"
           />
         )}
-        <div style={style2} data-disabled={isShowingCanvas} className="fixed bottom-0 z-50 data-[disabled=true]:translate-y-8 transition-all duration-200 ease-in-out inset-x-0 w-full flex items-center justify-between uppercase px-2 text-lg lg:text-base">
-          <Link to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className="hover:rotate-45 transition-all ease-in-out duration-300">
-            ✻
-          </Link>
-          <p className="w-48 whitespace-nowrap absolute inset-x-0 mx-auto text-center">
-            {currentTime}
-          </p>
-          <button onClick={() => togglemenuOpen(!isMenuOpen)} className={`${isMenuOpen ? "rotate-45" : ""} relative z-50 transition-all ease-in-out duration-300`}>
-            <p className="sr-only">
-              Menu
+        <div style={style2} data-disabled={isShowingCanvas} className="fixed bottom-0 z-50 data-[disabled=true]:translate-y-16 transition-all duration-200 ease-in-out inset-x-0 w-fulle p-2 text-sm lg:text-base">
+          <div className="flex items-center justify-between uppercase rounded-md bg-neutral-100 bg-opacity-50 backdrop-blur-lg backdrop-saturate-200 p-2">
+            <Link to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className="hover:-rotate-45 transition-all ease-in-out duration-300 pl-2">
+              {loaderData.logoUrl === "" && `✻`}
+              {loaderData.logoUrl !== "" && <img src={loaderData.logoUrl} className="h-4 lg:h-8" />}
+            </Link>
+            <p className="w-48 whitespace-nowrap absolute inset-x-0 mx-auto text-center">
+              {currentTime}
             </p>
-            ＋
-          </button>
+            <button onClick={() => togglemenuOpen(!isMenuOpen)} className={`relative z-50 w-8 aspect-square rounded hover:border border-revas-neutral-500 `} aria-label="Menu">
+              <p data-menuopen={isMenuOpen} className="data-[menuopen=true]:rotate-45 transition-all ease-in-out duration-300">
+              ＋
+              </p>
+            </button>
+          </div>
         </div>
-        <div data-visible={isMenuOpen} className="fixed opacity-0 h-0 p-0 overflow-hidden data-[visible=true]:h-full data-[visible=true]:opacity-100 inset-0 w-full z-40 flex items-center justify-center data-[visible=true]:p-[1.5vmin] bg-white bg-opacity-50">
+        <div data-visible={isMenuOpen} className="fixed opacity-0 h-0 p-0 overflow-hidden data-[visible=true]:h-full data-[visible=true]:opacity-100 inset-0 w-full z-40 flex items-center justify-center data-[visible=true]:p-[1.5vmin] bg-neutral-300">
           {
             loaderData.links.length > 0 &&
             <nav className="flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center h-full justify-between uppercase">
-              <p className="text-xs">
+              <p className="font-default text-xs">
                 Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella </a>
               </p>
-              <ul className="w-full flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center justify-center h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
+              <ul className="w-full flex flex-col gap-[6vmin] lg:gap-[4vmin] items-center justify-center h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
                   <NavLink to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className={({ isActive }) =>
                     `block`
                   }>

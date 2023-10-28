@@ -171,7 +171,9 @@ export default function FeedPage() {
 
   const constraintRef = useRef<HTMLDivElement>(null)
 
-  useScatterDivsRandomly({parentRef: constraintRef})
+  useEffect(() => {
+    useScatterDivsRandomly({parentRef: constraintRef})
+  }, [location.pathname])
 
   const portofolioSchema = {
     "@context": "https://schema.org",
@@ -192,7 +194,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div ref={constraintRef} className="h-full w-full flex flex-col bg-white gap-4 overflow-hidden relative text-center">
+    <div ref={constraintRef} className="absolute inset-0 bg-white overflow-hidden">
         <StructuredData schema={portofolioSchema} />
         <h1 className="sr-only">
           {loaderData.title}

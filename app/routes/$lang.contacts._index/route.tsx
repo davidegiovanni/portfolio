@@ -140,7 +140,7 @@ export default function Contacts() {
   }
 
   return (
-    <div className={"p-4 h-full w-full flex flex-col gap-2 text-center items-center justify-center uppercase scrollbar-hidden"}>
+    <div className={"p-4 h-full w-full flex flex-col gap-4 text-center items-center justify-center uppercase scrollbar-hidden"}>
       <StructuredData schema={webPageSchema} />
       <h1 className="w-full max-w-screen-sm font-semibold">
         {loaderData.title}
@@ -148,7 +148,7 @@ export default function Contacts() {
       <h2 className="max-w-screen-sm ">
         {loaderData.description}
       </h2>
-      <div className="inline-block text-[blue]">
+      <div className="inline-block rounded-full bg-neutral-200 px-6 py-1 hover:bg-black hover:text-white">
         {
           loaderData.link.isExternal ? (
             <a href={loaderData.link.url} >

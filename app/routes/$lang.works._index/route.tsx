@@ -11,6 +11,7 @@ import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { useScatterDivsRandomly } from "~/utils/helpers";
 import { motion } from "framer-motion";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
+import { StructuredData } from "~/utils/schema-data";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -113,29 +114,25 @@ export default function Works() {
     "description": page.description,
     "url": `https://illos.davidegiovanni.com/${location.pathname}`,
     "itemListElement": [
-      {
-        "@type": "Portfolio",
-        "name": "Project 1 Name",
-        "description": "Description of Project 1",
-        "image": "URL_OF_PROJECT_1_IMAGE",
-        "url": "URL_OF_PROJECT_1_PAGE"
-      },
-      {
-        "@type": "Portfolio",
-        "name": "Project 2 Name",
-        "description": "Description of Project 2",
-        "image": "URL_OF_PROJECT_2_IMAGE",
-        "url": "URL_OF_PROJECT_2_PAGE"
-      },
-      // Add more Portfolio items for each project in your portfolio
+      ...feeds.map(feed => {
+        return {
+          "@type": "Portfolio",
+          "name": feed.title,
+          "image": feed.image,
+          "url": `https://illos.davidegiovanni.com/${params.locale}/works/${feed.description}`
+        }
+      })
     ]
   }
 
-  useScatterDivsRandomly({parentRef: constraintRef})
+  useEffect(() => {
+    useScatterDivsRandomly({parentRef: constraintRef})
+  }, [location.pathname])
   
 
   return (
     <div ref={constraintRef} className="h-full w-full overflow-hidden scrollbar-hidden flex flex-col">
+      <StructuredData schema={portofolioSchema} />
       <h1 className="sr-only">
         {mainSection.title}
       </h1>
@@ -151,7 +148,7 @@ export default function Works() {
               whileTap={{
                 zIndex: 90
               }}
-              className={"w-full aspect-square max-w-md will-change-transform"}>
+              className={"w-32 lg:w-full aspect-square max-w-md will-change-transform"}>
               <Attachment size="object-cover" attachment={{
                 mediaType: "image/",
                 url: f.image,

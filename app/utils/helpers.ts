@@ -11,7 +11,7 @@ const fluidType = (minType: number, maxType: number, minScreen: number, maxScree
   }
 }
 
-function getSlug (url: string): string {
+function getSlug(url: string): string {
   const parsed = queryString.parse(url)
   return parsed.content as string
 }
@@ -28,30 +28,30 @@ const isExternalLink = (url: string) => {
   return EXTERNAL_URL_RE.test(url)
 }
 
-const getContrast = function (hexcolor: string){
+const getContrast = function (hexcolor: string) {
 
-	// If a leading # is provided, remove it
-	if (hexcolor.slice(0, 1) === '#') {
-		hexcolor = hexcolor.slice(1);
-	}
+  // If a leading # is provided, remove it
+  if (hexcolor.slice(0, 1) === '#') {
+    hexcolor = hexcolor.slice(1);
+  }
 
-	// If a three-character hexcode, make six-character
-	if (hexcolor.length === 3) {
-		hexcolor = hexcolor.split('').map(function (hex) {
-			return hex + hex;
-		}).join('');
-	}
+  // If a three-character hexcode, make six-character
+  if (hexcolor.length === 3) {
+    hexcolor = hexcolor.split('').map(function (hex) {
+      return hex + hex;
+    }).join('');
+  }
 
-	// Convert to RGB value
-	var r = parseInt(hexcolor.substr(0,2),16);
-	var g = parseInt(hexcolor.substr(2,2),16);
-	var b = parseInt(hexcolor.substr(4,2),16);
+  // Convert to RGB value
+  var r = parseInt(hexcolor.substr(0, 2), 16);
+  var g = parseInt(hexcolor.substr(2, 2), 16);
+  var b = parseInt(hexcolor.substr(4, 2), 16);
 
-	// Get YIQ ratio
-	var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+  // Get YIQ ratio
+  var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
 
-	// Check contrast
-	return (yiq >= 128) ? 'black' : 'white';
+  // Check contrast
+  return (yiq >= 128) ? 'black' : 'white';
 
 };
 
@@ -213,36 +213,34 @@ type Options = {
 };
 
 function useScatterDivsRandomly({ parentRef }: Options) {
-  useEffect(() => {
-    const parentDiv = parentRef.current;
-    if (!parentDiv) {
-      console.error(`Parent ref is not valid.`);
-      return;
-    }
+  const parentDiv = parentRef.current;
+  if (!parentDiv) {
+    console.error(`Parent ref is not valid.`);
+    return;
+  }
 
-    const viewportWidth = parentDiv.getBoundingClientRect().width;
-    const viewportHeight = parentDiv.getBoundingClientRect().height;
+  const viewportWidth = parentDiv.getBoundingClientRect().width;
+  const viewportHeight = parentDiv.getBoundingClientRect().height;
 
-    const divs = parentDiv.querySelectorAll("div");
+  const divs = parentDiv.querySelectorAll("div");
 
-    divs.forEach((div: HTMLElement) => {
-      const divWidth = div.offsetWidth;
-      const divHeight = div.offsetHeight;
+  divs.forEach((div: HTMLElement) => {
+    const divWidth = div.offsetWidth;
+    const divHeight = div.offsetHeight;
 
-      const maxLeft = viewportWidth - divWidth;
-      const maxTop = viewportHeight - divHeight;
+    const maxLeft = viewportWidth - divWidth;
+    const maxTop = viewportHeight - divHeight;
 
-      const randomLeft = Math.floor(Math.random() * maxLeft);
-      const randomTop = Math.floor(Math.random() * maxTop);
+    const randomLeft = Math.floor(Math.random() * maxLeft);
+    const randomTop = Math.floor(Math.random() * maxTop);
 
-      const boundedLeft = Math.max(0, randomLeft);
-      const boundedTop = Math.max(0, randomTop);
+    const boundedLeft = Math.max(0, randomLeft);
+    const boundedTop = Math.max(0, randomTop);
 
-      div.style.position = 'absolute';
-      div.style.left = `${boundedLeft}px`;
-      div.style.top = `${boundedTop}px`;
-    });
-  }, [parentRef]);
+    div.style.position = 'absolute';
+    div.style.left = `${boundedLeft}px`;
+    div.style.top = `${boundedTop}px`;
+  });
 }
 
 function reduceOpacityOnHover(targetDivId: string) {

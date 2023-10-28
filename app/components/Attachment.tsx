@@ -49,7 +49,7 @@ export function Attachment(props: AttachmentProps) {
       role="figure">
       {props.attachment.mediaType.startsWith("image/") && (
         <picture id={id} className="h-full w-full">
-          <source
+          {/* <source
             className={(props.align) + " " + (props.size ? props.size : "object-contain ") + " relative z-10 h-full w-full"}
             type="image/webp"
             sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
@@ -60,7 +60,7 @@ export function Attachment(props: AttachmentProps) {
             type="image/avif"
             sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
             srcSet={buildSrcset(props.attachment.url, "avif")}
-          ></source>
+          ></source> */}
           <img
           id={`src-${id}`}
             srcSet={buildSrcset(props.attachment.url, "")}
