@@ -317,7 +317,7 @@ export default function App() {
             </nav>
           }
         </div>
-        <div data-visible={isMenuOpen} data-disabled={isShowingCanvas} className="w-full flex-1 overflow-hidden data-[visible=true]:blur-2xl data-[disabled=true]:pointer-events-none">
+        <div key={location.pathname} data-visible={isMenuOpen} data-disabled={isShowingCanvas} className="w-full flex-1 overflow-hidden data-[visible=true]:blur-2xl data-[disabled=true]:pointer-events-none">
           <Outlet />
         </div>
       </div>
