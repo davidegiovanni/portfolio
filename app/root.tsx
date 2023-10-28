@@ -303,7 +303,7 @@ export default function App() {
                           {link.title}
                         </a>
                       ) : (
-                        <NavLink to={link.url} reloadDocument={link.url.includes("random")} className={({ isActive }) =>
+                        <NavLink to={link.url} className={({ isActive }) =>
                           `${isActive ? "opacity-50" : "hover:opacity-50"} opacity-100 block`
                         }>
                           {link.title}
