@@ -137,19 +137,17 @@ export default function ItemPage() {
   return (
     <div id="details" key={"details"} ref={constraintRef} className={`absolute z-50 inset-0 bg-black p-4 lg:p-12 overflow-hidden`}>
       <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
-        <div className="flex items-center justify-between">
-          <Link to={`/${params.lang}/works/${params.feed}`} >
-            CHIUDI
-          </Link>
-          <p className="sr-only">
-          {loaderData.title}
-          </p>
-          <Link to={`/${params.lang}/works/${params.feed}`} >
-            DOUBLE TAP TO ZOOM
-          </Link>
-        </div>
+        <Link to={`/${params.lang}/works/${params.feed}`} >
+          CHIUDI
+        </Link>
+        <p className="sr-only">
+        {loaderData.title}
+        </p>
+        <Link to={`/${params.lang}/works/${params.feed}`} className="opacity-60">
+          DOUBLE TAP TO ZOOM
+        </Link>
       </div>
-      <div className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-lg lg:text-sm text-white">
+      <div className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
           <Link to={`/${params.lang}/works/${params.feed}/${previous}`} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "")}>
             INDIETRO
           </Link>
