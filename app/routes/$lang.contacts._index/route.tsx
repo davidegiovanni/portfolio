@@ -140,7 +140,7 @@ export default function Contacts() {
   }
 
   return (
-    <div className={"p-4 h-full w-full flex flex-col gap-4 text-center items-center justify-center uppercase scrollbar-hidden"}>
+    <div id="contacts" key={"contacts"} className={"p-4 h-full w-full flex flex-col gap-4 text-center items-center justify-center uppercase scrollbar-hidden"}>
       <StructuredData schema={webPageSchema} />
       <h1 className="w-full max-w-screen-sm font-semibold">
         {loaderData.title}

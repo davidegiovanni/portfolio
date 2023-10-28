@@ -147,7 +147,7 @@ export default function About() {
   }
 
     return (
-      <div className="h-full w-full overflow-y-scroll lg:scrollbar-hidden uppercase">
+      <div id="about" key={"about"} className="h-full w-full overflow-y-scroll lg:scrollbar-hidden uppercase">
         <StructuredData schema={webPageSchema}/>
         <div className="w-full h-full lg:flex items-stretch">
           <div className="relative w-full aspect-square md:aspect-[4/2] lg:h-full lg:w-1/2 ">

@@ -194,60 +194,62 @@ export default function FeedPage() {
   }
 
   return (
-    <div ref={constraintRef} className="absolute inset-0 bg-white overflow-hidden">
-        <StructuredData schema={portofolioSchema} />
-        <h1 className="sr-only">
-          {loaderData.title}
-        </h1>
-        {
-          loaderData.description !== "" &&
-          <h2>
-            {loaderData.description}
-          </h2>
-        }
-        {
-          loaderData.works.map((i, index: any) => (
-            <Link to={`${i.slug}`} >
-              <motion.div
-                key={index}
-                id={`image-card-${index}`}
-                drag={true}
-                dragConstraints={constraintRef}
-                whileDrag={{ pointerEvents: "none"}}
-                initial={{ filter: "drop-shadow(0 0 #0000)"}}
-                whileHover={{
-                  scale: 1.1,
-                  filter: "drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))",
-                  zIndex: 90,
-                  transition: {
-                    duration: 0.3,
-                    delay: 0.1,
-                    ease: "easeInOut",
-                    mass: 20,
-                  }
-                }}
-                whileTap={{
-                  scale: 1.1,
-                  filter: "drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))",
-                  zIndex: 90,
-                  transition: {
-                    duration: 0.3,
-                    delay: 0.1,
-                    ease: "easeInOut",
-                    mass: 20,
-                  }
-                }}
-                className="w-32 absolute h-32 will-change-transform">
-                    <Attachment size="object-contain" attachment={{
-                      mediaType: "image/",
-                      url: i.image,
-                      description: i.slug,
-                      metadata: {}
-                    }}></Attachment>
-              </motion.div>
-            </Link>
-          ))
-        }
+    <div className="h-full w-full overflow-hidden">
+      <div id="illos" key={"illos"} ref={constraintRef} className="h-full w-full overflow-hidden">
+          <StructuredData schema={portofolioSchema} />
+          <h1 className="sr-only">
+            {loaderData.title}
+          </h1>
+          {
+            loaderData.description !== "" &&
+            <h2>
+              {loaderData.description}
+            </h2>
+          }
+          {
+            loaderData.works.map((i, index: any) => (
+              <Link to={`${i.slug}`} >
+                <motion.div
+                  key={index}
+                  id={`image-card-${index}`}
+                  drag={true}
+                  dragConstraints={constraintRef}
+                  whileDrag={{ pointerEvents: "none"}}
+                  initial={{ filter: "drop-shadow(0 0 #0000)"}}
+                  whileHover={{
+                    scale: 1.1,
+                    filter: "drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))",
+                    zIndex: 90,
+                    transition: {
+                      duration: 0.3,
+                      delay: 0.1,
+                      ease: "easeInOut",
+                      mass: 20,
+                    }
+                  }}
+                  whileTap={{
+                    scale: 1.1,
+                    filter: "drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))",
+                    zIndex: 90,
+                    transition: {
+                      duration: 0.3,
+                      delay: 0.1,
+                      ease: "easeInOut",
+                      mass: 20,
+                    }
+                  }}
+                  className="w-32 absolute h-32 will-change-transform">
+                      <Attachment size="object-contain" attachment={{
+                        mediaType: "image/",
+                        url: i.image,
+                        description: i.slug,
+                        metadata: {}
+                      }}></Attachment>
+                </motion.div>
+              </Link>
+            ))
+          }
+      </div>
     </div>
   );
 }

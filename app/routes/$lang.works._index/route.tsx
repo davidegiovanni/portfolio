@@ -131,36 +131,38 @@ export default function Works() {
   
 
   return (
-    <div ref={constraintRef} className="h-full w-full overflow-hidden scrollbar-hidden flex flex-col">
-      <StructuredData schema={portofolioSchema} />
-      <h1 className="sr-only">
-        {mainSection.title}
-      </h1>
-      {feeds.map((f, index) => (
-        <Link to={`/${params.lang}/works/${f.description}`}>
-            <motion.div 
-              drag={true}
-              dragConstraints={constraintRef}
-              whileDrag={{ pointerEvents: "none"}}
-              whileHover={{
-                zIndex: 90
-              }}
-              whileTap={{
-                zIndex: 90
-              }}
-              className={"w-32 lg:w-full aspect-square max-w-md will-change-transform"}>
-              <Attachment size="object-cover" attachment={{
-                mediaType: "image/",
-                url: f.image,
-                description: f.title,
-                metadata: {}
-              }}></Attachment>
-              <h2 className="sr-only">
-                {f.title}
-              </h2>
-            </motion.div>
-        </Link>
-      ))}
+    <div className="h-full w-full overflow-hidden">
+      <div id="works" key={"works"} ref={constraintRef} className="h-full w-full overflow-hidden">
+        <StructuredData schema={portofolioSchema} />
+        <h1 className="sr-only">
+          {mainSection.title}
+        </h1>
+        {feeds.map((f, index) => (
+          <Link to={`/${params.lang}/works/${f.description}`}>
+              <motion.div 
+                drag={true}
+                dragConstraints={constraintRef}
+                whileDrag={{ pointerEvents: "none"}}
+                whileHover={{
+                  zIndex: 90
+                }}
+                whileTap={{
+                  zIndex: 90
+                }}
+                className={"w-32 lg:w-full aspect-square max-w-md will-change-transform"}>
+                <Attachment size="object-cover" attachment={{
+                  mediaType: "image/",
+                  url: f.image,
+                  description: f.title,
+                  metadata: {}
+                }}></Attachment>
+                <h2 className="sr-only">
+                  {f.title}
+                </h2>
+              </motion.div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

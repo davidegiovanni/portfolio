@@ -212,7 +212,7 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="h-full w-full overflow-hidden text-center uppercase">
+    <div id="workpage" key={"workpage"} className="h-full w-full overflow-hidden text-center uppercase">
       <StructuredData schema={portofolioSchema} />
       <Link to={`/${params.lang}/works`} className="absolute top-0 left-0 z-50 m-2">
         <p className="sr-only">

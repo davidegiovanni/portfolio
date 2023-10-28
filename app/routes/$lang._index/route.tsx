@@ -165,7 +165,7 @@ export default function Index() {
   }
 
   return (
-    <div ref={constraintRef} className="h-full w-full relative flex items-center justify-center scrollbar-hidden">
+    <div id="homepage" key={"homepage"} ref={constraintRef} className="h-full w-full relative flex items-center justify-center scrollbar-hidden">
       <StructuredData schema={webPageSchema} />
       <motion.div 
         drag={true}
