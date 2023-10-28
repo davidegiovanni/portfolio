@@ -107,6 +107,8 @@ export default function Works() {
 
   const constraintRef = useRef<HTMLDivElement>(null)
 
+  const [randomKey, setRandomKey] = useState<number>(0)
+
   const portofolioSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -127,6 +129,9 @@ export default function Works() {
 
   useEffect(() => {
     useScatterDivsRandomly({parentRef: constraintRef})
+    setTimeout(() => {
+      setRandomKey(1)
+    }, 100)
   }, [location.pathname])
   
 
@@ -138,8 +143,9 @@ export default function Works() {
           {mainSection.title}
         </h1>
         {feeds.map((f, index) => (
-          <Link to={`/${params.lang}/works/${f.description}`}>
-              <motion.div 
+          <Link key={randomKey + index} to={`/${params.lang}/works/${f.description}`}>
+              <motion.div
+                key={randomKey + index} 
                 drag={true}
                 dragConstraints={constraintRef}
                 whileDrag={{ pointerEvents: "none"}}

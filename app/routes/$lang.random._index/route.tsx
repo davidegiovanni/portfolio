@@ -6,7 +6,7 @@ import { Attachment } from "~/components/Attachment";
 import { feed, page } from "~/api";
 import { Page, Feed } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, animate } from "framer-motion"
 import { StructuredData } from "~/utils/schema-data";
 
@@ -171,8 +171,13 @@ export default function FeedPage() {
 
   const constraintRef = useRef<HTMLDivElement>(null)
 
+  const [randomKey, setRandomKey] = useState<number>(0)
+
   useEffect(() => {
     useScatterDivsRandomly({parentRef: constraintRef})
+    setTimeout(() => {
+      setRandomKey(1)
+    }, 100)
   }, [location.pathname])
 
   const portofolioSchema = {
@@ -208,9 +213,9 @@ export default function FeedPage() {
           }
           {
             loaderData.works.map((i, index: any) => (
-              <Link to={`${i.slug}`} >
+              <Link key={randomKey + index} to={`${i.slug}`} >
                 <motion.div
-                  key={index}
+                  key={randomKey + index}
                   id={`image-card-${index}`}
                   drag={true}
                   dragConstraints={constraintRef}
