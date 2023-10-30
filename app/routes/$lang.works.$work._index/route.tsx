@@ -128,7 +128,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   if (sectionItems.length > 0) {
     title = sectionItems[0].title
-    description = sectionItems[0].title
+    description = sectionItems[0].description
     image = sectionItems[0].attachment?.url || image
     if (sectionItems[0].link) link = {
       ...sectionItems[0].link,
