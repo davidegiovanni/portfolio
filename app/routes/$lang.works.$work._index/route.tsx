@@ -77,7 +77,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  if (params.feed === "random") {
+  if (params.work === "random") {
     return redirect(`/${params.lang}/random`)
   }
 
@@ -234,7 +234,7 @@ export default function FeedPage() {
           }
           {
             loaderData.link !== null && (
-              <div className="inline-block text-[blue]">
+              <div className="inline-block rounded-full bg-neutral-200 px-6 py-1 hover:bg-black hover:text-white">
                 {
                   loaderData.link.isExternal ? (
                     <a href={loaderData.link.url} >

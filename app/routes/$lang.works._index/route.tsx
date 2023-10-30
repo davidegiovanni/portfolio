@@ -201,17 +201,30 @@ export default function Works() {
         {loaderData.portfolioItems.map((f, index) => (
           <Link key={randomKey + index} to={`/${loaderData.incomingLocale}/works/${f.slug}`}>
               <motion.div
+                id={`image-card-${index}`}
                 key={randomKey + index} 
                 drag={true}
                 dragConstraints={constraintRef}
                 whileDrag={{ pointerEvents: "none"}}
                 whileHover={{
-                  zIndex: 90
+                  zIndex: 90,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.1,
+                    ease: "easeInOut",
+                    mass: 20,
+                  }
                 }}
                 whileTap={{
-                  zIndex: 90
+                  zIndex: 90,
+                  transition: {
+                    duration: 0.3,
+                    delay: 0.1,
+                    ease: "easeInOut",
+                    mass: 20,
+                  }
                 }}
-                className={"w-32 lg:w-full aspect-square max-w-md will-change-transform"}>
+                className={"w-48 lg:w-full aspect-square max-w-md will-change-transform"}>
                 <Attachment size="object-cover" attachment={{
                   mediaType: "image/",
                   url: f.image.url,
