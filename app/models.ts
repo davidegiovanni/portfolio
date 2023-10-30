@@ -156,7 +156,6 @@ export type UIItem = {
   slug: string;
   date_published: string;
   content: string;
-  id: string;
 }
 
 export type UISection = {
@@ -165,4 +164,53 @@ export type UISection = {
   image: Attachment;
   link: UILink;
   id: string;
+}
+
+export type Attributes = { [key: string]: string | number | boolean }
+
+export type BlockItemUI= {
+  title: string;
+  description: string;
+
+  linkTitle: string;
+  linkUrl: string;
+  linkMetadata: Record<string, string>,
+
+  attachmentMediaType: AttachmentMediaUIType,
+  attachmentUrl: string;
+  attachmentDescription: string;
+  attachmentCaption: string;
+  attachmentMetadata: Record<string, string>,
+
+  metadata: Record<string, string>,
+};
+
+// block layout UI
+export type BlockLayoutUI = "main" |  "default"
+
+export type BlockItemsLayoutUI = "linear" | "grid" | "columns"
+
+export type AttachmentMediaUIType = "image/*" | "application/vnd.youtube.video"
+
+// block UI
+export interface BlockUI {
+  html: string;
+
+  blockLayout: BlockLayoutUI,
+  title: string;
+  description: string;
+
+  linkTitle: string;
+  linkUrl: string;
+  linkMetadata: Record<string, string>,
+
+  attachmentMediaType: AttachmentMediaUIType,
+  attachmentUrl: string;
+  attachmentDescription: string;
+  attachmentCaption: string;
+  attachmentMetadata: Record<string, string>,
+  
+  itemsLayout: BlockItemsLayoutUI,
+  items: BlockItemUI[],
+  metadata: Record<string, string>,
 }

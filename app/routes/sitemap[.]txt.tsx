@@ -7,9 +7,6 @@ const ALL_PAGES = [
     locale: "it-IT",
     pages: [
       "works",
-      "works/ux-tales",
-      "works/facing-my-faces-project",
-      "works/erotic-art",
       "about",
       "contacts",
       "random"
@@ -20,16 +17,8 @@ const ALL_PAGES = [
         value: "random"
       },
       {
-        key: "ux-tales",
-        value: "works/ux-tales"
-      },
-      {
-        key: "facing-my-faces-project",
-        value: "works/facing-my-faces-project"
-      },
-      {
-        key: "erotic-art",
-        value: "works/erotic-art"
+        key: "illos-works",
+        value: "illos"
       }
     ]
   }

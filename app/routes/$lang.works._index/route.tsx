@@ -1,4 +1,4 @@
-import { json, LoaderFunction, SerializeFrom } from "@remix-run/node";
+import { json, LoaderFunction, redirect, SerializeFrom } from "@remix-run/node";
 import { Link, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
 import { safeGet } from "~/utils/safe-post";
 import { loadTranslations } from "~/helpers/i18n";
@@ -6,12 +6,15 @@ import metadata from '~/utils/metadata'
 import link from '~/utils/links'
 import { Attachment } from "~/components/Attachment";
 import { useEffect, useRef, useState } from "react";
-import { WebPageModel, WebSectionModel } from "~/models";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { Block, BlockItem, BlockUI, Feed, Page, UIItem, UISection, WebPageModel, WebSectionModel, Website } from "~/models";
 import { useScatterDivsRandomly } from "~/utils/helpers";
 import { motion } from "framer-motion";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import { StructuredData } from "~/utils/schema-data";
+import { fromFeedItemToUIItem, fromPageSectionToUISection, safeGetFeed, safeGetPage, safeGetWebsite, website } from "~/api";
+
+import itTranslations from "../../i18n/it-IT.json"
+import enTranslations from "../../i18n/en-US.json"
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -31,10 +34,10 @@ export const meta: V2_MetaFunction = ({ data, location }) => {
   let url = 'https://illos.davidegiovanni.com' + location.pathname
 
   if (data !== undefined) {
-    const { page } = data as LoaderData;
-    title = (page.title !== '' ? page.title : "Lavori") + ' | Davide G. Steccanella'
-    description = page.description !== '' ? page.description : "Le illustrazioni di Davide Giovanni Steccanella"
-    image = page.image !== '' ? page.image : ''
+    const { meta } = data as LoaderData;
+    title = (meta.title !== '' ? meta.title : "Homepage") + ''
+    description = meta.description !== '' ? meta.description : "Illustrazioni di Davide Giovanni Steccanella"
+    image = meta.image !== '' ? meta.image : ''
     url = 'https://illos.davidegiovanni.com' + location.pathname
   }
 
@@ -54,54 +57,107 @@ const i18nKeys = [] as const;
 type I18nKeys = typeof i18nKeys[number];
 
 type LoaderData = {
-  i18n: Record<I18nKeys, any>;
-  page: WebPageModel;
-  mainSection: WebSectionModel;
-  feeds: WebSectionModel[];
-  logo: string;
+  translations: Record<I18nKeys, any>;
+
+  title: string;
+  description: string;
+  image: string;
+
+  incomingLocale: string;
+  meta: {
+    title: string;
+    description: string;
+    image: string;
+  };
+
+  portfolioItems: UIItem[];
+  
+  items: UISection[];
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const i18n = loadTranslations<I18nKeys>(params.lang as string, i18nKeys);
+  const incomingLocale = params.lang || ""
+  let translations = incomingLocale === "it-IT" ? itTranslations : enTranslations
 
-  let lang = params.lang
-  let url = new URL(request.url)
-  const host = (url.host.includes('localhost') || url.host.includes('192.168')) ? 'illos.davidegiovanni.com' : url.host
 
-  const [websiteRes, websiteErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
-  if (websiteErr !== null) {
-    throw new Response(`Error loading website: ${websiteErr.message} ${websiteErr.code}`, {
+  let websiteObject: Website = {} as Website
+  const websiteRes = await safeGetWebsite(request, params, incomingLocale);
+  if (typeof websiteRes === "string") {
+    if (websiteRes === "error") {
+      throw new Response("Website not found", {
+        status: 404,
+      });
+    }
+    return redirect(websiteRes)
+  }
+  websiteObject = websiteRes.website
+
+  let meta = {
+    title: websiteObject.title,
+    description: websiteObject.title,
+    image: websiteObject.theme?.logoUrl || ""
+  }
+
+  let pageObject: Page = {} as Page
+  const pageRes = await safeGetPage("works", params)
+  if (typeof pageRes === "string") {
+    throw new Response("Page not found", {
       status: 404,
     });
   }
-  const logo = websiteRes.website.theme.logoUrl
+  pageObject = pageRes
 
-  const [pageRes, pageErr] = await safeGet<any>(request, `https://cdn.revas.app/websites/v0/websites/${host}/pages/works?public_key=01exy3y9j9pdvyzhchkpj9vc5w&language_code=${lang}`)
-  if (pageErr !== null) {
-    throw new Response(`Page do not exist: ${pageRes.message} ${pageRes.code}`, {
+  let feedObject: Feed = {} as Feed
+  const feedRes = await safeGetFeed("illos-works", params)
+  if (typeof feedRes === "string") {
+    throw new Response("Page not found", {
       status: 404,
     });
   }
+  feedObject = feedRes
 
-  const page: WebPageModel = pageRes.page
+  let title = pageObject.title
+  let description = pageObject.description
+  let image = pageObject.imageUrl
 
-  const mainSection: WebSectionModel = page.sections[0]
+  meta.title = pageObject.title
+  meta.description = pageObject.description
+  meta.image = pageObject.imageUrl
 
-  const feeds = page.sections.length > 1 ? page.sections.splice(1) : []
+  let portfolioItems: UIItem[] = feedRes.items.map(item => {
+    return fromFeedItemToUIItem(item, incomingLocale)
+  })
+
+  let sectionItems: BlockItem[] = []
+
+  pageRes.blocks.forEach(block => sectionItems.push(...block.items))
+
+  if (sectionItems.length > 0) {
+    title = sectionItems[0].title
+    description = sectionItems[0].title
+    image = sectionItems[0].attachment?.url || image
+  }
+
+  let items: UISection[] = sectionItems.slice(1).map(item => {
+    return fromPageSectionToUISection(item)
+  })
 
   const loaderData: LoaderData = {
-    i18n,
-    page: page,
-    mainSection,
-    feeds,
-    logo
+    translations,
+    title,
+    description,
+    image,
+    incomingLocale,
+    meta,
+    portfolioItems,
+    items
   }
 
   return json(loaderData)
 };
 
 export default function Works() {
-  const { mainSection, feeds, page } = useLoaderData<LoaderData>();
+  const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
   const location = useLocation()
 
@@ -112,16 +168,16 @@ export default function Works() {
   const portofolioSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "name": page.title,
-    "description": page.description,
-    "url": `https://illos.davidegiovanni.com/${location.pathname}`,
+    "name": loaderData.title,
+    "description": loaderData.description,
+    "url": `https://illos.davidegiovanni.com${location.pathname}`,
     "itemListElement": [
-      ...feeds.map(feed => {
+      ...loaderData.portfolioItems.map(item => {
         return {
           "@type": "Portfolio",
-          "name": feed.title,
-          "image": feed.image,
-          "url": `https://illos.davidegiovanni.com/${params.locale}/works/${feed.description}`
+          "name": item.title,
+          "image": item.image,
+          "url": `https://illos.davidegiovanni.com/${loaderData.incomingLocale}/works/${item.slug}`
         }
       })
     ]
@@ -140,10 +196,10 @@ export default function Works() {
       <div id="works" key={"works"} ref={constraintRef} className="h-full w-full overflow-hidden">
         <StructuredData schema={portofolioSchema} />
         <h1 className="sr-only">
-          {mainSection.title}
+          {loaderData.title}
         </h1>
-        {feeds.map((f, index) => (
-          <Link key={randomKey + index} to={`/${params.lang}/works/${f.description}`}>
+        {loaderData.portfolioItems.map((f, index) => (
+          <Link key={randomKey + index} to={`/${loaderData.incomingLocale}/works/${f.slug}`}>
               <motion.div
                 key={randomKey + index} 
                 drag={true}
@@ -158,8 +214,8 @@ export default function Works() {
                 className={"w-32 lg:w-full aspect-square max-w-md will-change-transform"}>
                 <Attachment size="object-cover" attachment={{
                   mediaType: "image/",
-                  url: f.image,
-                  description: f.title,
+                  url: f.image.url,
+                  description: f.image.description,
                   metadata: {}
                 }}></Attachment>
                 <h2 className="sr-only">

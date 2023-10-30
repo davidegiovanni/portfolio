@@ -125,8 +125,7 @@ export function fromFeedItemToUIItem (item: FeedItem, locale: string): UIItem {
     },
     slug: getSlug(item.id) || "",
     date_published: formatDate(item.date_published, locale),
-    content: item.content_html || "",
-    id: item.id
+    content: item.content_html || ""
   }
   return formattedItem
 }

@@ -3,12 +3,17 @@ import { Link, NavLink, useLoaderData, useLocation, useParams, V2_MetaFunction }
 import metadata from '~/utils/metadata'
 import { getSlug, isExternalLink } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
-import { feed, page } from "~/api";
-import { Page, Feed } from "~/models";
+import { feed, fromPageSectionToUISection, page, safeGetFeed, safeGetPage, safeGetWebsite } from "~/api";
+import { Page, Feed, UISection, UILink, BlockItem, Website, FeedItem } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import { motion, MotionValue, useAnimate, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { StructuredData } from "~/utils/schema-data";
+
+import itTranslations from "../../i18n/it-IT.json"
+import enTranslations from "../../i18n/en-US.json"
+import { newTranslate } from "~/utils/translate";
+import { extractImagesFromContent, getContentWithoutImages } from "./utils";
 
 // create the dynamicLinks function with the correct type
 // note: loader type is optional
@@ -52,37 +57,23 @@ export const meta: V2_MetaFunction = ({ data, location }) => {
   )
 };
 
-type UILink = {
-  title: string;
-  url: string;
-  isExternal: boolean;
-}
-
 type LoaderData = {
+  translations: Record<any, any>;
+  incomingLocale: string;
+
   title: string,
   description: string,
   image: string,
-  sections: {
-    title: string,
-    description: string,
-    image: string;
-    link: UILink;
-    slug: string;
-  }[];
-  works: {
-    image: string;
-    slug: string;
-  }[];
+
+  sections: UISection[];
+  content: string;
+
   meta: {
     title: string;
     description: string;
     image: string;
   };
-  link: {
-    title: string;
-    url: string;
-    isExternal: boolean;
-  } | null;
+  link: UILink | null;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -91,94 +82,94 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
 
   const incomingLocale = params.lang || ""
+  let translations = incomingLocale === "it-IT" ? itTranslations : enTranslations
+
+  let websiteObject: Website = {} as Website
+  const websiteRes = await safeGetWebsite(request, params, incomingLocale);
+  if (typeof websiteRes === "string") {
+    if (websiteRes === "error") {
+      throw new Response("Website not found", {
+        status: 404,
+      });
+    }
+    return redirect(websiteRes)
+  }
+  websiteObject = websiteRes.website
+
   let meta = {
-    title: "",
-    description: "",
-    image: ""
+    title: websiteObject.title,
+    description: websiteObject.title,
+    image: websiteObject.theme?.logoUrl || ""
   }
 
-  let sections: {
-    title: string,
-    description: string,
-    image: string;
-    link: UILink;
-    slug: string;
-  }[] = []
+  let sections = []
 
-  let works: {
-    image: string;
-    slug: string;
-  }[] = []
-
-  const [pageRes, pageErr] = await page(params.feed as string, params)
-  if (pageErr !== null) {
-    throw new Response(`Page do not exist: ${pageErr.message} ${pageErr.code}`, {
+  let pageObject: Page = {} as Page
+  const pageRes = await safeGetPage(params.work as string, params)
+  if (typeof pageRes === "string") {
+    throw new Response("Page not found", {
       status: 404,
     });
   }
+  pageObject = pageRes
 
-  const pageObject: Page = pageRes.page
-
-  let title = pageObject.blocks.length > 0 ? pageObject.blocks[0].items[0].title : ""
-  let description = pageObject.blocks.length > 0 ? pageObject.blocks[0].items[0].description : ""
-  let image = pageObject.blocks.length > 0
-    ? pageObject.blocks[0].items[0].attachment
-      ? pageObject.blocks[0].items[0].attachment?.url
-      : ""
-    : ""
-
-  let link = (pageObject.blocks.length > 0 && pageObject.blocks[0].items[0].link) ? {
-    title: pageObject.blocks[0].items[0].link?.title as string,
-    url: pageObject.blocks[0].items[0].link?.url as string,
-    isExternal: isExternalLink(pageObject.blocks[0].items[0].link?.url as string)
-  } : null
-
-  sections = pageObject.blocks.length > 1
-    ? pageObject.blocks.slice(1).map(b => {
-      return {
-        title: b.items[0].title,
-        description: b.items[0].description,
-        image: b.items[0].attachment
-          ? b.items[0].attachment?.url
-          : "",
-        link: {
-          title: b.items[0].link?.title as string,
-          url: b.items[0].link?.url as string,
-          isExternal: isExternalLink(b.items[0].link?.url as string)
-        },
-        slug: b.items[0].description
-      }
-    })
-    : []
+  let title = pageObject.title
+  let description = pageObject.description
+  let image = pageObject.imageUrl
+  let link: UILink | null = null
 
   meta.title = pageObject.title
   meta.description = pageObject.description
   meta.image = pageObject.imageUrl
 
+  let sectionItems: BlockItem[] = []
+
+  pageRes.blocks.forEach(block => sectionItems.push(...block.items))
+
+  if (sectionItems.length > 0) {
+    title = sectionItems[0].title
+    description = sectionItems[0].title
+    image = sectionItems[0].attachment?.url || image
+    if (sectionItems[0].link) link = {
+      ...sectionItems[0].link,
+      isExternal: isExternalLink(sectionItems[0].link.url)
+    }
+  }
+
+  sections = sectionItems.slice(1).map(item => {
+    return fromPageSectionToUISection(item)
+  })
+
   const feedName = params.feed || "";
 
-  const [feedRes, feedErr] = await feed(feedName, params)
-  if (feedErr !== null) {
-    throw new Response(`Feed do not exist: ${feedErr.message} ${feedErr.code}`, {
+  let feedObject: Feed = {} as Feed
+  const feedRes = await safeGetFeed("illos-works" as string, params)
+  if (typeof feedRes === "string") {
+    throw new Response("Page not found", {
       status: 404,
     });
   }
+  feedObject = feedRes
 
-  const feedObject: Feed = feedRes
-
-  works = feedObject.items.map((i, index) => {
-    return {
-      image: i.image || "",
-      slug: `/${incomingLocale}/works/${params.feed}/${getSlug(i.id)}`
-    }
+  let slug = params.work as string
+  let foundItem: FeedItem | undefined = feedObject.items.find((i: any) => {
+    return i.id.endsWith(slug)
   })
+  if (foundItem === undefined) {
+    throw new Response(`Post do not exist`, {
+      status: 404,
+    });
+  }
+  let content = foundItem.content_html
 
   const loaderData: LoaderData = {
+    translations,
+    incomingLocale,
     title,
     description,
     image,
-    sections,
-    works,
+    sections: [],
+    content,
     meta,
     link
   }
@@ -190,7 +181,20 @@ export default function FeedPage() {
   const params = useParams()
   const location = useLocation()
 
+  const translate = newTranslate({ messages: loaderData.translations })
+
   const containerRef = useRef(null);
+
+  const [images, setImages] = useState<string[]>([])
+  const [content, setContent] = useState<string>("")
+
+  useEffect(() => {
+    const imagesStrings = extractImagesFromContent(loaderData.content)
+    setImages(imagesStrings)
+
+    const formattedContent = getContentWithoutImages(loaderData.content)
+    setContent(formattedContent)
+  }, [loaderData.content])
 
   const portofolioSchema = {
     "@context": "https://schema.org",
@@ -199,29 +203,26 @@ export default function FeedPage() {
     "description": loaderData.description,
     "url": `https://illos.davidegiovanni.com/${location.pathname}`,
     "itemListElement": [
-      ...loaderData.sections.map(item => {
+      ...images.map(img => {
         return {
           "@type": "Portfolio",
-          "name": item.title,
-          "description": item.description,
-          "image": item.image,
-          "url": `https://illos.davidegiovanni.com/${location.pathname}/${item.slug}`
+          "name": loaderData.title,
+          "description": loaderData.title,
+          "image": img,
+          "url": img
         }
       })
     ]
   }
 
   return (
-    <div id="workpage" key={"workpage"} className="h-full w-full overflow-hidden text-center uppercase">
+    <div ref={containerRef} id="workpage" key={"workpage"} className="h-full w-full overflow-y-auto">
       <StructuredData schema={portofolioSchema} />
-      <Link to={`/${params.lang}/works`} className="absolute top-0 left-0 z-50 m-2">
-        <p className="sr-only">
-          Close
-        </p>
-          ✕
+      <Link to={`/${params.lang}/works`} className="fixed bg-white bg-opacity-50 backdrop-blur-2xl backdrop-saturate-200 top-0 left-0 z-50 p-4 w-full text-sm uppercase">
+        {translate({ key: "go_back" })}
       </Link>
-      <div ref={containerRef} className="w-full h-full overflow-y-auto overflow-x-hidden">
-        <div className="w-full h-full sticky top-0 flex flex-col gap-4 items-center justify-center px-4">
+      <div>
+        <div className="w-screen h-screen sticky top-0 flex flex-col gap-4 items-center justify-center px-4">
           <h1 className="font-semibold">
             {loaderData.title}
           </h1>
@@ -250,16 +251,21 @@ export default function FeedPage() {
           }
         </div>
         {
-            loaderData.works.map((i, index: any) => (
-              <ScrollingImage key={index} image={i.image} slug={i.slug} index={index} container={containerRef} />
-            ))
-          }
+          images.map((i, index: any) => (
+            <ScrollingImage key={index} image={i} index={index} container={containerRef} />
+          ))
+        }
       </div>
+      {
+        content !== "" && (
+          <article className="prose text-center max-w-prose mx-auto py-8 lg:py-16 pb-16 lg:pb-24 px-4 lg:px-0" dangerouslySetInnerHTML={{ __html: content }}></article>
+        )
+      }
     </div>
   );
 }
 
-function ScrollingImage (props: { image: string; slug: string; index: number, container: React.MutableRefObject<null>}) {
+function ScrollingImage(props: { image: string; index: number, container: React.MutableRefObject<null> }) {
   const index = props.index
   const target = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -279,7 +285,7 @@ function ScrollingImage (props: { image: string; slug: string; index: number, co
         <Attachment attachment={{
           mediaType: "image/",
           url: props.image,
-          description: props.slug,
+          description: "",
           metadata: {}
         }}></Attachment>
       </motion.div>
