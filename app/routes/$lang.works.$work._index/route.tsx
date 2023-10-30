@@ -228,7 +228,7 @@ export default function FeedPage() {
           </h1>
           {
             loaderData.description !== "" &&
-            <h2 className="max-w-prose">
+            <h2 className="max-w-prose text-center">
               {loaderData.description}
             </h2>
           }
@@ -251,7 +251,7 @@ export default function FeedPage() {
           }
         </div>
         {
-          images.map((i, index: any) => (
+          images.length > 0 && images.map((i, index: any) => (
             <ScrollingImage key={index} image={i} index={index} container={containerRef} />
           ))
         }
