@@ -1,5 +1,5 @@
 import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
-import { Link, useLoaderData, useParams, V2_MetaFunction } from "@remix-run/react";
+import { Link, useLoaderData, useNavigate, useParams, V2_MetaFunction } from "@remix-run/react";
 import queryString from 'query-string'
 
 import metadata from '~/utils/metadata'
@@ -8,6 +8,7 @@ import { feed } from "~/api";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import ZoomableImage from "~/components/zommable";
 import { Feed } from "~/models";
+import { motion, AnimatePresence } from "framer-motion";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -129,14 +130,27 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function ItemPage() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
+  const navigate = useNavigate()
+  const [isImageVisible, toggleImageVisibility] = useState(true)
+
+  function handleClick (direction: "previous" | "next") {
+    toggleImageVisibility(false)
+
+    setTimeout(() => {
+      navigate(direction === "previous"
+      ? `/${params.lang}/works/${params.feed}/${previous}`
+      : `/${params.lang}/works/${params.feed}/${next}`)
+    }, 300)
+  }
 
   const constraintRef = useRef<HTMLDivElement>(null)
   const previous = loaderData.previous
   const next = loaderData.next
 
   return (
-    <div id="details" key={"details"} ref={constraintRef} className={`absolute z-50 inset-0 bg-black p-4 lg:p-12 overflow-hidden`}>
-      <div className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
+    <div id="details" key={"details"} ref={constraintRef} className={`fixed z-[120] inset-0 bg-black p-4 lg:p-12 overflow-hidden`}>
+      <motion.div
+        className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
         <Link to={`/${params.lang}/works/${params.feed}`}>
           CHIUDI
         </Link>
@@ -146,23 +160,37 @@ export default function ItemPage() {
         <Link to={`/${params.lang}/works/${params.feed}`} className="opacity-60">
           DOUBLE TAP TO ZOOM
         </Link>
-      </div>
-      <div className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
-          <Link to={`/${params.lang}/works/${params.feed}/${previous}`} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "")}>
+      </motion.div>
+      <motion.div className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
+          <button onClick={() => handleClick("previous")} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "")}>
             INDIETRO
-          </Link>
-          <Link to={`/${params.lang}/works/${params.feed}/${next}`} className={(next === "" ? "pointer-events-none opacity-50 select-none " : "")}>
+          </button>
+          <button onClick={() => handleClick("next")} className={(next === "" ? "pointer-events-none opacity-50 select-none " : "")}>
             AVANTI
-          </Link>
-      </div>
-      <div className='h-full w-full'>
-          <ZoomableImage attachment={{
-          mediaType: "image/",
-          url: loaderData.image,
-          description: loaderData.title,
-          metadata: {}
-        }} dragConstraints={constraintRef}></ZoomableImage>
-        </div>
+          </button>
+      </motion.div>
+      <motion.div className='h-full w-full'>
+        <AnimatePresence>
+          {
+            isImageVisible && (
+              <motion.div
+                key={loaderData.image}
+                animate={{ translateY: 0, scale: 1, skewX: 0, opacity: 1 }}
+                initial={{ translateY: "10%", scale: 0.9, skewX: 2, opacity: 0 }}
+                exit={{ translateY: "10%", scale: 0.9, skewX: -2, opacity: 0 }}
+                transition={{ ease: [.64,.13,.58,1], duration: 0.3, delay: 0.2 }} 
+                className='h-full w-full origin-bottom'>
+                  <ZoomableImage attachment={{
+                  mediaType: "image/",
+                  url: loaderData.image,
+                  description: loaderData.title,
+                  metadata: {}
+                }} dragConstraints={constraintRef}></ZoomableImage>
+                </motion.div>
+            )
+          }
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }

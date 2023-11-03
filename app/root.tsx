@@ -31,7 +31,7 @@ import { Page, Website } from "./models";
 import { DynamicLinks } from "./utils/dynamic-links";
 import defaultCss from "./default.css";
 import MSPaint from "./components/PaintCanvas";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { image } from "remix-utils";
 
 export const meta: V2_MetaFunction = () => {
@@ -222,14 +222,25 @@ export default function App() {
   const style = {
     "--customfont": loaderData.fontFamily,
     fontFamily: loaderData.fontFamily,
-    backgroundColor: "white",
-  }
-
-  const style2 = {
-    color: getContrast("#ffffff")
   }
 
   const [isMenuOpen, togglemenuOpen] = useState<boolean>(false)
+  const [isNavVisible, toggleNavOpen] = useState<boolean>(false)
+
+  function togglePresence () {
+    if (isMenuOpen) {
+      toggleNavOpen(false)
+      setTimeout(() => {
+        togglemenuOpen(false)
+      }, 500)
+    }
+    if (!isMenuOpen) {
+      togglemenuOpen(true)
+      setTimeout(() => {
+        toggleNavOpen(true)
+      }, 500)
+    }
+  }
 
   const followerDivRef = useRef<HTMLDivElement>(null);
   const { x, y } = useFollowPointer(followerDivRef)
@@ -258,7 +269,7 @@ export default function App() {
           </motion.div>
         )
       }
-      <div style={style} className="fixed inset-0 overflow-hidden  selection:bg-slate-100 w-full h-full flex flex-col-reverse font-default cursor-none">
+      <div style={style} className="fixed inset-0 overflow-hidden selection:bg-slate-100 w-full h-full flex flex-col-reverse font-default cursor-none">
         {(navigationStart || navigationEnd) && (
           <div
             data-navigation-start={navigationStart}
@@ -266,58 +277,120 @@ export default function App() {
             className="loading-bar"
           />
         )}
-        <div style={style2} data-disabled={isShowingCanvas} className="fixed bottom-0 z-50 data-[disabled=true]:translate-y-16 transition-all duration-200 ease-in-out inset-x-0 w-fulle p-2 text-sm lg:text-base">
-          <div className="flex items-center justify-between uppercase rounded-md bg-neutral-100 bg-opacity-50 backdrop-blur-lg backdrop-saturate-200 p-2">
-            <Link to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className="lg:hover:-rotate-45 transition-all ease-in-out duration-300 pl-2">
+        <div data-disabled={isShowingCanvas} className="relative z-[100] data-[disabled=true]:translate-y-16 transition-all duration-200 ease-in-out w-full px-2 pb-2 text-sm lg:text-base bg-white flex flex-col gap-2">
+          <div className="flex items-center justify-center">
+            <motion.div animate={{ width: "50%" }} transition={{ ease: "easeOut", duration: 0.5 }} className="h-px border-t border-black w-0"></motion.div>
+            <motion.div animate={{ width: "50%" }} transition={{ ease: "easeOut", duration: 0.5 }} className="h-px border-t border-black w-0"></motion.div>
+          </div>
+          <div className="flex items-center justify-between uppercase">
+            <Link to={`/${params.lang}`} onClick={togglePresence} className="block lg:hidden lg:hover:-rotate-45 transition-all ease-in-out duration-300 pl-2 overflow-hidden">
               {loaderData.logoUrl === "" && `✻`}
-              {loaderData.logoUrl !== "" && <img src={loaderData.logoUrl} className="h-4 lg:h-8" />}
+              {loaderData.logoUrl !== "" && <motion.img animate={{ translateY: 0 }} initial={{ translateY: 36 }} transition={{ ease: "easeOut", duration: 0.1, delay: 0.5 }} src={loaderData.logoUrl} className="block h-4 lg:h-8" />}
+            </Link>
+            <Link to={`/${params.lang}`} className="hidden lg:block lg:hover:-rotate-45 transition-all ease-in-out duration-300 pl-2 overflow-hidden">
+              {loaderData.logoUrl === "" && `✻`}
+              {loaderData.logoUrl !== "" && <motion.img animate={{ translateY: 0 }} initial={{ translateY: 36 }} transition={{ ease: "easeOut", duration: 0.1, delay: 0.5 }} src={loaderData.logoUrl} className="block h-4 lg:h-8" />}
             </Link>
             <p className="w-48 whitespace-nowrap absolute inset-x-0 mx-auto text-center">
               {currentTime}
             </p>
-            <button onClick={() => togglemenuOpen(!isMenuOpen)} className={`relative z-50 w-8 aspect-square rounded hover:border border-revas-neutral-500 `} aria-label="Menu">
-              <p data-menuopen={isMenuOpen} className="data-[menuopen=true]:rotate-45 transition-all ease-in-out duration-300">
-              ＋
-              </p>
-            </button>
-          </div>
-        </div>
-        <div data-visible={isMenuOpen} className="fixed opacity-0 h-0 p-0 overflow-hidden data-[visible=true]:h-full data-[visible=true]:opacity-100 inset-0 w-full z-40 flex items-center justify-center data-[visible=true]:p-[1.5vmin] bg-neutral-300">
-          {
-            loaderData.links.length > 0 &&
-            <nav className="flex flex-col gap-[6vmin] lg:gap-[2vmin] items-center h-full justify-between uppercase">
-              <p className="font-default text-xs">
-                Copyright © <a href="https://davidegiovanni.com" target={'_blank'} rel="noopener">Davide Giovanni Steccanella </a>
-              </p>
-              <ul className="w-full flex flex-col gap-[6vmin] lg:gap-[4vmin] items-center justify-center h-full" style={{ fontSize: fluidType(16, 20, 300, 2400, 1.5).fontSize, lineHeight: fluidType(12, 16, 300, 2400, 1.5).lineHeight }}>
-                  <NavLink to={`/${params.lang}`} onClick={() => togglemenuOpen(false)} className={({ isActive }) =>
-                    `block`
-                  }>
-                    HOME
-                  </NavLink>
+            <nav className="hidden lg:block">
+              <ul className="w-full flex gap-1 lg:gap-2 items-center justify-end ">
                 {loaderData.links.map((link, index) => (
-                  <li key={index} onClick={() => togglemenuOpen(false)}>
+                  <motion.li animate={{ translateY: 0 }} initial={{ translateY: 36 }} transition={{ ease: "easeOut", duration: 0.1, delay: index / 10 }} data-active={location.pathname.endsWith(link.url)} key={index} onClick={() => togglemenuOpen(false)} className={"inline-block group rounded-full bg-neutral-100 px-3 py-1 overflow-hidden relative data-[active=true]:pointer-events-none data-[active=true]:bg-black data-[active=true]:text-white hover:text-white text-sm transition-all duration-500 will-change-contents"}>
                     {
                       link.isExternal ? (
-                        <a href={link.url} className="block">
+                        <a href={link.url} className={"relative z-10"}>
                           {link.title}
                         </a>
                       ) : (
-                        <NavLink to={link.url} className={({ isActive }) =>
-                          `${isActive ? "opacity-50" : "hover:opacity-50"} opacity-100 block`
-                        }>
+                        <NavLink to={link.url} className={"relative z-10"}>
                           {link.title}
                         </NavLink>
                       )
                     }
-                  </li>
+                    <div className="absolute origin-bottom inset-0 aspect-square rounded-full scale-0 group-hover:scale-[2] transition-all duration-1000 bg-black"></div>
+                  </motion.li>
                 ))}
               </ul>
-              <div></div>
             </nav>
-          }
+            <button onClick={togglePresence} className={"lg:hidden rounded-full bg-neutral-100 px-3 py-1 hover:bg-black hover:text-white text-sm flex items-center justify-center gap-1 uppercase"}>
+              Menu 
+              <svg data-menuopen={isMenuOpen} className="data-[menuopen=true]:rotate-45 transition-all duration-300 ease-in-out -tranlate-y-1 block" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2.75C8 2.47386 7.77614 2.25 7.5 2.25C7.22386 2.25 7 2.47386 7 2.75V7H2.75C2.47386 7 2.25 7.22386 2.25 7.5C2.25 7.77614 2.47386 8 2.75 8H7V12.25C7 12.5261 7.22386 12.75 7.5 12.75C7.77614 12.75 8 12.5261 8 12.25V8H12.25C12.5261 8 12.75 7.77614 12.75 7.5C12.75 7.22386 12.5261 7 12.25 7H8V2.75Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            </button>
+          </div>
         </div>
-        <div key={location.pathname} data-visible={isMenuOpen} data-disabled={isShowingCanvas} className="w-full flex-1 overflow-hidden data-[visible=true]:blur-2xl data-[disabled=true]:pointer-events-none">
+        <div key={location.pathname} className="bg-white relative w-full flex-1 overflow-hidden">
+          <AnimatePresence>
+            {isMenuOpen && (
+                <motion.div 
+                  animate={{ scaleY: 1 }}
+                  initial={{ scaleY: 0 }}
+                  exit={{ scaleY: 0 }}
+                  transition={{ ease: "easeOut", duration: 0.2 }}
+                  className="absolute origin-bottom overflow-hidden inset-0 z-50 p-2 flex flex-col gap-4 items-stretch justify-end bg-white">
+                  <ul className="w-full flex flex-col gap-4 items-start justify-start ">
+                  {loaderData.links.map((link, index) => (
+                    <div className="w-full flex flex-col gap-4 items-stretch justify-start">
+                      <div className="w-full h-fit overflow-hidden">
+                        <AnimatePresence>
+                          {
+                            isNavVisible && (
+                              <motion.li 
+                                animate={{ translateY: 0 }} 
+                                initial={{ translateY: "100%" }}
+                                exit={{ translateY: "-100%" }} 
+                                transition={{ ease: "easeOut", duration: 0.3, delay: index / 5 }} data-active={location.pathname.endsWith(link.url)} key={index} onClick={togglePresence} className={"uppercase text-xl w-full flex items-center justify-between"}>
+                                {
+                                  link.isExternal ? (
+                                    <a href={link.url} className={"relative z-10 inline-flex items-start justify-start gap-2 w-full"}>
+                                      <span className="text-xs translate-y-1">{index + 1}</span>
+                                      {link.title}
+                                    </a>
+                                  ) : (
+                                    <NavLink to={link.url} className={"relative z-10 inline-flex items-start justify-start gap-2 w-full"}>
+                                      <span className="text-xs translate-y-1">{index + 1}</span>
+                                      {link.title}
+                                    </NavLink>
+                                  )
+                                }
+                                <span
+                                  className="w-4 h-4 overflow-hidden">
+                                    {
+                                      isNavVisible && (
+                                        <motion.svg
+                                          animate={{ translateY: 0, rotate: 0 }} 
+                                          initial={{ translateY: "100%", rotate: -45 }}
+                                          exit={{ translateY: "-100%", rotate: 45 }} 
+                                          transition={{ ease: "easeOut", duration: 0.3, delay: index / 3 }}
+                                          width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></motion.svg>
+                                      )
+                                    }
+                                </span>
+                              </motion.li>
+                            )
+                          }
+                        </AnimatePresence>
+                      </div>
+                      {index !== loaderData.links.length - 1 && (
+                        <AnimatePresence>
+                          {
+                            isNavVisible && (
+                              <motion.div
+                                animate={{ width: "100%" }}
+                                initial={{ width: 0 }}
+                                exit={{ width: 0 }}
+                                transition={{ ease: "easeOut", duration: 0.2, delay: index / 10 }} className="h-px border-t border-black w-0"></motion.div>
+                            )
+                          }
+                        </AnimatePresence>
+                      )}
+                    </div>
+                  ))}
+                </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
           <Outlet />
         </div>
       </div>

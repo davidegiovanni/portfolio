@@ -12,6 +12,11 @@ import { feed } from "~/api";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import { Feed, FeedItem } from "~/models";
 import { StructuredData } from "~/utils/schema-data";
+import { motion } from "framer-motion";
+
+import itTranslations from "../../i18n/it-IT.json"
+import enTranslations from "../../i18n/en-US.json"
+import { newTranslate } from "~/utils/translate";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -51,6 +56,7 @@ export const meta: V2_MetaFunction = ({ data, location }) => {
 };
 
 type LoaderData = {
+  translations: Record<any, any>;
   title: string;
   description: string;
   image: string;
@@ -64,6 +70,8 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const incomingLocale = params.lang || ""
+  let translations = incomingLocale === "it-IT" ? itTranslations : enTranslations
+
   let meta = {
     title: "",
     description: "",
@@ -104,7 +112,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     description,
     image,
     html,
-    meta
+    meta,
+    translations
   }
 
   return json(loaderData);
@@ -114,6 +123,7 @@ export default function About() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
   const location = useLocation()
+  const translate = newTranslate({ messages: loaderData.translations })
 
   const webPageSchema = {
     "@context": "https://schema.org",
@@ -147,32 +157,47 @@ export default function About() {
   }
 
     return (
-      <div id="about" key={"about"} className="h-full w-full overflow-y-scroll lg:scrollbar-hidden uppercase">
+      <div id="about" key={"about"} className="h-full w-full overflow-y-scroll lg:scrollbar-hidden">
         <StructuredData schema={webPageSchema}/>
-        <div className="w-full h-full lg:flex items-stretch">
-          <div className="relative w-full aspect-square md:aspect-[4/2] lg:h-full lg:w-1/2 ">
-            <div className="relative h-full w-full overflow-hidden">
-              <Attachment size="object-cover" attachment={{
-                  mediaType: "image/",
-                  url: loaderData.image,
-                  description: "Davide Giovanni Steccanella",
-                  metadata: {}
-                }}></Attachment>
+        <motion.div animate={{ translateY: "-100%", scaleY: 0.2, skewY: 20 }} initial={{ translateY: 0 }} transition={{ ease: "easeOut", duration: 0.8 }} className="h-full absolute inset-x-0 top-0 bg-white z-30 origin-top"></motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 w-full lg:h-full">
+          <div className="w-full max-h-screen aspect-square lg:aspect-auto lg:sticky top-0 overflow-hidden p-4 flex items-center justify-center">
+            <div className="relative aspect-square w-10/12 overflow-hidden flex items-center justify-center">
+              <motion.div animate={{ skewY: 0, translateY: 0 }} initial={{  skewY: 8, translateY: 200 }} transition={{ ease: "easeOut", duration: 0.5 }} className="relative w-2/3 overflow-hidden">
+                <motion.div animate={{ scale: 1.2 }} initial={{ scale: 1 }} transition={{ ease: "easeOut", duration: 10 }} className="w-full h-full">
+                  <Attachment size="object-contain" attachment={{
+                      mediaType: "image/",
+                      url: loaderData.image,
+                      description: "Davide Giovanni Steccanella",
+                      metadata: {}
+                    }}></Attachment>
+                </motion.div>
+              </motion.div>
             </div>
           </div>
-          <div className="w-full lg:w-1/2 lg:overflow-y-auto pb-4 flex flex-col items-stretch justify-start gap-4">
-            <div className="p-4 text-center border-b border-black">
-              <h1 className="w-full uppercase font-semibold mb-2 max-w-sm mx-auto" >
-                  {loaderData.title}
-                </h1>
-                <h2 className="mb-2 max-w-lg mx-auto">
-                  {loaderData.description}
-                </h2>
+          <div className="w-full lg:overflow-y-auto pb-4 flex flex-col items-stretch justify-start border-black border-t lg:border-t-0 lg:border-l">
+            <div className="p-4 lg:py-12 text-2xl lg:text-5xl uppercase">
+              <div className="w-full h-fit overflow-hidden">
+                <motion.h1 animate={{ translateY: 0, opacity: 1, skewY: 0 }} initial={{ translateY: 40, opacity: 0, skewY: 2 }} transition={{ ease: "easeOut", duration: 0.4, delay: 0.5 }} className="max-w-xl mx-auto flex flex-col origin-top-left" >
+                    <span className="uppercase text-xs">{translate({ key: "my_name_is" })}</span>
+                    {loaderData.title}
+                  </motion.h1>
+              </div>
             </div>
+            <motion.div animate={{ width: "100%" }} transition={{ ease: "easeOut", duration: 0.4, delay: 0.3 }} className="h-px border-t border-black w-0"></motion.div>
+            <div className="p-4 lg:py-12 uppercase">
+              <div className="w-full h-fit overflow-hidden">
+                <motion.h2 animate={{ translateY: 0, opacity: 1, skewY: 0 }} initial={{ translateY: 60, opacity: 0, skewY: 2 }} transition={{ ease: "easeOut", duration: 0.4, delay: 0.6 }} className="max-w-xl mx-auto font-medium flex flex-col gap-2 origin-top-left">
+                    <span className="uppercase text-xs font-normal">{translate({ key: "about_me" })}</span>
+                    {loaderData.description}
+                  </motion.h2>
+              </div>
+            </div>
+            <motion.div animate={{ width: "100%" }} transition={{ ease: "easeOut", duration: 0.4, delay: 0.3 }} className="h-px border-t border-black w-0"></motion.div>
             { loaderData.html !== "" && loaderData.html !== undefined &&
-                <article className="p-4 lg:p-8 block prose-sm prose-a:underline prose-a:underline-offset-2 text-justify mx-auto">
+                <motion.article animate={{ translateY: 0, opacity: 1, skewY: 0 }} initial={{ translateY: 20, opacity: 0, skewY: 2 }} transition={{ ease: "easeOut", duration: 0.4, delay: 0.7 }} className="p-4 pb-16 lg:pt-16 break-after-column block prose-sm prose-a:underline prose-a:underline-offset-2 max-w-xl mx-auto origin-top-left">
                 {parse(loaderData.html)}
-              </article>
+              </motion.article>
               }
           </div>
         </div>

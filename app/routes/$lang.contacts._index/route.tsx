@@ -6,6 +6,7 @@ import { Page } from "~/models";
 import { DynamicLinksFunction } from "~/utils/dynamic-links";
 import { isExternalLink } from "~/utils/helpers";
 import { StructuredData } from "~/utils/schema-data";
+import { motion } from "framer-motion";
 
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
@@ -140,27 +141,39 @@ export default function Contacts() {
   }
 
   return (
-    <div id="contacts" key={"contacts"} className={"p-4 h-full w-full flex flex-col gap-4 text-center items-center justify-center uppercase scrollbar-hidden"}>
+    <div id="contacts" key={"contacts"} className={"p-4 h-full w-full flex flex-col gap-4 lg:gap-8 text-center items-center justify-center uppercase scrollbar-hidden"}>
       <StructuredData schema={webPageSchema} />
-      <h1 className="w-full max-w-screen-sm font-semibold">
-        {loaderData.title}
-      </h1>
-      <h2 className="max-w-screen-sm ">
-        {loaderData.description}
-      </h2>
-      <div className="inline-block rounded-full bg-neutral-200 px-6 py-1 hover:bg-black hover:text-white">
-        {
-          loaderData.link.isExternal ? (
-            <a href={loaderData.link.url} >
-              {loaderData.link.title}
-            </a>
-          ) : (
-            <Link to={loaderData.link.url} >
-              {loaderData.link.title}
-            </Link>
-          )
-        }
+      <motion.div animate={{ translateY: "-100%", scaleY: 0.2, skewY: 20 }} initial={{ translateY: 0 }} transition={{ ease: "easeOut", duration: 0.8 }} className="h-full absolute inset-x-0 top-0 bg-white z-30 origin-top"></motion.div>
+      <div className="w-full h-fit overflow-hidden">
+        <motion.h1 animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64,.13,.58,1], duration: 0.5, delay: 0.2 }} className="font-semibold text-2xl lg:text-6xl max-w-screen-lg mx-auto text-center uppercase">
+          {loaderData.title}
+        </motion.h1>
       </div>
+      {
+        loaderData.description !== "" &&
+        <div className="w-full h-fit overflow-hidden">
+          <motion.h2  animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64,.13,.58,1], duration: 0.6, delay: 0.4 }} className="max-w-prose mx-auto text-center">
+            {loaderData.description}
+          </motion.h2>
+        </div>
+      }
+      {
+            loaderData.link !== null && (
+              <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ ease: "easeInOut", duration: 0.5, delay: 1 }} className="inline-block rounded-full bg-neutral-200 px-6 py-1 hover:bg-black hover:text-white">
+                {
+                  loaderData.link.isExternal ? (
+                    <a href={loaderData.link.url} >
+                      {loaderData.link.title}
+                    </a>
+                  ) : (
+                    <Link to={loaderData.link.url} >
+                      {loaderData.link.title}
+                    </Link>
+                  )
+                }
+              </motion.div>
+            )
+          }
     </div>
   );
 }

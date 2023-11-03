@@ -1,5 +1,5 @@
 import { json, LoaderFunction, MetaFunction, SerializeFrom } from "@remix-run/node";
-import { Link, NavLink, useLoaderData, useLocation, useParams, V2_MetaFunction } from "@remix-run/react";
+import { Link, NavLink, useLoaderData, useLocation, useNavigate, useParams, V2_MetaFunction } from "@remix-run/react";
 import metadata from '~/utils/metadata'
 import { getSlug, isExternalLink, useScatterDivsRandomly } from '~/utils/helpers'
 import { Attachment } from "~/components/Attachment";
@@ -168,6 +168,17 @@ export default function FeedPage() {
   const loaderData = useLoaderData<LoaderData>();
   const params = useParams()
   const location = useLocation()
+  const navigate= useNavigate()
+
+  const [blackPanelVisible, toggleBlackPanel] = useState(false)
+
+  function handleClick (slug: string) {
+    toggleBlackPanel(true)
+
+    setTimeout(() => {
+      navigate(slug)
+    }, 500)
+  } 
 
   const constraintRef = useRef<HTMLDivElement>(null)
 
@@ -199,8 +210,13 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="h-full w-full overflow-hidden">
-      <div id="illos" key={"illos"} ref={constraintRef} className="h-full w-full overflow-hidden">
+    <motion.div className="h-full w-full overflow-hidden">
+      { blackPanelVisible && (
+        <motion.div animate={{ translateY: 0, skewY: 0 }} initial={{ translateY: "100%", skewY: 20 }} transition={{ ease: "easeOut", duration: 0.3 }} className="h-full fixed inset-x-0 bottom-0 bg-black z-[120] origin-top"></motion.div>
+      )}
+      <motion.div animate={{ translateY: "-100%", scaleY: 0.2, skewY: 20 }} initial={{ translateY: 0 }} transition={{ ease: "easeOut", duration: 0.8 }} className="h-full absolute inset-x-0 top-0 bg-white z-30 origin-top"></motion.div>
+      <div
+        id="illos" key={"illos"} ref={constraintRef} className="h-full w-full overflow-hidden">
           <StructuredData schema={portofolioSchema} />
           <h1 className="sr-only">
             {loaderData.title}
@@ -213,14 +229,14 @@ export default function FeedPage() {
           }
           {
             loaderData.works.map((i, index: any) => (
-              <Link key={randomKey + index} to={`${i.slug}`} >
+              <button key={randomKey + index} onClick={() => handleClick(i.slug)}>
                 <motion.div
                   key={randomKey + index}
                   id={`image-card-${index}`}
                   drag={true}
                   dragConstraints={constraintRef}
                   whileDrag={{ pointerEvents: "none"}}
-                  initial={{ filter: "drop-shadow(0 0 #0000)"}}
+                  initial={{  filter: "drop-shadow(0 0 0 rgb(0 0 0 / 0.15))" }}
                   whileHover={{
                     scale: 1.1,
                     filter: "drop-shadow(0 25px 25px rgb(0 0 0 / 0.15))",
@@ -244,17 +260,19 @@ export default function FeedPage() {
                     }
                   }}
                   className="w-32 absolute h-32 will-change-transform">
+                    <motion.span animate={{ opacity: 1, translateY: 0 }} initial={{ opacity: 0, translateY: index % 2 === 0 ? -1000 : 1000 }} transition={{ ease: "easeInOut", duration: 1.5, delay: index / 50, type: "spring" }} className="w-32 h-32 overflow-hidden origin-bottom block">
                       <Attachment size="object-contain" attachment={{
-                        mediaType: "image/",
-                        url: i.image,
-                        description: i.slug,
-                        metadata: {}
-                      }}></Attachment>
+                          mediaType: "image/",
+                          url: i.image,
+                          description: i.slug,
+                          metadata: {}
+                        }}></Attachment>
+                    </motion.span>
                 </motion.div>
-              </Link>
+              </button>
             ))
           }
       </div>
-    </div>
+    </motion.div>
   );
 }

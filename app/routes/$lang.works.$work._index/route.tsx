@@ -218,23 +218,28 @@ export default function FeedPage() {
   return (
     <div ref={containerRef} id="workpage" key={"workpage"} className="h-full w-full overflow-y-auto">
       <StructuredData schema={portofolioSchema} />
-      <Link to={`/${params.lang}/works`} className="fixed bg-white bg-opacity-50 backdrop-blur-2xl backdrop-saturate-200 top-0 left-0 z-50 p-4 w-full text-sm uppercase">
+      <motion.div animate={{ translateY: "-100%", scaleY: 0.2, skewY: 20 }} initial={{ translateY: 0 }} transition={{ ease: "easeOut", duration: 0.8 }} className="h-full absolute inset-x-0 top-0 bg-white z-30 origin-top"></motion.div>
+      <Link to={`/${params.lang}/works`} className="fixed bg-white top-0 left-0 z-50 p-4 text-sm uppercase">
         {translate({ key: "go_back" })}
       </Link>
       <div>
         <div className="w-screen h-screen sticky top-0 flex flex-col gap-4 items-center justify-center px-4">
-          <h1 className="font-semibold">
-            {loaderData.title}
-          </h1>
+          <div className="w-full h-fit overflow-hidden">
+            <motion.h1 animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64,.13,.58,1], duration: 0.5, delay: 0.2 }} className="font-semibold text-2xl lg:text-6xl max-w-screen-md mx-auto text-center uppercase">
+              {loaderData.title}
+            </motion.h1>
+          </div>
           {
             loaderData.description !== "" &&
-            <h2 className="max-w-prose text-center">
-              {loaderData.description}
-            </h2>
+            <div className="w-full h-fit overflow-hidden">
+              <motion.h2  animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64,.13,.58,1], duration: 0.6, delay: 0.4 }} className="max-w-prose mx-auto text-center">
+                {loaderData.description}
+              </motion.h2>
+            </div>
           }
           {
             loaderData.link !== null && (
-              <div className="inline-block rounded-full bg-neutral-200 px-6 py-1 hover:bg-black hover:text-white">
+              <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ ease: "easeInOut", duration: 0.5, delay: 1 }} className="inline-block rounded-full bg-neutral-200 px-6 py-1 hover:bg-black hover:text-white">
                 {
                   loaderData.link.isExternal ? (
                     <a href={loaderData.link.url} >
@@ -246,7 +251,7 @@ export default function FeedPage() {
                     </Link>
                   )
                 }
-              </div>
+              </motion.div>
             )
           }
         </div>
@@ -281,7 +286,7 @@ function ScrollingImage(props: { image: string; index: number, container: React.
       <motion.div
         data-index={index % 3}
         style={{ zIndex: index + 1, rotate }}
-        className={`w-full h-full origin-center will-change-transform`}>
+        className={`w-full h-[70%] origin-center will-change-transform`}>
         <Attachment attachment={{
           mediaType: "image/",
           url: props.image,

@@ -193,6 +193,7 @@ export default function Works() {
 
   return (
     <div className="h-full w-full overflow-hidden">
+      <motion.div animate={{ translateY: "-100%", scaleY: 0.2, skewY: 20 }} initial={{ translateY: 0 }} transition={{ ease: "easeOut", duration: 0.8 }} className="h-full absolute inset-x-0 top-0 bg-white z-30 origin-top"></motion.div>
       <div id="works" key={"works"} ref={constraintRef} className="h-full w-full overflow-hidden">
         <StructuredData schema={portofolioSchema} />
         <h1 className="sr-only">
@@ -225,15 +226,17 @@ export default function Works() {
                   }
                 }}
                 className={"w-48 lg:w-full aspect-square max-w-md will-change-transform"}>
-                <Attachment size="object-cover" attachment={{
-                  mediaType: "image/",
-                  url: f.image.url,
-                  description: f.image.description,
-                  metadata: {}
-                }}></Attachment>
-                <h2 className="sr-only">
-                  {f.title}
-                </h2>
+                  <motion.span animate={{ opacity: 1, translateY: 0 }} initial={{ opacity: 0, translateY: 1000 }} transition={{ ease: "easeInOut", duration: 1, delay: index / 50, type: "spring" }} className="block">
+                    <Attachment size="object-cover" attachment={{
+                      mediaType: "image/",
+                      url: f.image.url,
+                      description: f.image.description,
+                      metadata: {}
+                    }}></Attachment>
+                    <h2 className="sr-only">
+                      {f.title}
+                    </h2>
+                  </motion.span>
               </motion.div>
           </Link>
         ))}
