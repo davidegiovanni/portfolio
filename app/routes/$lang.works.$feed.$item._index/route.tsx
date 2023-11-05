@@ -10,6 +10,10 @@ import ZoomableImage from "~/components/zommable";
 import { Feed } from "~/models";
 import { motion, AnimatePresence } from "framer-motion";
 
+import itTranslations from "../../i18n/it-IT.json"
+import enTranslations from "../../i18n/en-US.json"
+import { newTranslate } from "~/utils/translate";
+
 let dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
   id,
   data,
@@ -48,6 +52,7 @@ export const meta: V2_MetaFunction = ({ data, location }) => {
 };
 
 type LoaderData = {
+  translations: Record<any, any>;
   title: string;
   description: string;
   image: string;
@@ -64,6 +69,7 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const incomingLocale = params.lang || ""
+  let translations = incomingLocale === "it-IT" ? itTranslations : enTranslations
   let meta = {
     title: "",
     description: "",
@@ -114,6 +120,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   meta.image = image
 
   const loaderData: LoaderData = {
+    translations,
     title,
     image,
     description,
@@ -146,27 +153,28 @@ export default function ItemPage() {
   const constraintRef = useRef<HTMLDivElement>(null)
   const previous = loaderData.previous
   const next = loaderData.next
+  const translate = newTranslate({ messages: loaderData.translations })
 
   return (
-    <div id="details" key={"details"} ref={constraintRef} className={`fixed z-[120] inset-0 bg-black p-4 lg:p-12 overflow-hidden`}>
+    <div id="details" key={"details"} ref={constraintRef} className={`fixed z-[120] inset-0 bg-black p-8 lg:p-24 overflow-hidden uppercase`}>
       <motion.div
         className="fixed top-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
         <Link to={`/${params.lang}/works/${params.feed}`}>
-          CHIUDI
+          {translate({ key: "close_page" })}
         </Link>
         <p className="sr-only">
         {loaderData.title}
         </p>
         <Link to={`/${params.lang}/works/${params.feed}`} className="opacity-60">
-          DOUBLE TAP TO ZOOM
+          {translate({ key: "double_tap_to_zoom" })}
         </Link>
       </motion.div>
       <motion.div className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-between flex-none m-2 text-sm text-white">
           <button onClick={() => handleClick("previous")} className={(previous === "" ? "pointer-events-none opacity-50 select-none " : "")}>
-            INDIETRO
+            {translate({ key: "go_to_previous_image" })}
           </button>
           <button onClick={() => handleClick("next")} className={(next === "" ? "pointer-events-none opacity-50 select-none " : "")}>
-            AVANTI
+            {translate({ key: "go_to_next_image" })}
           </button>
       </motion.div>
       <motion.div className='h-full w-full'>

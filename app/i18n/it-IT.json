@@ -1,5 +1,19 @@
 {
     "go_back": "Chiudi",
     "my_name_is": "Mi chiamo",
-    "about_me": "Chi sono"
+    "about_me": "Chi sono",
+    "close_page": "Chiudi",
+    "double_tap_to_zoom": "Doppio click per lo zoom",
+    "go_to_previous_image": "Avanti",
+    "go_to_next_image": "Indietro",
+
+    "draw_on_canvas": "Disegna",
+    "close_canvas": "Chiudi",
+
+    "there_was_an_error": "Qui mi si erano scaricati i pennarelli",
+    "this_page_did_not_load_correctly_wait_and_retry": "Questa pagina non è ancora stata disegnata, nemmeno una bozza. Ho già editori e agenti alle calcagna. Prova a tornare in homepage e cercarla da lì",
+    "go_to_homepage": "Vai alla home",
+
+    "language_en-us": "Inglese",
+    "language_it-it": "Italiano"
 }

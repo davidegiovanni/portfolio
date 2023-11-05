@@ -32,7 +32,9 @@ import { DynamicLinks } from "./utils/dynamic-links";
 import defaultCss from "./default.css";
 import MSPaint from "./components/PaintCanvas";
 import { AnimatePresence, motion } from "framer-motion";
-import { image } from "remix-utils";
+import itTranslations from "./i18n/it-IT.json"
+import enTranslations from "./i18n/en-US.json"
+import { newTranslate } from "~/utils/translate";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -57,6 +59,8 @@ export const links: LinksFunction = () => [
 ];
 
 type LoaderData = {
+  translations: Record<any, any>;
+  englishVersion: string;
   primaryColor: string;
   favicon: string;
   links: {
@@ -74,6 +78,8 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   const incomingLocale = params.lang || ""
+  let translations = incomingLocale === "it-IT" ? itTranslations : enTranslations
+  let englishVersion = ""
 
   function getLanguageName(lang: string) {
     switch (lang) {
@@ -128,7 +134,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     });
   }
 
+  const otherLangs: string[] = webRes.languageCodes.filter((l: string) => l !== incomingLocale)
   const websiteObject: Website = webRes.website
+
+  if (otherLangs.length !== 0) englishVersion = otherLangs.filter(l => l.toLowerCase() === "en-us")[0]
 
   const primaryColor: string = websiteObject.theme.accentColor
 
@@ -165,6 +174,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 
   const loaderData: LoaderData = {
+    translations,
+    englishVersion,
     primaryColor,
     favicon,
     fontUrl,
@@ -183,6 +194,7 @@ export default function App() {
   const loaderData = useLoaderData<LoaderData>()
   const params = useParams()
   const location = useLocation()
+  const translate = newTranslate({ messages: loaderData.translations })
 
   const navigation = useNavigation();
 
@@ -227,7 +239,7 @@ export default function App() {
   const [isMenuOpen, togglemenuOpen] = useState<boolean>(false)
   const [isNavVisible, toggleNavOpen] = useState<boolean>(false)
 
-  function togglePresence () {
+  function togglePresence() {
     if (isMenuOpen) {
       toggleNavOpen(false)
       setTimeout(() => {
@@ -242,6 +254,13 @@ export default function App() {
     }
   }
 
+  function closeAll() {
+    toggleNavOpen(false)
+    setTimeout(() => {
+      togglemenuOpen(false)
+    }, 500)
+  }
+
   const followerDivRef = useRef<HTMLDivElement>(null);
   const { x, y } = useFollowPointer(followerDivRef)
 
@@ -249,10 +268,16 @@ export default function App() {
   return (
     <Document lang={loaderData.incomingLocale} favicon={loaderData.favicon} fontUrl={loaderData.fontUrl}>
       {
-        cursor === "" && 
-          <motion.div
-            ref={followerDivRef}
-            className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] bg-black rounded-full pointer-events-none select-none origin-top-left cursor-none" />
+        cursor === "" &&
+        <motion.div
+          ref={followerDivRef}
+          animate={{ x, y }}
+            transition={{
+              type: "tween",
+              ease: "linear",
+              duration: 0
+            }}
+          className="hidden xl:block fixed top-0 left-0 w-12 h-12 z-[1000] bg-black rounded-full pointer-events-none select-none origin-top-left cursor-none" />
       }
       {
         cursor !== "" && (
@@ -283,7 +308,7 @@ export default function App() {
             <motion.div animate={{ width: "50%" }} transition={{ ease: "easeOut", duration: 0.5 }} className="h-px border-t border-black w-0"></motion.div>
           </div>
           <div className="flex items-center justify-between uppercase">
-            <Link to={`/${params.lang}`} onClick={togglePresence} className="block lg:hidden lg:hover:-rotate-45 transition-all ease-in-out duration-300 pl-2 overflow-hidden">
+            <Link to={`/${params.lang}`} onClick={closeAll} className="block lg:hidden lg:hover:-rotate-45 transition-all ease-in-out duration-300 pl-2 overflow-hidden">
               {loaderData.logoUrl === "" && `✻`}
               {loaderData.logoUrl !== "" && <motion.img animate={{ translateY: 0 }} initial={{ translateY: 36 }} transition={{ ease: "easeOut", duration: 0.1, delay: 0.5 }} src={loaderData.logoUrl} className="block h-4 lg:h-8" />}
             </Link>
@@ -309,13 +334,21 @@ export default function App() {
                         </NavLink>
                       )
                     }
-                    <div className="absolute origin-bottom inset-0 aspect-square rounded-full scale-0 group-hover:scale-[2] transition-all duration-1000 bg-black"></div>
+                    <div className="absolute origin-center inset-0 aspect-square rounded-full scale-0 group-hover:scale-[2] transition-all duration-1000 bg-black"></div>
                   </motion.li>
                 ))}
+                {loaderData.englishVersion !== "" && (
+                  <motion.li animate={{ translateY: 0 }} initial={{ translateY: 36 }} transition={{ ease: "easeOut", duration: 0.1, delay: loaderData.links.length - 1 / 10 }} onClick={() => togglemenuOpen(false)} className={"inline-block group rounded-full bg-neutral-100 px-3 py-1 overflow-hidden relative data-[active=true]:pointer-events-none data-[active=true]:bg-black data-[active=true]:text-white hover:text-white text-sm transition-all duration-500 will-change-contents"}>
+                    <Link to={`/${loaderData.englishVersion}`} className={"relative z-10"} reloadDocument>
+                      {translate({ key: `language_${loaderData.englishVersion.toLowerCase()}` })}
+                    </Link>
+                    <div className="absolute origin-center inset-0 aspect-square rounded-full scale-0 group-hover:scale-[3] transition-all duration-1000 bg-black"></div>
+                  </motion.li>
+                )}
               </ul>
             </nav>
             <button onClick={togglePresence} className={"lg:hidden rounded-full bg-neutral-100 px-3 py-1 hover:bg-black hover:text-white text-sm flex items-center justify-center gap-1 uppercase"}>
-              Menu 
+              Menu
               <svg data-menuopen={isMenuOpen} className="data-[menuopen=true]:rotate-45 transition-all duration-300 ease-in-out -tranlate-y-1 block" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2.75C8 2.47386 7.77614 2.25 7.5 2.25C7.22386 2.25 7 2.47386 7 2.75V7H2.75C2.47386 7 2.25 7.22386 2.25 7.5C2.25 7.77614 2.47386 8 2.75 8H7V12.25C7 12.5261 7.22386 12.75 7.5 12.75C7.77614 12.75 8 12.5261 8 12.25V8H12.25C12.5261 8 12.75 7.77614 12.75 7.5C12.75 7.22386 12.5261 7 12.25 7H8V2.75Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
             </button>
           </div>
@@ -323,23 +356,23 @@ export default function App() {
         <div key={location.pathname} className="bg-white relative w-full flex-1 overflow-hidden">
           <AnimatePresence>
             {isMenuOpen && (
-                <motion.div 
-                  animate={{ scaleY: 1 }}
-                  initial={{ scaleY: 0 }}
-                  exit={{ scaleY: 0 }}
-                  transition={{ ease: "easeOut", duration: 0.2 }}
-                  className="absolute origin-bottom overflow-hidden inset-0 z-50 p-2 flex flex-col gap-4 items-stretch justify-end bg-white">
-                  <ul className="w-full flex flex-col gap-4 items-start justify-start ">
+              <motion.div
+                animate={{ scaleY: 1 }}
+                initial={{ scaleY: 0 }}
+                exit={{ scaleY: 0 }}
+                transition={{ ease: "easeOut", duration: 0.2 }}
+                className="absolute origin-bottom overflow-hidden inset-0 z-50 p-2 flex flex-col gap-4 items-stretch justify-end bg-white">
+                <ul className="w-full flex flex-col gap-4 items-start justify-start ">
                   {loaderData.links.map((link, index) => (
                     <div className="w-full flex flex-col gap-4 items-stretch justify-start">
                       <div className="w-full h-fit overflow-hidden">
                         <AnimatePresence>
                           {
                             isNavVisible && (
-                              <motion.li 
-                                animate={{ translateY: 0 }} 
+                              <motion.li
+                                animate={{ translateY: 0 }}
                                 initial={{ translateY: "100%" }}
-                                exit={{ translateY: "-100%" }} 
+                                exit={{ translateY: "-100%" }}
                                 transition={{ ease: "easeOut", duration: 0.3, delay: index / 5 }} data-active={location.pathname.endsWith(link.url)} key={index} onClick={togglePresence} className={"uppercase text-xl w-full flex items-center justify-between"}>
                                 {
                                   link.isExternal ? (
@@ -356,16 +389,16 @@ export default function App() {
                                 }
                                 <span
                                   className="w-4 h-4 overflow-hidden">
-                                    {
-                                      isNavVisible && (
-                                        <motion.svg
-                                          animate={{ translateY: 0, rotate: 0 }} 
-                                          initial={{ translateY: "100%", rotate: -45 }}
-                                          exit={{ translateY: "-100%", rotate: 45 }} 
-                                          transition={{ ease: "easeOut", duration: 0.3, delay: index / 3 }}
-                                          width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></motion.svg>
-                                      )
-                                    }
+                                  {
+                                    isNavVisible && (
+                                      <motion.svg
+                                        animate={{ translateY: 0, rotate: 0 }}
+                                        initial={{ translateY: "100%", rotate: -45 }}
+                                        exit={{ translateY: "-100%", rotate: 45 }}
+                                        transition={{ ease: "easeOut", duration: 0.3, delay: index / 3 }}
+                                        width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></motion.svg>
+                                    )
+                                  }
                                 </span>
                               </motion.li>
                             )
@@ -388,9 +421,9 @@ export default function App() {
                     </div>
                   ))}
                 </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <Outlet />
         </div>
       </div>
@@ -399,7 +432,10 @@ export default function App() {
       }
       <MSPaint isShowingCanvas={isShowingCanvas} />
       {!isMenuOpen && location.pathname.endsWith(loaderData.incomingLocale) && (
-          <button className="fixed top-0 right-0 m-4 z-50" onClick={() => setShowCanvas(!isShowingCanvas)}>
+        <motion.button
+          animate={{ translateY: 0 }} initial={{ translateY: -100 }} transition={{ ease: "easeOut", duration: 0.1, delay: 1 }}
+          className="fixed top-0 right-0 m-4 z-50 group rounded-full px-3 py-1 overflow-hidden data-[active=true]:pointer-events-none data-[active=true]:bg-black data-[active=true]:text-white hover:text-white text-sm transition-all duration-500 will-change-contents" onClick={() => setShowCanvas(!isShowingCanvas)}>
+          <p className="relative z-10 inline-flex items-center justify-center gap-1">
             {
               isShowingCanvas ? (
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.8536 2.85355C13.0488 2.65829 13.0488 2.34171 12.8536 2.14645C12.6583 1.95118 12.3417 1.95118 12.1464 2.14645L7.5 6.79289L2.85355 2.14645C2.65829 1.95118 2.34171 1.95118 2.14645 2.14645C1.95118 2.34171 1.95118 2.65829 2.14645 2.85355L6.79289 7.5L2.14645 12.1464C1.95118 12.3417 1.95118 12.6583 2.14645 12.8536C2.34171 13.0488 2.65829 13.0488 2.85355 12.8536L7.5 8.20711L12.1464 12.8536C12.3417 13.0488 12.6583 13.0488 12.8536 12.8536C13.0488 12.6583 13.0488 12.3417 12.8536 12.1464L8.20711 7.5L12.8536 2.85355Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
@@ -407,39 +443,57 @@ export default function App() {
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8536 1.14645C11.6583 0.951184 11.3417 0.951184 11.1465 1.14645L3.71455 8.57836C3.62459 8.66832 3.55263 8.77461 3.50251 8.89155L2.04044 12.303C1.9599 12.491 2.00189 12.709 2.14646 12.8536C2.29103 12.9981 2.50905 13.0401 2.69697 12.9596L6.10847 11.4975C6.2254 11.4474 6.3317 11.3754 6.42166 11.2855L13.8536 3.85355C14.0488 3.65829 14.0488 3.34171 13.8536 3.14645L11.8536 1.14645ZM4.42166 9.28547L11.5 2.20711L12.7929 3.5L5.71455 10.5784L4.21924 11.2192L3.78081 10.7808L4.42166 9.28547Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
               )
             }
-          </button>
-        )}
+            {translate({ key: isShowingCanvas ? `close_canvas` : `draw_on_canvas` })}
+          </p>
+          <div className="absolute origin-center -translate-y-8 inset-0 aspect-square rounded-full scale-0 group-hover:scale-[3] transition-all duration-1000 bg-black"></div>
+        </motion.button>
+      )}
     </Document>
   )
 }
 
 export function ErrorBoundary() {
+  const followerDivRef = useRef<HTMLDivElement>(null);
+  const { x, y } = useFollowPointer(followerDivRef)
+  const params = useParams()
   const error = useRouteError();
   const isErrorBig = isRouteErrorResponse(error)
 
+  const incomingLocale = params.lang || ""
+  const translate = newTranslate({ messages: incomingLocale === "it-IT" ? itTranslations : enTranslations })
+
   return (
-    <Document lang={"en-US"} favicon={""} fontUrl={""}>
-      <div className="fixed inset-0 overflow-hidden bg-[#0827F5] text-white p-2 selection:bg-yellow-500 selection:text-white">
-        <div className="w-full h-full overflow-hidden safari-only">
-          <h1 style={{ fontSize: fluidType(32, 120, 300, 2400, 1.5).fontSize, lineHeight: fluidType(24, 100, 300, 2400, 1.5).lineHeight }}>
-            Error ಥ_ಥ
-          </h1>
-          <p className="text-white my-4">
-            {isErrorBig && (
-              <>
-                {error.status} {error.statusText}
-              </>
-            )}
-            {!isErrorBig && error instanceof Error && (
-              <>
-                {error.message} {error.name}
-              </>
-            )}
-          </p>
-          <Link to={'/'} className="block underline mb-4 text-white" reloadDocument>
-            Go to homepage
-          </Link>
-          <img src="https://c.tenor.com/1zi9Ppr4YDsAAAAj/travolta-lost.gif" alt="" />
+    <Document
+      lang={incomingLocale}
+      favicon={"/error-favicon.png"}
+      fontUrl={"https://use.typekit.net/beq1tyu.css"}>
+        <motion.div
+        animate={{ x, y }}
+        transition={{
+          type: "tween",
+          ease: "linear",
+          duration: 0,
+          delay: 0.01,
+        }}
+        ref={followerDivRef}
+        className="hidden xl:block fixed top-0 left-0 w-4 h-4 z-[1000] border border-black rounded-full pointer-events-none select-none origin-top-left cursor-none" />
+      <div className="fixed inset-0 overflow-hidden bg-white text-black">
+        <div className="w-full h-full overflow-hidden flex flex-col items-center justify-center text-center gap-4 lg:gap-8 p-4 lg:p-8">
+          <div className="w-full h-fit overflow-hidden">
+            <motion.h1 animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64, .13, .58, 1], duration: 0.5, delay: 0.2 }} className="font-medium text-2xl lg:text-6xl max-w-screen-lg mx-auto text-center uppercase">
+              {translate({ key: "there_was_an_error" })}
+            </motion.h1>
+          </div>
+          <div className="w-full h-fit overflow-hidden">
+            <motion.h2 animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64, .13, .58, 1], duration: 0.6, delay: 0.4 }} className="max-w-screen-sm uppercase mx-auto text-center text-sm lg:text-base">
+              {translate({ key: "this_page_did_not_load_correctly_wait_and_retry" })}
+            </motion.h2>
+          </div>
+          <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ ease: "easeInOut", duration: 0.5, delay: 1 }}>
+            <Link to={'/'} className="inline-block rounded-full bg-neutral-200 px-6 py-1 hover:bg-black hover:text-white" reloadDocument>
+              {translate({ key: "go_to_homepage" })}
+            </Link>
+          </motion.div>
         </div>
       </div>
     </Document>
@@ -457,7 +511,7 @@ function Document(props: { children: ReactNode; lang: string; favicon: string; f
         <Links />
         <DynamicLinks />
       </head>
-      <body>
+      <body className="font-default">
         {props.children}
         <Scripts />
         <ScrollRestoration />
@@ -465,7 +519,7 @@ function Document(props: { children: ReactNode; lang: string; favicon: string; f
         <LiveReload />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href={props.fontUrl} rel="stylesheet"></link>
+        <link rel="stylesheet" href={props.fontUrl}></link>
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
     </html>

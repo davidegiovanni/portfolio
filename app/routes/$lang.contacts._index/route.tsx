@@ -145,14 +145,14 @@ export default function Contacts() {
       <StructuredData schema={webPageSchema} />
       <motion.div animate={{ translateY: "-100%", scaleY: 0.2, skewY: 20 }} initial={{ translateY: 0 }} transition={{ ease: "easeOut", duration: 0.8 }} className="h-full absolute inset-x-0 top-0 bg-white z-30 origin-top"></motion.div>
       <div className="w-full h-fit overflow-hidden">
-        <motion.h1 animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64,.13,.58,1], duration: 0.5, delay: 0.2 }} className="font-semibold text-2xl lg:text-6xl max-w-screen-lg mx-auto text-center uppercase">
+        <motion.h1 animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64,.13,.58,1], duration: 0.5, delay: 0.2 }} className="font-medium text-2xl lg:text-6xl max-w-screen-lg mx-auto text-center uppercase">
           {loaderData.title}
         </motion.h1>
       </div>
       {
         loaderData.description !== "" &&
         <div className="w-full h-fit overflow-hidden">
-          <motion.h2  animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64,.13,.58,1], duration: 0.6, delay: 0.4 }} className="max-w-prose mx-auto text-center">
+          <motion.h2  animate={{ translateY: 0, opacity: 1 }} initial={{ translateY: "100%", opacity: 0 }} transition={{ ease: [.64,.13,.58,1], duration: 0.6, delay: 0.4 }} className="max-w-prose mx-auto text-center text-sm lg:text-base">
             {loaderData.description}
           </motion.h2>
         </div>
