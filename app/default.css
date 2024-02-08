@@ -205,7 +205,7 @@ body {
 }
 
 .ColumnsBlockItem {
-  @apply w-full block bg-transparent break-inside-avoid-column data-[is-item-card=true]:rounded-default data-[is-item-dark=true]:bg-theme-dark data-[is-item-darklight=true]:bg-theme-darklight data-[is-item-light=true]:bg-white data-[is-item-spring=true]:bg-theme-spring data-[is-item-yellow=true]:bg-theme-yellow data-[is-item-green=true]:bg-theme-green data-[is-item-blue=true]:bg-theme-blue data-[is-item-red=true]:bg-theme-red;
+  @apply w-full block bg-transparent break-inside-avoid-column data-[is-item-card=true]:rounded-default;
 }
 
 .ColumnsBlockItem--container {
@@ -233,11 +233,7 @@ body {
 }
 
 .ColumnsBlockItem--link {
-  @apply max-w-md inline-flex w-fit items-center justify-center gap-2 font-medium rounded-default text-primary hover:underline group-data-[item-accent-light=true]:text-white group-data-[item-accent-spring=true]:text-theme-spring group-data-[item-accent-yellow=true]:text-theme-yellow group-data-[item-accent-green=true]:text-theme-green group-data-[item-accent-blue=true]:text-theme-blue group-data-[item-accent-red=true]:text-theme-red active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed;
-}
-
-.ColumnsBlockItem--label {
-  @apply max-w-md text-sm uppercase font-medium rounded-full text-primary group-data-[item-accent-light=true]:text-white group-data-[item-accent-spring=true]:text-theme-spring group-data-[item-accent-yellow=true]:text-theme-yellow group-data-[item-accent-green=true]:text-theme-green group-data-[item-accent-blue=true]:text-theme-blue group-data-[item-accent-red=true]:text-theme-red active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed;
+  @apply max-w-md inline-flex w-fit items-center justify-center gap-2 font-medium rounded-default text-primary hover:underline  active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed;
 }
 
 /* Linear */
