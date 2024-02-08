@@ -3,17 +3,17 @@ html {
 }
 
 body {
-  @apply min-h-screen flex flex-col items-stretch justify-start
+  @apply min-h-screen flex flex-col items-stretch justify-start 
 }
 
 /* /LAYOUTS */
 
 .App {
-  @apply bg-neutral-100 dark:bg-revas-neutral-900 animate-pageShow flex-1 flex flex-col items-stretch justify-start;
+  @apply bg-white dark:bg-revas-neutral-900 animate-pageShow flex-1 flex flex-col items-stretch justify-start;
 }
 
 .Page {
-  @apply bg-neutral-100 dark:bg-revas-neutral-900 animate-pageShow flex-1;
+  @apply bg-white dark:bg-revas-neutral-900 animate-pageShow flex-1;
 }
 
 /* LINKS */

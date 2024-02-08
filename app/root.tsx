@@ -46,7 +46,7 @@ export default function App() {
       </head>
       <body>
         <DefaultTheme />
-        <Theme>
+        <Theme className="flex-1 flex flex-col items-stretch justify-start">
           <Outlet />
         </Theme>
         <ScrollRestoration />
