@@ -1,3 +1,4 @@
+import { useMeasure } from "@uidotdev/usehooks";
 import { useEffect, useRef, useState } from "react";
 
 import type { Attributes as AttributesModel } from "~/models";
@@ -19,6 +20,8 @@ export default function Attachment({
   className,
 }: AttachmentProps) {
   const blockRef = useRef<any>(null);
+
+  const [ref, { width, height }] = useMeasure();
 
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const callbackFunction = (entries: any) => {
@@ -69,10 +72,11 @@ export default function Attachment({
       className={`Attachment--figure ${className} group OverrideAttachment--figure`}
       key={attachmentUrl}
       role="figure"
+      style={{ width: width || "100%", height: height || "100%"}}
     >
       {attributes && <Attributes applyTo={blockRef} attributes={attributes} />}
       {metadata && <Metadata applyTo={blockRef} metadata={metadata} />}
-      {isVisible && <picture className="AttachmentFigure--picture OverrideAttachmentFigure--picture">
+      {isVisible && <picture ref={ref} className="AttachmentFigure--picture OverrideAttachmentFigure--picture">
         {IMAGE_TPES.map((type, index) => (
           <source
             key={`source-${type}-${index}`}

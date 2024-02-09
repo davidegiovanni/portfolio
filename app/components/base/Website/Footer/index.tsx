@@ -30,7 +30,7 @@ export default function Footer({
     <>
       {mainItem && <MainItem item={mainItem} />}
       <div className={`Footer OverrideFooter group`}>
-        {(authors || links || socials) && <div className={`Footer--container OverrideFooter--container`}>
+        {((authors && authors.length > 0) || (links && links.length > 0) || (socials && socials.length > 0)) && <div className={`Footer--container OverrideFooter--container`}>
           {authors && (
             <div className={`Footer--authors OverrideFooter--authors`}>
               <Authors authors={authors} />

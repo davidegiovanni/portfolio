@@ -714,16 +714,12 @@ video {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-.data-\[hide-on-mobile\=true\]\:hidden[data-hide-on-mobile=true] {
-  display: none;
-}
-
 @media (min-width: 1024px) {
-  .lg\:gap-8 {
-    gap: calc(var(--spacing-base-unit) * 16);
+  .lg\:flex-none {
+    flex: none;
   }
 
-  .data-\[hide-on-mobile\=true\]\:lg\:inline-block[data-hide-on-mobile=true] {
-    display: inline-block;
+  .lg\:gap-8 {
+    gap: calc(var(--spacing-base-unit) * 16);
   }
 }

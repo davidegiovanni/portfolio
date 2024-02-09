@@ -37,7 +37,7 @@ function ColumnsBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
     "block-layout": block.blockLayout,
     "block-image": block.attachmentUrl !== "",
 
-    "has-image": hasImage,
+    "has-item-image": hasImage,
     "is-item-video": attachmentIsVideo,
     "item-index": itemIndex,
   };
@@ -72,13 +72,6 @@ function ColumnsBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
           <div
             className={`ColumnsBlockItemContainer--second-slot OverrideColumnsBlockItemContainer--second-slot`}
           >
-            {
-              hasLabel && (
-                <p className={`ColumnsBlockItem--label OverrideColumnsBlockItem--label`}>
-                    {label}
-                  </p>
-              )
-            }
             {hasTitle && (
               <Title
                 size={blockIndex === 0 ? "2" : "3"}
@@ -88,12 +81,7 @@ function ColumnsBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
               </Title>
             )}
             {hasDescription && (
-              <Description
-                size={blockIndex === 0 ? "3" : ""}
-                className={`ColumnsBlockItem--description OverrideColumnsBlockItem--description`}
-              >
-                <div dangerouslySetInnerHTML={{ __html: item.description}} />
-              </Description>
+              <div className={`ColumnsBlockItem--description OverrideColumnsBlockItem--description`} dangerouslySetInnerHTML={{ __html: item.description}} />
             )}
             {hasLink && (
               <WebsiteLink

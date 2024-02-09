@@ -6,6 +6,7 @@ import type { WebsiteLinkUI } from "~/models";
 import NavigationLinks from "~/components/base/Website/Navigation";
 import MainLink from "~/components/base/Website/MainLink";
 import Attachment from "~/components/core/Attachment";
+import { AnimatePresence, motion } from "framer-motion";
 
 export interface HeaderProps {
   websiteTitle: string;
@@ -32,18 +33,22 @@ export default function Header({
         <div className={`Header--container OverrideHeader--container`}>
           <Link to={`/${locale}`} onClick={() => toggleMobileMenu(false)}>
             {logoUrl !== "" && (
-              <div data-attachment-width="auto" data-attachment-object="contain" className={`Header--logo group OverrideHeader--logo`}>
-                <Attachment
-                  attachmentUrl={logoUrl}
-                  attachmentMediaType={"image/"}
-                  attachmentCaption={""}
-                  attachmentDescription={websiteTitle}
-                  metadata={{}}/>
+              <div>
+                <div data-attachment-width="auto" data-attachment-object="contain" className={`Header--logo group OverrideHeader--logo`}>
+                  <Attachment
+                    attachmentUrl={logoUrl}
+                    attachmentMediaType={"image/"}
+                    attachmentCaption={""}
+                    attachmentDescription={websiteTitle}
+                    metadata={{}}/>
+                </div>
               </div>
             )}
             {logoUrl === "" && (
-              <div className={`Header--title OverrideHeader--title`}>
-                <p>{websiteTitle}</p>
+              <div>
+                <div className={`Header--title OverrideHeader--title`}>
+                  <p>{websiteTitle}</p>
+                </div>
               </div>
             )}
           </Link>
@@ -56,15 +61,15 @@ export default function Header({
               >
                   <NavigationLinks
                     links={navigation}
-                    className={`GhostLink__base-size OverrideGhostLink__base-size`}
+                    className={`Header--desktop-link OverrideHeader--desktop-link`}
                   />
               </ul>
             )}
             {mainLink && (
-              <span data-hide-on-mobile={mainLink.title.length > 15} className="data-[hide-on-mobile=true]:hidden data-[hide-on-mobile=true]:lg:inline-block" onClick={() => toggleMobileMenu(false)}>
+              <span className="flex-1 lg:flex-none" onClick={() => toggleMobileMenu(false)}>
                 <MainLink
                   link={mainLink}
-                  className={`SolidLink__base-size OverrideSolidLink__base-size`}
+                  className={`Header--desktop-main-link OverrideHeader--desktop-main-link`}
                 />
               </span>
             )}
@@ -110,8 +115,19 @@ export default function Header({
           </nav>
         </div>
       </div>
+      <AnimatePresence>
       {mobileMenuOpen && (
-        <nav
+
+        <motion.nav
+          initial={{
+            translateY: 0
+          }}
+          animate={{
+            translateY: "-100%"
+          }}
+          exit={{
+            translateY: 0
+          }}
           className={`Header--mobile-wrapper OverrideHeader--mobile-wrapper`}
         >
           {navigation && (
@@ -121,20 +137,13 @@ export default function Header({
             >
               <NavigationLinks
                 links={navigation}
-                className={`GhostLink__base-size OverrideGhostLink__base-size`}
+                className={`Header--mobile-link OverrideHeader--mobile-link`}
               />
             </ul>
           )}
-          {mainLink && mainLink.title.length > 15 && (
-          <div className={`Header--mobile-main-action OverrideHeader--mobile-main-action`} onClick={() => toggleMobileMenu(false)}>
-              <MainLink
-                link={mainLink}
-                className={`SolidLink__base-size OverrideSolidLink__base-size`}
-              />
-          </div>
-          )}
-        </nav>
+        </motion.nav>
       )}
+      </AnimatePresence>
     </div>
   );
 }
