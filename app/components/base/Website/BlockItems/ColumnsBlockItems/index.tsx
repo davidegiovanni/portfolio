@@ -27,12 +27,13 @@ function ColumnsBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
     hasTitle,
     hasDescription,
     hasLink,
-    hasImage,
     hasText,
+    hasImage,
     attachmentIsVideo,
   } = BlockItemProperties(item);
 
   const attributes: AttributesModel = {
+    "is-column-item": true,
     "block-index": blockIndex,
     "block-layout": block.blockLayout,
     "block-image": block.attachmentUrl !== "",
@@ -41,6 +42,9 @@ function ColumnsBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
     "is-item-video": attachmentIsVideo,
     "item-index": itemIndex,
   };
+
+  if (!hasText && !hasImage) return <div className="hidden -mb-px"></div>
+
   return (
     <div
       ref={blockRef}
@@ -56,6 +60,7 @@ function ColumnsBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
             className={`ColumnsBlockItemContainer--first-slot OverrideColumnsBlockItemContainer--first-slot`}
           >
             <div
+              data-is-clickable={!hasTitle && !hasDescription && hasLink && hasImage}
               className={`ColumnsBlockItem--attachment OverrideColumnsBlockItem--attachment`}
             >
               <Attachment
@@ -68,7 +73,7 @@ function ColumnsBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
             </div>
           </div>
         )}
-        {hasText && (
+        {(hasTitle || hasDescription) && hasLink && (
           <div
             className={`ColumnsBlockItemContainer--second-slot OverrideColumnsBlockItemContainer--second-slot`}
           >
@@ -92,6 +97,17 @@ function ColumnsBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
                 {item.linkTitle}
               </WebsiteLink>
             )}
+          </div>
+        )}
+        {!hasTitle && !hasDescription && hasLink && hasImage && (
+          <div className="bg-white translate-y-full group-data-[is-column-item]:group-hover:translate-y-0 group-data-[is-column-item]:group-focus:translate-y-0 p-4 absolute bottom-0 inset-x-0 transition-all duration-300 ease-in-out border-t border-black">
+            <WebsiteLink
+                url={item.linkUrl}
+                className={`GridBlockItem--link OverrideGridBlockItem--link`}
+                metadata={item.linkMetadata}
+              >
+                {item.linkTitle}
+              </WebsiteLink>
           </div>
         )}
       </div>

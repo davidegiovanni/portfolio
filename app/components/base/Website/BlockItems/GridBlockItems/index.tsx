@@ -33,6 +33,7 @@ function GridBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
   } = BlockItemProperties(item);
 
   const attributes: AttributesModel = {
+    "is-grid-item": true,
     "block-index": blockIndex,
     "block-layout": block.blockLayout,
     "block-image": block.attachmentUrl !== "",
@@ -41,6 +42,9 @@ function GridBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
     "is-item-video": attachmentIsVideo,
     "item-index": itemIndex,
   };
+
+  if (!hasText && !hasImage) return <div className="hidden -mb-px"></div>
+
   return (
     <div ref={blockRef} className={`GridBlockItem OverrideGridBlockItem group`}>
       <Attributes applyTo={blockRef} attributes={attributes} />
@@ -53,6 +57,7 @@ function GridBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
             className={`GridBlockItemContainer--first-slot OverrideGridBlockItemContainer--first-slot`}
           >
             <div
+              data-is-clickable={!hasTitle && !hasDescription && hasLink && hasImage}
               className={`GridBlockItem--attachment OverrideGridBlockItem--attachment`}
             >
               <Attachment
@@ -65,7 +70,7 @@ function GridBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
             </div>
           </div>
         )}
-        {hasText && (
+        {hasText && !(!hasTitle && !hasDescription && hasLink && hasImage)  && (
           <div
             className={`GridBlockItemContainer--second-slot OverrideGridBlockItemContainer--second-slot`}
           >
@@ -89,6 +94,18 @@ function GridBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
                 {item.linkTitle}
               </WebsiteLink>
             )}
+          </div>
+        )}
+        {!hasTitle && !hasDescription && hasLink && hasImage && (
+          <div className="bg-white lg:translate-y-full group-data-[is-grid-item]:group-hover:lg:translate-y-0 group-data-[is-grid-item]:group-focus:lg:translate-y-0 p-4 absolute bottom-0 inset-x-0 transition-all duration-300 ease-in-out border-t border-black">
+            <div className="hidden lg:block w-10 rounded-full bg-white shadow absolute top-0 inset-x-0 mx-auto -translate-y-4 h-1" />
+            <WebsiteLink
+                url={item.linkUrl}
+                className={`GridBlockItem--link OverrideGridBlockItem--link`}
+                metadata={item.linkMetadata}
+              >
+                {item.linkTitle}
+              </WebsiteLink>
           </div>
         )}
       </div>

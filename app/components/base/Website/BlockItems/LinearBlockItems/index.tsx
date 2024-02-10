@@ -41,6 +41,9 @@ function LinearBlockItem({ item, itemIndex, blockIndex, block }: ItemProps) {
     "is-item-video": attachmentIsVideo,
     "item-index": itemIndex,
   };
+
+  if (!hasText && !hasImage) return <div className="hidden -mb-px"></div>
+
   return (
     <>
       <div

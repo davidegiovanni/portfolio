@@ -26,14 +26,26 @@ export default function Header({
   const [mobileMenuOpen, toggleMobileMenu] = useState<boolean>(false);
 
   return (
-    <div className={`Header OverrideHeader group`}>
+    <motion.div 
+      initial={{
+        translateY: "120%"
+      }}
+      animate={{
+        translateY: 0
+      }}
+      transition={{
+        duration: 0.5,
+        delay: 0.3,
+        ease: "easeInOut"
+      }}
+      className={`Header OverrideHeader group`}>
       <div
         className={`Header--desktop-wrapper OverrideHeader--desktop-wrapper`}
       >
         <div className={`Header--container OverrideHeader--container`}>
-          <Link to={`/${locale}`} onClick={() => toggleMobileMenu(false)}>
+          <Link to={`/${locale}`} onClick={() => toggleMobileMenu(false)} className="select-none cursor-pointer">
             {logoUrl !== "" && (
-              <div>
+              <div className="select-none cursor-pointer">
                 <div data-attachment-width="auto" data-attachment-object="contain" className={`Header--logo group OverrideHeader--logo`}>
                   <Attachment
                     attachmentUrl={logoUrl}
@@ -144,6 +156,6 @@ export default function Header({
         </motion.nav>
       )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

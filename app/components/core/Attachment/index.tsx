@@ -1,4 +1,5 @@
 import { useMeasure } from "@uidotdev/usehooks";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 import type { Attributes as AttributesModel } from "~/models";
@@ -76,27 +77,45 @@ export default function Attachment({
     >
       {attributes && <Attributes applyTo={blockRef} attributes={attributes} />}
       {metadata && <Metadata applyTo={blockRef} metadata={metadata} />}
-      {isVisible && <picture ref={ref} className="AttachmentFigure--picture OverrideAttachmentFigure--picture">
-        {IMAGE_TPES.map((type, index) => (
-          <source
-            key={`source-${type}-${index}`}
-            type={`image/${type}`}
+      <AnimatePresence>
+      {isVisible && (
+          <motion.picture
+            initial={{
+              opacity: 0
+            }}
+            exit={{
+              opacity: 0
+            }}
+            animate={{
+              opacity: 1
+            }}
+            transition={{
+              duration: 0.5,
+              ease: "easeInOut"
+            }}
+             ref={ref} className="AttachmentFigure--picture OverrideAttachmentFigure--picture">
+          {IMAGE_TPES.map((type, index) => (
+            <source
+              key={`source-${type}-${index}`}
+              type={`image/${type}`}
+               sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
+              srcSet={buildSrcset(attachmentUrl, type, ATTACHMENT_SIZES)}
+              className="AttachmentPicture--source OverrideAttachmentPicture--source"
+            />
+          ))}
+          <img
+            srcSet={buildSrcset(attachmentUrl, "", ATTACHMENT_SIZES)}
              sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
-            srcSet={buildSrcset(attachmentUrl, type, ATTACHMENT_SIZES)}
-            className="AttachmentPicture--source OverrideAttachmentPicture--source"
+            src={attachmentUrl}
+            loading="lazy"
+            decoding="async"
+            alt={attachmentDescription}
+            onLoad={() => setIsLoaded(true)}
+            className="AttachmentPicture--image OverrideAttachmentPicture--image"
           />
-        ))}
-        <img
-          srcSet={buildSrcset(attachmentUrl, "", ATTACHMENT_SIZES)}
-           sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 800px) 800px, 600px"
-          src={attachmentUrl}
-          loading="lazy"
-          decoding="async"
-          alt={attachmentDescription}
-          onLoad={() => setIsLoaded(true)}
-          className="AttachmentPicture--image OverrideAttachmentPicture--image"
-        />
-      </picture>}
+        </motion.picture>
+        )}
+      </AnimatePresence>
       {attachmentCaption !== "" && (
         <p className="AttachmentFigure--caption OverrideAttachmentFigure--caption">
           {attachmentCaption}
