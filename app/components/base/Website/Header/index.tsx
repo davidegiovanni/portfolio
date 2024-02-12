@@ -1,4 +1,3 @@
-import type { ReactNode} from "react";
 import { useState } from "react";
 import { Link } from "@remix-run/react";
 
@@ -8,6 +7,8 @@ import NavigationLinks from "~/components/base/Website/Navigation";
 import MainLink from "~/components/base/Website/MainLink";
 import Attachment from "~/components/core/Attachment";
 import { AnimatePresence, motion } from "framer-motion";
+import LocaleConfigurator from "~/components/core/Toolbar/LocaleConfigurator";
+import { useTranslationsContext } from "~/services/template/i18n-provider";
 
 export interface HeaderProps {
   websiteTitle: string;
@@ -15,7 +16,6 @@ export interface HeaderProps {
   navigation?: WebsiteLinkUI[];
   mainLink?: WebsiteLinkUI;
   locale: string;
-  children?: ReactNode
 }
 
 export default function Header({
@@ -23,10 +23,10 @@ export default function Header({
   websiteTitle,
   navigation,
   mainLink,
-  locale,
-  children
+  locale
 }: HeaderProps) {
   const [mobileMenuOpen, toggleMobileMenu] = useState<boolean>(false);
+  const { t } = useTranslationsContext()
 
   return (
     <motion.div 
@@ -78,6 +78,11 @@ export default function Header({
                     links={navigation}
                     className={`Header--desktop-link OverrideHeader--desktop-link`}
                   />
+                  <LocaleConfigurator>
+                    <p className="Header--desktop-link OverrideHeader--desktop-link">
+                      {t("change_language")}
+                    </p>
+                  </LocaleConfigurator>
               </ul>
             )}
             {mainLink && (
@@ -88,9 +93,6 @@ export default function Header({
                 />
               </span>
             )}
-            {
-              children && children
-            }
             <button
               data-menu-open={mobileMenuOpen}
               className={`Header--menu-button OverrideHeader--menu-button`}
@@ -159,9 +161,11 @@ export default function Header({
               />
             </ul>
           )}
-          {
-            children && children
-          }
+          <LocaleConfigurator>
+            <p className="Header--mobile-link OverrideHeader--mobile-link">
+              {t("change_language")}
+            </p>
+          </LocaleConfigurator>
         </motion.nav>
       )}
       </AnimatePresence>

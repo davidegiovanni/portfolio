@@ -551,7 +551,7 @@ body {
 }
 
 .FeedPage--items-container {
-  @apply w-full -mb-[1.5px] overflow-hidden
+  @apply w-full -mb-[1.5px] overflow-hidden border-b
 }
 
 .FeedPage--items {
@@ -621,11 +621,11 @@ body {
 }
 
 .LocaleConfigurator--navigation-menu {
-  @apply w-[200px] bg-white rounded-default p-2 shadow-lg border [animation-duration:_400ms] [animation-timing-function:_cubic-bezier(0.16,_1,_0.3,_1)] will-change-[transform,opacity] relative z-50 flex flex-col gap-1
+  @apply w-[200px] bg-white border border-black shadow-lg [animation-duration:_400ms] [animation-timing-function:_cubic-bezier(0.16,_1,_0.3,_1)] will-change-[transform,opacity] relative z-50 flex flex-col
 }
 
 .LocaleNavigationMenu--link {
-  @apply uppercase px-2 py-1 rounded-inner bg-white hover:ring-1 focus:ring-1 hover:ring-revas-neutral-100 focus:ring-revas-neutral-100 data-[state=checked]:bg-revas-neutral-100 data-[state=checked]:opacity-60 data-[state=checked]:pointer-events-none data-[state=checked]:cursor-not-allowed flex-1 text-sm text-center
+  @apply uppercase p-4 border-b border-black bg-white hover:bg-neutral-100 underline decoration-dotted underline-offset-2 data-[state=checked]:bg-revas-neutral-100 data-[state=checked]:opacity-60 data-[state=checked]:pointer-events-none data-[state=checked]:cursor-not-allowed flex-1 text-sm text-center
 }
 
 .LocaleConfigurator--viewport {
