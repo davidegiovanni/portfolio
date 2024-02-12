@@ -495,19 +495,19 @@ body {
 /* FEED */
 
 .FeedBlockItem {
-  @apply w-full h-full border-b border-r border-black -mb-px -mr-px relative overflow-hidden;
+  @apply w-full h-full border-b border-r border-black -mb-px -mr-px relative overflow-hidden p-4;
 }
 
 .FeedBlockItem--container {
-  @apply w-full h-full flex flex-col-reverse items-stretch justify-start;
+  @apply w-full h-full flex flex-col-reverse gap-4 items-stretch justify-start;
 }
 
 .FeedBlockItemContainer--second-slot {
-  @apply flex-1 flex flex-col gap-1 items-start justify-start w-auto h-auto p-2 lg:p-4 pb-0 lg:pb-0 bg-white;
+  @apply flex-1 flex flex-col gap-1 items-start justify-start w-auto h-auto bg-white;
 }
 
 .FeedBlockItemContainer--first-slot {
-  @apply flex-1 w-full h-auto bg-white p-2;
+  @apply flex-1 w-full h-auto bg-white;
 }
 
 .FeedBlockItem--title {
@@ -561,47 +561,47 @@ body {
 /* CONTENT */
 
 .ContentPage {
-  @apply relative bg-revas-white dark:bg-revas-neutral-900 w-full flex-1;
+  @apply bg-revas-white dark:bg-revas-neutral-900 w-full flex-1 grid grid-cols-1 lg:grid-cols-2 border-b border-black;
 }
 
 .ContentPage--header {
-  @apply p-4 lg:p-8 border-b border-revas-neutral-200 dark:border-revas-neutral-600
+  @apply bg-white lg:sticky top-0 self-start
 }
 
 .ContentHeader--container {
-  @apply w-full h-full max-w-screen-xl mx-auto flex gap-8 flex-col lg:flex-row items-stretch overflow-hidden;
+  @apply p-4 flex flex-col items-start justify-start gap-4;
 }
 
 .ContentHeaderContainer--first-slot {
-  @apply grow shrink gap-2 flex flex-col items-start justify-center w-full lg:w-1/2 h-auto max-w-screen-md;
+  @apply flex flex-col items-start justify-start gap-2;
 }
 
 .ContentHeaderContainer--second-slot {
-  @apply grow shrink-0 p-0 w-full lg:w-1/2 h-auto;
+  @apply w-full;
 }
 
 .ContentHeader--feed-title {
-  @apply text-xs lg:text-sm uppercase text-primary hover:underline;
+  @apply text-xs uppercase underline underline-offset-2 decoration-dotted
 }
 
 .ContentHeader--title {
-  @apply text-xl lg:text-2xl font-semibold text-revas-neutral-800 dark:text-revas-neutral-500;
+  @apply text-sm uppercase
 }
 
 .ContentHeader--description {
-  @apply text-lg lg:text-xl font-normal text-revas-neutral-700 dark:text-revas-neutral-500;
+  @apply text-xs uppercase prose prose-p:mt-0 prose-ul:mt-0;
 }
 
 .ContentHeader--published-date {
-  @apply text-sm font-normal text-revas-neutral-500 dark:text-revas-neutral-600;
+  @apply text-xs px-2 py-0.5 rounded-full bg-revas-neutral-100 uppercase;
 }
 
 .ContentHeader--attachment {
-  @apply relative aspect-[4/3] group-data-[is-video=true]:aspect-video w-full rounded-default overflow-hidden dark:opacity-80;
+  @apply aspect-[2/3] group-data-[is-item-video=true]:aspect-video overflow-hidden data-[is-clickable=true]:group-data-[is-grid-item]:group-hover:opacity-50 w-full rounded-default border border-black;
 }
 
 .ContentPage--content {
-  @apply prose dark:prose-invert mx-auto w-full max-w-screen-md prose-p:text-sm prose-a:text-sm prose-a:text-primary prose-a:dark:text-revas-neutral-300 prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-h4:text-sm prose-h5:text-sm prose-h6:text-sm prose-h1:lg:text-3xl prose-h2:lg:text-2xl prose-h3:lg:text-xl prose-h4:lg:text-lg prose-h5:lg:text-sm prose-h6:lg:text-sm p-4 lg:py-8
+  @apply border-t lg:border-l lg:border-t-0 border-black prose-sm dark:prose-invert mx-auto w-full max-w-screen-md prose-p:text-sm prose-a:text-sm prose-a:underline prose-a:underline-offset-2 prose-a:decoration-dotted prose-a:text-primary prose-a:dark:text-revas-neutral-300 prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-h4:text-sm prose-h5:text-sm prose-h6:text-sm prose-h1:lg:text-3xl prose-h2:lg:text-2xl prose-h3:lg:text-xl prose-h4:lg:text-lg prose-h5:lg:text-sm prose-h6:lg:text-sm p-4 lg:p-8
 }
 
 /* TOOLBAR */

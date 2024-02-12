@@ -1,3 +1,4 @@
+import type { ReactNode} from "react";
 import { useState } from "react";
 import { Link } from "@remix-run/react";
 
@@ -14,6 +15,7 @@ export interface HeaderProps {
   navigation?: WebsiteLinkUI[];
   mainLink?: WebsiteLinkUI;
   locale: string;
+  children?: ReactNode
 }
 
 export default function Header({
@@ -22,6 +24,7 @@ export default function Header({
   navigation,
   mainLink,
   locale,
+  children
 }: HeaderProps) {
   const [mobileMenuOpen, toggleMobileMenu] = useState<boolean>(false);
 
@@ -85,6 +88,9 @@ export default function Header({
                 />
               </span>
             )}
+            {
+              children && children
+            }
             <button
               data-menu-open={mobileMenuOpen}
               className={`Header--menu-button OverrideHeader--menu-button`}
@@ -153,6 +159,9 @@ export default function Header({
               />
             </ul>
           )}
+          {
+            children && children
+          }
         </motion.nav>
       )}
       </AnimatePresence>
