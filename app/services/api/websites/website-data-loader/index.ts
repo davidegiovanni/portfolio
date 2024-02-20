@@ -108,9 +108,9 @@ export const newLoader = ({
     contrastMode = a11yParsedCookie.contrastMode
     if (contrastModeParam !== "") contrastMode = contrastModeParam
 
-    let textBaseUnit = 0.155 + 0.155 * increaseAmount
-    let textLineBaseUnit = 0.155 + (increaseAmount / 10)
-    let spacingBaseUnit = Math.abs(0.155 - (increaseAmount / (increaseAmount === 0 ? 1 : 20 * increaseAmount)))
+    let textBaseUnit = 0.125 + 0.125 * increaseAmount
+    let textLineBaseUnit = 0.125 + (increaseAmount / 10)
+    let spacingBaseUnit = Math.abs(0.125 - (increaseAmount / (increaseAmount === 0 ? 1 : 20 * increaseAmount)))
     let isHighContrastMode = contrastMode === "high"
 
     let selectedLocale = ""
